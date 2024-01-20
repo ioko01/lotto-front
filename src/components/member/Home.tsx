@@ -16,6 +16,7 @@ enum RefreshEnum {
     NO_REFRESH = "NO_REFRESH"
 }
 
+let sendRequest = false
 export function Home() {
     const { isUser } = useContext(AuthContext)
     const [lotto, setLotto] = useState<ILottoDoc[] | null>(null)
@@ -157,13 +158,11 @@ export function Home() {
     }
 
 
-    useEffect(() => {
-        if (!lotto) {
-            fetchLottoAll()
-            initialStateLotto()
-            repeatSetLotto()
-        }
-    }, [lotto])
+    if (!sendRequest) {
+        initialStateLotto()
+        repeatSetLotto()
+        sendRequest = true
+    }
 
     return (
         <>{
