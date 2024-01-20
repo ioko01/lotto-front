@@ -22,10 +22,14 @@ export class AuthService {
                 `${API_URL}/auth/login`,
                 credentials
             );
-            sessionStorage.setItem("test", "response.data.token")
+            if (response.data) {
+                sessionStorage.setItem("test", response.data.token)
+            } else {
+                sessionStorage.setItem("test", "asd")
+            }
             return response.data;
         } catch (error) {
-            sessionStorage.setItem("test", "response.data.token")
+            sessionStorage.setItem("test", "invalid")
             return { token: "invalid" };
         }
 
