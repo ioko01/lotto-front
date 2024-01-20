@@ -48,40 +48,37 @@ function fetchAuth(token: string) {
     return response
 }
 
-let sendRequest = false
+
 export const AuthContextProvider = ({ children }: AuthProviderProps): JSX.Element => {
     const [isUser, setIsUser] = useState<IUser | null>(null)
     const [status, setStatus] = useState<LOGIN_STATE>("LOADING");
     const token = getToken()
     useEffect(() => {
         if (token) {
-            if (!sendRequest) {
-                sendRequest = true
-                // console.log(token);
-                const fetchMe = fetchAuth(token)
-                fetchMe.then((response) => {
-                    if (response.data.token) {
-                        localStorage.setItem(import.meta.env.VITE_OPS_COOKIE_NAME, response.data.token)
-                        fetchMe.then((response) => {
-                            setIsUser(response.data)
-                            setStatus("SUCCESS")
-                        })
-                            .catch((err) => {
-                                setStatus("LOGOUT")
-                                setIsUser(null)
-                            })
-                        sendRequest = false
-                    } else {
+            // console.log(token);
+            const fetchMe = fetchAuth(token)
+            fetchMe.then((response) => {
+                if (response.data.token) {
+                    localStorage.setItem(import.meta.env.VITE_OPS_COOKIE_NAME, response.data.token)
+                    fetchMe.then((response) => {
                         setIsUser(response.data)
                         setStatus("SUCCESS")
-                    }
-                })
-                    .catch((err) => {
-                        localStorage.removeItem(import.meta.env.VITE_OPS_COOKIE_NAME)
-                        setStatus("LOGOUT")
-                        setIsUser(null)
                     })
-            }
+                        .catch((err) => {
+                            setStatus("LOGOUT")
+                            setIsUser(null)
+                        })
+                } else {
+                    setIsUser(response.data)
+                    setStatus("SUCCESS")
+                }
+            })
+                .catch((err) => {
+                    localStorage.removeItem(import.meta.env.VITE_OPS_COOKIE_NAME)
+                    setStatus("LOGOUT")
+                    setIsUser(null)
+                })
+
         } else if (status !== "LOGOUT") {
             setStatus("LOGOUT")
         }
