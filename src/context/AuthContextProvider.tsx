@@ -5,7 +5,7 @@ import React, {
     createContext,
     useEffect,
 } from 'react'
-import axios, { AxiosRequestConfig } from 'axios'
+import axios, { AxiosRequestConfig, AxiosResponse } from 'axios'
 import { axiosConfig } from '../utils/headers'
 import { IUser, IUserDoc } from '../models/User'
 import { getToken } from '../utils/token'
@@ -43,16 +43,24 @@ export function useAuth(): AuthContextData {
 }
 
 async function fetchAuth(token: string) {
-    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
-    axios.defaults.withCredentials = true
-    const response = await axios.get(import.meta.env.VITE_OPS_URL + "/me")
-    if (response) {
-        sessionStorage.setItem("test", response.data)
-    } else {
-        sessionStorage.setItem("test", "no response data")
+    try {
+        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
+        axios.defaults.withCredentials = true
+        const response = await axios.get(import.meta.env.VITE_OPS_URL + "/me")
+        if (response) {
+            sessionStorage.setItem("test", response.data)
+        } else {
+            sessionStorage.setItem("test", "no response data")
+        }
+
+        return response
+    } catch (error) {
+
+        sessionStorage.setItem("test", String(error))
+        return error
     }
 
-    return response
+
 }
 
 export const AuthContextProvider = ({ children }: AuthProviderProps): JSX.Element => {
@@ -63,10 +71,10 @@ export const AuthContextProvider = ({ children }: AuthProviderProps): JSX.Elemen
         if (token) {
             // console.log(token);
             const fetchMe = fetchAuth(token)
-            fetchMe.then((response) => {
+            fetchMe.then((response: AxiosResponse<any, any> | any) => {
                 if (response.data.token) {
                     sessionStorage.setItem(import.meta.env.VITE_OPS_COOKIE_NAME, response.data.token)
-                    fetchMe.then((response) => {
+                    fetchMe.then((response: AxiosResponse<any, any> | any) => {
                         setIsUser(response.data)
                         setStatus("SUCCESS")
                     })
@@ -96,7 +104,7 @@ export const AuthContextProvider = ({ children }: AuthProviderProps): JSX.Elemen
         if (response) {
             location.reload()
             const fetchMe = fetchAuth(response.token)
-            fetchMe.then((response) => {
+            fetchMe.then((response: AxiosResponse<any, any> | any) => {
                 setIsUser(response.data)
                 setStatus("SUCCESS")
             })
