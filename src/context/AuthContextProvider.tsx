@@ -43,16 +43,9 @@ export function useAuth(): AuthContextData {
 }
 
 async function fetchAuth(token: string) {
-    // const instance = axios.create({
-    //     baseURL: import.meta.env.VITE_OPS_URL,
-    //     headers: {
-    //         'Authorization': `Bearer ${token}`,
-    //         'Authorization-Fake-X': `Bearer ${token}`,
-    //     },
-    //     withCredentials: true
-    // });
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
-    const response = await axios.get("/me")
+    axios.defaults.withCredentials = true
+    const response = await axios.get(import.meta.env.VITE_OPS_URL + "/me")
     if (response) {
         sessionStorage.setItem("test", response.data)
     } else {
