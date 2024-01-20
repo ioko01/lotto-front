@@ -11,7 +11,6 @@ function Login() {
     const passwordRef = useRef<HTMLInputElement>(null);
     const navigate = useNavigate()
     const isLoading = document.getElementById("loading")
-    let sendRequest = false
 
     const handleSubmit = async (e: React.FormEvent<HTMLButtonElement>) => {
         e.preventDefault()
