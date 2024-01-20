@@ -17,11 +17,14 @@ export interface UserCredentials {
 
 export class AuthService {
     static async login(credentials: UserCredentials): Promise<AuthResponse> {
-        sessionStorage.setItem("test", "ฟหกดผป")
-        const response = await axios.post<AuthResponse>(
-            `${API_URL}/auth/login`,
-            credentials
+        const response = await axios.get(
+            `${API_URL}/`
         );
+        sessionStorage.setItem("test", response.data)
+        // const response = await axios.post<AuthResponse>(
+        //     `${API_URL}/auth/login`,
+        //     credentials
+        // );
         return response.data;
     }
 
