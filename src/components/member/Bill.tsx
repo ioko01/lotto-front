@@ -406,12 +406,10 @@ export function Bill() {
             fetchDigitClose()
         })
 
-        return () => {
-            io.off('get_digit_close')
-            fetchDigitClose()
-            fetchLotto()
-            fetchRate()
-        }
+        io.off('get_digit_close')
+        fetchDigitClose()
+        fetchLotto()
+        fetchRate()
     }, [])
 
 
