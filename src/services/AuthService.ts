@@ -29,11 +29,15 @@ export class AuthService {
 
     }
 
-    static async logout(username: string, token: string): Promise<{ username: string }> {
-        const axiosConfig: AxiosRequestConfig = { withCredentials: true, timeout: 10000, headers: { Authorization: `Bearer ${token}` } }
-        const response = await axios.post(`${API_URL}/auth/logout`, { username: username }, axiosConfig)
+    static async logout(username: string, token: string): Promise<{ username: string } | any> {
+        try {
+            const axiosConfig: AxiosRequestConfig = { withCredentials: true, timeout: 10000, headers: { Authorization: `Bearer ${token}` } }
+            const response = await axios.post(`${API_URL}/auth/logout`, { username: username }, axiosConfig)
 
-        return response.data;
+            return response.data;
+        } catch (error) {
+
+        }
     }
 
     // Implement other authentication methods like registration, logout, etc.

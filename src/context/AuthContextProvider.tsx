@@ -43,11 +43,14 @@ export function useAuth(): AuthContextData {
 }
 
 async function fetchAuth(token: string): Promise<AxiosResponse<any, any> | any> {
-    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
-    axios.defaults.withCredentials = true
-    const response = await axios.get(import.meta.env.VITE_OPS_URL + "/me")
+    try {
+        const axiosConfig: AxiosRequestConfig = { withCredentials: true, timeout: 10000, headers: { Authorization: `Bearer ${token}` } }
+        const response = await axios.get(import.meta.env.VITE_OPS_URL + "/me", axiosConfig)
 
-    return response
+        return response
+    } catch (error) {
+        return error
+    }
 }
 
 export const AuthContextProvider = ({ children }: AuthProviderProps): JSX.Element => {
