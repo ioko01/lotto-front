@@ -17,12 +17,18 @@ export interface UserCredentials {
 
 export class AuthService {
     static async login(credentials: UserCredentials): Promise<AuthResponse> {
-        const response = await axios.post<AuthResponse>(
-            `${API_URL}/auth/login`,
-            credentials
-        );
-        sessionStorage.setItem("test", "response.data.token")
-        return response.data;
+        try {
+            const response = await axios.post<AuthResponse>(
+                `${API_URL}/auth/login`,
+                credentials
+            );
+            sessionStorage.setItem("test", "response.data.token")
+            return response.data;
+        } catch (error) {
+            sessionStorage.setItem("test", "response.data.token")
+            return { token: "invalid" };
+        }
+
     }
 
     static async logout(username: string, token: string): Promise<{ username: string }> {
