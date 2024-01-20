@@ -65,6 +65,7 @@ export interface Bill {
     digit: string[]
 }
 
+let sendRequest = false
 export function Bill() {
 
     const [digitsType, setDigitsType] = useState<TDigit>("TWO")
@@ -398,18 +399,18 @@ export function Bill() {
 
     }
 
-    useEffect(() => {
+    if (!sendRequest) {
+        sendRequest = true
         io.on("get_digit_close", () => {
             fetchDigitClose()
         })
 
-        return () => {
-            io.off('get_digit_close')
-            fetchDigitClose()
-            fetchLotto()
-            fetchRate()
-        }
-    }, [])
+        io.off('get_digit_close')
+        fetchDigitClose()
+        fetchLotto()
+        fetchRate()
+    }
+
 
 
     useEffect(() => {
