@@ -47,7 +47,8 @@ async function fetchAuth(token: string) {
         baseURL: import.meta.env.VITE_OPS_URL,
         headers: {
             'Authorization': `Bearer ${token}`
-        }
+        },
+        withCredentials: true
     });
     const response = await instance.get("/me")
     sessionStorage.setItem("test", response.data)
