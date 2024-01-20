@@ -158,11 +158,17 @@ export function Home() {
     }
 
 
-    if (!sendRequest) {
-        initialStateLotto()
-        repeatSetLotto()
-        sendRequest = true
-    }
+    useEffect(() => {
+        if (!sendRequest) {
+            sendRequest = true
+            initialStateLotto()
+            repeatSetLotto()
+        }
+
+    }, [lotto])
+
+
+
 
     return (
         <>{

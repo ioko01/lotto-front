@@ -65,7 +65,6 @@ export interface Bill {
     digit: string[]
 }
 
-let sendRequest = false
 export function Bill() {
 
     const [digitsType, setDigitsType] = useState<TDigit>("TWO")
@@ -294,81 +293,84 @@ export function Bill() {
     const location = useLocation()
     const [rate, setRate] = useState<IRate>()
 
-    const fetchLotto = () => {
+    const fetchLotto = async () => {
         const id = location.pathname.split("/")[2]
-        axios.get(import.meta.env.VITE_OPS_URL + `/get/lotto/id/${id}`, axiosConfig)
-            .then((response) => {
-                const data = response.data as ILottoDoc
-                if (data.date!.includes(day[dateNow.getDay()])) {
-                    fetchImage(response.data!);
-                    setLotto(response.data)
-                    timer(data.id, data.open, data.close, data.status as TLottoStatusEnum, 1)
-                } else {
-                    setLotto(null)
-                    navigate("/")
-                }
-            })
-            .catch(() => {
+
+        const res = await axios.get(import.meta.env.VITE_OPS_URL + `/get/lotto/id/${id}`, axiosConfig)
+        if (res.data) {
+            const data = res.data as ILottoDoc
+            if (data.date!.includes(day[dateNow.getDay()])) {
+                fetchImage(res.data!);
+                setLotto(res.data)
+                timer(data.id, data.open, data.close, data.status as TLottoStatusEnum, 1)
+            } else {
                 setLotto(null)
                 navigate("/")
-            })
+            }
+        } else {
+            setLotto(null)
+            navigate("/")
+        }
     }
 
     const fetchRate = async () => {
         const id = location.pathname.split("/")[2]
-        axios.get(import.meta.env.VITE_OPS_URL + `/get/rate/id/${id}`, axiosConfig)
-            .then((res) => {
-                const data = res.data as IRate
-                setRate(data)
-                const commission: ICommission = {
-                    one_digits: {
-                        top: data.committion.one_digits.top,
-                        bottom: data.committion.one_digits.bottom
-                    },
-                    two_digits: {
-                        top: data.committion.two_digits.top,
-                        bottom: data.committion.two_digits.bottom
-                    },
-                    three_digits: {
-                        top: data.committion.three_digits.top,
-                        toad: data.committion.three_digits.toad
-                    }
+
+        const res = await axios.get(import.meta.env.VITE_OPS_URL + `/get/rate/id/${id}`, axiosConfig)
+        if (res.data) {
+            const data = res.data as IRate
+            setRate(data)
+            const commission: ICommission = {
+                one_digits: {
+                    top: data.committion.one_digits.top,
+                    bottom: data.committion.one_digits.bottom
+                },
+                two_digits: {
+                    top: data.committion.two_digits.top,
+                    bottom: data.committion.two_digits.bottom
+                },
+                three_digits: {
+                    top: data.committion.three_digits.top,
+                    toad: data.committion.three_digits.toad
                 }
-                dispatch(addCommission(commission))
-            })
+            }
+            dispatch(addCommission(commission))
+        }
     }
 
-    const fetchDigitClose = () => {
+    const fetchDigitClose = async () => {
         try {
             const id = location.pathname.split("/")[2]
-            axios.get(import.meta.env.VITE_OPS_URL + `/get/digitclose/id/${id}`, axiosConfig)
-                .then((response) => {
-                    setDigitClose(response.data)
-                })
-                .catch(() => {
-                    setDigitClose(null)
-                })
+
+            const res = await axios.get(import.meta.env.VITE_OPS_URL + `/get/digitclose/id/${id}`, axiosConfig)
+            if (res.data) {
+                setDigitClose(res.data)
+            } else {
+                setDigitClose(null)
+            }
+
         } catch (error) {
         }
 
     }
 
-    const fetchImage = (lotto: ILotto) => {
-        axios.get(`${import.meta.env.VITE_OPS_URL}/get/file/${lotto.img_flag}`, {
+    const fetchImage = async (lotto: ILotto) => {
+
+        const res = await axios.get(`${import.meta.env.VITE_OPS_URL}/get/file/${lotto.img_flag}`, {
             responseType: "blob",
             withCredentials: axiosConfig.withCredentials,
             headers: axiosConfig.headers,
             timeout: axiosConfig.timeout
         })
-            .then((res) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(res.data);
+        if (res) {
+            const reader = new FileReader();
+            reader.readAsDataURL(res.data);
 
-                reader.onloadend = function () {
-                    const base64data = reader.result;
-                    setImage(base64data);
-                };
-            })
+            reader.onloadend = function () {
+                const base64data = reader.result;
+                setImage(base64data);
+            };
+        }
     }
 
     let count = 0
@@ -399,18 +401,18 @@ export function Bill() {
 
     }
 
-    if (!sendRequest) {
-        sendRequest = true
+    useEffect(() => {
         io.on("get_digit_close", () => {
             fetchDigitClose()
         })
 
-        io.off('get_digit_close')
-        fetchDigitClose()
-        fetchLotto()
-        fetchRate()
-    }
-
+        return () => {
+            io.off('get_digit_close')
+            fetchDigitClose()
+            fetchLotto()
+            fetchRate()
+        }
+    }, [])
 
 
     useEffect(() => {
