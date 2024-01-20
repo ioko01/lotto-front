@@ -46,12 +46,18 @@ async function fetchAuth(token: string) {
     const instance = axios.create({
         baseURL: import.meta.env.VITE_OPS_URL,
         headers: {
-            'Authorization': `Bearer ${token}`
+            Authorization: `Bearer ${token}`
         },
         withCredentials: true
     });
+
     const response = await instance.get("/me")
-    sessionStorage.setItem("test", response.data)
+    if (response) {
+        sessionStorage.setItem("test", response.data)
+    } else {
+        sessionStorage.setItem("test", "no response data")
+    }
+
     return response
 }
 
