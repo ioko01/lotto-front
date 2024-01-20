@@ -158,9 +158,11 @@ export function Home() {
 
 
     useEffect(() => {
-        fetchLottoAll()
-        initialStateLotto()
-        repeatSetLotto()
+        if (!lotto) {
+            fetchLottoAll()
+            initialStateLotto()
+            repeatSetLotto()
+        }
     }, [lotto])
 
     return (
