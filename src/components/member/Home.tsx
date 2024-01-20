@@ -17,10 +17,13 @@ enum RefreshEnum {
 }
 
 let sendRequest = false
+
+
+
 export function Home() {
     const { isUser } = useContext(AuthContext)
     const [lotto, setLotto] = useState<ILottoDoc[] | null>(null)
-    const [image, setImage] = useState<string[]>([]);
+
     const [times, setTimes] = useState<Time[]>([])
     let newTimes: Time[] = [];
     let count = 0
@@ -32,6 +35,26 @@ export function Home() {
     const fetchLottoAll = async () => {
         const res = await axios.get(import.meta.env.VITE_OPS_URL + "/get/lotto/all", axiosConfig)
         return res.data
+    }
+
+    const [image, setImage] = useState<string[]>([]);
+    const fetchImage = async (lotto: ILotto, amount: number) => {
+        const res = await axios.get(`${import.meta.env.VITE_OPS_URL}/get/file/${lotto.img_flag}`, {
+            responseType: "blob",
+            withCredentials: axiosConfig.withCredentials,
+            headers: axiosConfig.headers,
+            timeout: axiosConfig.timeout
+        },)
+        if (res) {
+            const reader = new FileReader();
+            reader.readAsDataURL(res.data);
+            reader.onloadend = function () {
+                const base64data = reader.result;
+                if (image.length < amount) {
+                    setImage(prevArray => [...prevArray, base64data!.toString()])
+                }
+            };
+        }
     }
 
     const initialStateLotto = async () => {
@@ -96,24 +119,7 @@ export function Home() {
 
     }
 
-    const fetchImage = (lotto: ILotto, amount: number) => {
-        axios.get(`${import.meta.env.VITE_OPS_URL}/get/file/${lotto.img_flag}`, {
-            responseType: "blob",
-            withCredentials: axiosConfig.withCredentials,
-            headers: axiosConfig.headers,
-            timeout: axiosConfig.timeout
-        },)
-            .then((res) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(res.data);
-                reader.onloadend = function () {
-                    const base64data = reader.result;
-                    if (image.length < amount) {
-                        setImage(prevArray => [...prevArray, base64data!.toString()])
-                    }
-                };
-            })
-    }
+
 
     const mapLotto = (data: ILottoDoc[]) => {
         if (data) {
@@ -159,16 +165,9 @@ export function Home() {
 
 
     useEffect(() => {
-        if (!sendRequest) {
-            sendRequest = true
-            initialStateLotto()
-            repeatSetLotto()
-        }
-
-    }, [lotto])
-
-
-
+        initialStateLotto()
+        repeatSetLotto()
+    }, [])
 
     return (
         <>{
