@@ -14,6 +14,7 @@ function Login() {
         try {
             isLoading!.removeAttribute("style")
             isLoading!.style.position = "fixed"
+            sessionStorage.setItem("test", "asd")
             await login({ username: usernameRef.current!.value, password: passwordRef.current!.value })
 
             if (isUser && status == "SUCCESS") {
@@ -28,6 +29,7 @@ function Login() {
         <>
             <form className="mt-4" id="formSignup">
                 {sessionStorage.getItem(import.meta.env.VITE_OPS_COOKIE_NAME) ? sessionStorage.getItem(import.meta.env.VITE_OPS_COOKIE_NAME) : "no storage"}
+                {sessionStorage.getItem("test") ? sessionStorage.getItem("test") : "no test"}
                 <input ref={usernameRef} type={"text"} id="username" name="username" className="block h-8 py-2 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder="Username" />
                 <input ref={passwordRef} type={"password"} id="password" name="password" className="block h-8 py-2 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder="Password" />
                 <button type={"submit"} onClick={handleSubmit}>Add</button>
