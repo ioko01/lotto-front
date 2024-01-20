@@ -42,25 +42,12 @@ export function useAuth(): AuthContextData {
     return useContext(AuthContext)
 }
 
-async function fetchAuth(token: string) {
-    try {
-        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
-        axios.defaults.withCredentials = true
-        const response = await axios.get(import.meta.env.VITE_OPS_URL + "/me")
-        if (response) {
-            sessionStorage.setItem("test", response.data)
-        } else {
-            sessionStorage.setItem("test", "no response data")
-        }
+async function fetchAuth(token: string): Promise<AxiosResponse<any, any> | any> {
+    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
+    axios.defaults.withCredentials = true
+    const response = await axios.get(import.meta.env.VITE_OPS_URL + "/me")
 
-        return response
-    } catch (error) {
-
-        sessionStorage.setItem("test", String(error))
-        return error
-    }
-
-
+    return response
 }
 
 export const AuthContextProvider = ({ children }: AuthProviderProps): JSX.Element => {
@@ -71,10 +58,10 @@ export const AuthContextProvider = ({ children }: AuthProviderProps): JSX.Elemen
         if (token) {
             // console.log(token);
             const fetchMe = fetchAuth(token)
-            fetchMe.then((response: AxiosResponse<any, any> | any) => {
+            fetchMe.then((response) => {
                 if (response.data.token) {
                     sessionStorage.setItem(import.meta.env.VITE_OPS_COOKIE_NAME, response.data.token)
-                    fetchMe.then((response: AxiosResponse<any, any> | any) => {
+                    fetchMe.then((response) => {
                         setIsUser(response.data)
                         setStatus("SUCCESS")
                     })
@@ -104,7 +91,7 @@ export const AuthContextProvider = ({ children }: AuthProviderProps): JSX.Elemen
         if (response) {
             location.reload()
             const fetchMe = fetchAuth(response.token)
-            fetchMe.then((response: AxiosResponse<any, any> | any) => {
+            fetchMe.then((response) => {
                 setIsUser(response.data)
                 setStatus("SUCCESS")
             })
