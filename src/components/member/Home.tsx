@@ -159,6 +159,7 @@ export function Home() {
 
     useEffect(() => {
         return () => {
+            fetchLottoAll()
             initialStateLotto()
             repeatSetLotto()
         }
