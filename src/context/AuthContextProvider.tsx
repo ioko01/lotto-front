@@ -58,7 +58,7 @@ export const AuthContextProvider = ({ children }: AuthProviderProps): JSX.Elemen
             const fetchMe = fetchAuth(token)
             fetchMe.then((response) => {
                 if (response.data.token) {
-                    localStorage.setItem(import.meta.env.VITE_OPS_COOKIE_NAME, response.data.token)
+                    sessionStorage.setItem(import.meta.env.VITE_OPS_COOKIE_NAME, response.data.token)
                     fetchMe.then((response) => {
                         setIsUser(response.data)
                         setStatus("SUCCESS")
@@ -73,7 +73,7 @@ export const AuthContextProvider = ({ children }: AuthProviderProps): JSX.Elemen
                 }
             })
                 .catch((err) => {
-                    localStorage.removeItem(import.meta.env.VITE_OPS_COOKIE_NAME)
+                    sessionStorage.removeItem(import.meta.env.VITE_OPS_COOKIE_NAME)
                     setStatus("LOGOUT")
                     setIsUser(null)
                 })
@@ -85,7 +85,7 @@ export const AuthContextProvider = ({ children }: AuthProviderProps): JSX.Elemen
 
     const login = async (credentials: UserCredentials) => {
         const response = await AuthService.login(credentials)
-        window.localStorage.setItem(import.meta.env.VITE_OPS_COOKIE_NAME, response.token)
+        sessionStorage.setItem(import.meta.env.VITE_OPS_COOKIE_NAME, response.token)
         if (response) {
             location.reload()
             const fetchMe = fetchAuth(response.token)
@@ -94,7 +94,7 @@ export const AuthContextProvider = ({ children }: AuthProviderProps): JSX.Elemen
                 setStatus("SUCCESS")
             })
                 .catch((err) => {
-                    window.localStorage.removeItem(import.meta.env.VITE_OPS_COOKIE_NAME)
+                    sessionStorage.removeItem(import.meta.env.VITE_OPS_COOKIE_NAME)
                     setStatus("LOGOUT")
                     setIsUser(null)
                 })
@@ -105,7 +105,7 @@ export const AuthContextProvider = ({ children }: AuthProviderProps): JSX.Elemen
 
     const logout = async (username: string) => {
         const response = await AuthService.logout(username, token!)
-        localStorage.removeItem(import.meta.env.VITE_OPS_COOKIE_NAME)
+        sessionStorage.removeItem(import.meta.env.VITE_OPS_COOKIE_NAME)
         if (response) {
             setStatus("LOGOUT")
         }
