@@ -11,15 +11,6 @@ export interface ILottoDoc extends ILotto {
     id: string
 }
 
-enum RefreshEnum {
-    REFRESH = "REFRESH",
-    NO_REFRESH = "NO_REFRESH"
-}
-
-let sendRequest = false
-
-
-
 export function Home() {
     const { isUser } = useContext(AuthContext)
     const [lotto, setLotto] = useState<ILottoDoc[] | null>(null)

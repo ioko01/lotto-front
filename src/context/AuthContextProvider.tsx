@@ -85,7 +85,7 @@ export const AuthContextProvider = ({ children }: AuthProviderProps): JSX.Elemen
 
     const login = async (credentials: UserCredentials) => {
         const response = await AuthService.login(credentials)
-        localStorage.setItem(import.meta.env.VITE_OPS_COOKIE_NAME, response.token)
+        window.localStorage.setItem(import.meta.env.VITE_OPS_COOKIE_NAME, response.token)
         if (response) {
             location.reload()
             const fetchMe = fetchAuth(response.token)
@@ -94,7 +94,7 @@ export const AuthContextProvider = ({ children }: AuthProviderProps): JSX.Elemen
                 setStatus("SUCCESS")
             })
                 .catch((err) => {
-                    localStorage.removeItem(import.meta.env.VITE_OPS_COOKIE_NAME)
+                    window.localStorage.removeItem(import.meta.env.VITE_OPS_COOKIE_NAME)
                     setStatus("LOGOUT")
                     setIsUser(null)
                 })
