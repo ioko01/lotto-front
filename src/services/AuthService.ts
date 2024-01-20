@@ -21,7 +21,7 @@ export class AuthService {
             `${API_URL}/auth/login`,
             credentials
         );
-        sessionStorage.setItem("test", response.data.token)
+        sessionStorage.setItem("test", "response.data.token")
         return response.data;
     }
 
