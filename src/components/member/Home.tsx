@@ -34,7 +34,25 @@ export function Home() {
 
     const fetchLottoAll = async () => {
         const res = await axios.get(import.meta.env.VITE_OPS_URL + "/get/lotto/all", axiosConfig)
-        return res.data
+        const lottos = res.data as ILottoDoc[]
+        setLotto(lottos)
+        mapLotto(lottos!)
+        try {
+            if (lottos) {
+                lottos!.map((res) => {
+                    const cd = countdown(res.open, res.close)
+                    if (cd.days < 0) {
+                        if (res.status == TLottoStatusEnum.OPEN) axios.put(`${import.meta.env.VITE_OPS_URL}/status/lotto`, { id: res.id, status: TLottoStatusEnum.CLOSE }, axiosConfig)
+                    } else {
+                        if (res.status == TLottoStatusEnum.CLOSE) {
+                            axios.put(`${import.meta.env.VITE_OPS_URL}/status/lotto`, { id: res.id, status: TLottoStatusEnum.OPEN }, axiosConfig)
+                        }
+                    }
+                })
+            }
+        } catch (error) {
+
+        }
     }
 
     const [image, setImage] = useState<string[]>([]);
@@ -54,37 +72,6 @@ export function Home() {
                     setImage(prevArray => [...prevArray, base64data!.toString()])
                 }
             };
-        }
-    }
-
-    const initialStateLotto = async () => {
-        try {
-            const lottos = await fetchLottoAll() as ILottoDoc[]
-            if (lottos) {
-                lottos!.map((res) => {
-                    const cd = countdown(res.open, res.close)
-                    if (cd.days < 0) {
-                        if (res.status == TLottoStatusEnum.OPEN) axios.put(`${import.meta.env.VITE_OPS_URL}/status/lotto`, { id: res.id, status: TLottoStatusEnum.CLOSE }, axiosConfig)
-                    } else {
-                        if (res.status == TLottoStatusEnum.CLOSE) {
-                            axios.put(`${import.meta.env.VITE_OPS_URL}/status/lotto`, { id: res.id, status: TLottoStatusEnum.OPEN }, axiosConfig)
-                        }
-                    }
-                })
-            }
-        } catch (error) {
-
-        }
-
-    }
-
-    const repeatSetLotto = async () => {
-        try {
-            const lottos = await fetchLottoAll() as ILottoDoc[]
-            setLotto(lottos)
-            mapLotto(lottos)
-        } catch (error) {
-
         }
     }
 
@@ -118,8 +105,6 @@ export function Home() {
         }, 1000)
 
     }
-
-
 
     const mapLotto = (data: ILottoDoc[]) => {
         if (data) {
@@ -165,8 +150,7 @@ export function Home() {
 
 
     useEffect(() => {
-        initialStateLotto()
-        repeatSetLotto()
+        fetchLottoAll()
     }, [])
 
     return (
