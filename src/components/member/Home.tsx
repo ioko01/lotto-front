@@ -30,9 +30,6 @@ export function Home() {
 
     const fetchLottoAll = async () => {
         const res = await axios.get(import.meta.env.VITE_OPS_URL + "/get/lotto/all", axiosConfig)
-        const lottos = res.data as ILottoDoc[]
-        setLotto(lottos)
-        mapLotto(lottos)
         return res.data
     }
 
@@ -166,6 +163,10 @@ export function Home() {
             repeatSetLotto()
         }
     }, [])
+
+    useEffect(() => {
+        fetchLottoAll()
+    }, [lotto])
 
     return (
         <>{
