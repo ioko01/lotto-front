@@ -43,7 +43,13 @@ export function useAuth(): AuthContextData {
 }
 
 async function fetchAuth(token: string) {
-    const response = await axios.get(import.meta.env.VITE_OPS_URL + "/me", { headers: { Authorization: `Bearer ${token}` } })
+    const instance = axios.create({
+        baseURL: import.meta.env.VITE_OPS_URL,
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+    const response = await instance.get("/me")
     sessionStorage.setItem("test", response.data)
     return response
 }
