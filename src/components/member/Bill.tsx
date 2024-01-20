@@ -294,48 +294,58 @@ export function Bill() {
     const [rate, setRate] = useState<IRate>()
 
     const fetchLotto = async () => {
-        const id = location.pathname.split("/")[2]
+        try {
+            const id = location.pathname.split("/")[2]
 
-        const res = await axios.get(import.meta.env.VITE_OPS_URL + `/get/lotto/id/${id}`, axiosConfig)
-        if (res.data) {
-            const data = res.data as ILottoDoc
-            if (data.date!.includes(day[dateNow.getDay()])) {
-                fetchImage(res.data!);
-                setLotto(res.data)
-                timer(data.id, data.open, data.close, data.status as TLottoStatusEnum, 1)
+            const res = await axios.get(import.meta.env.VITE_OPS_URL + `/get/lotto/id/${id}`, axiosConfig)
+            if (res.data) {
+                const data = res.data as ILottoDoc
+                if (data.date!.includes(day[dateNow.getDay()])) {
+                    fetchImage(res.data!);
+                    setLotto(res.data)
+                    timer(data.id, data.open, data.close, data.status as TLottoStatusEnum, 1)
+                } else {
+                    setLotto(null)
+                    navigate("/")
+                }
             } else {
                 setLotto(null)
                 navigate("/")
             }
-        } else {
-            setLotto(null)
-            navigate("/")
+        } catch (error) {
+
         }
+
     }
 
     const fetchRate = async () => {
-        const id = location.pathname.split("/")[2]
+        try {
+            const id = location.pathname.split("/")[2]
 
-        const res = await axios.get(import.meta.env.VITE_OPS_URL + `/get/rate/id/${id}`, axiosConfig)
-        if (res.data) {
-            const data = res.data as IRate
-            setRate(data)
-            const commission: ICommission = {
-                one_digits: {
-                    top: data.committion.one_digits.top,
-                    bottom: data.committion.one_digits.bottom
-                },
-                two_digits: {
-                    top: data.committion.two_digits.top,
-                    bottom: data.committion.two_digits.bottom
-                },
-                three_digits: {
-                    top: data.committion.three_digits.top,
-                    toad: data.committion.three_digits.toad
+            const res = await axios.get(import.meta.env.VITE_OPS_URL + `/get/rate/id/${id}`, axiosConfig)
+            if (res.data) {
+                const data = res.data as IRate
+                setRate(data)
+                const commission: ICommission = {
+                    one_digits: {
+                        top: data.committion.one_digits.top,
+                        bottom: data.committion.one_digits.bottom
+                    },
+                    two_digits: {
+                        top: data.committion.two_digits.top,
+                        bottom: data.committion.two_digits.bottom
+                    },
+                    three_digits: {
+                        top: data.committion.three_digits.top,
+                        toad: data.committion.three_digits.toad
+                    }
                 }
+                dispatch(addCommission(commission))
             }
-            dispatch(addCommission(commission))
+        } catch (error) {
+
         }
+
     }
 
     const fetchDigitClose = async () => {
@@ -355,22 +365,27 @@ export function Bill() {
     }
 
     const fetchImage = async (lotto: ILotto) => {
+        try {
+            const res = await axios.get(`${import.meta.env.VITE_OPS_URL}/get/file/${lotto.img_flag}`, {
+                responseType: "blob",
+                withCredentials: axiosConfig.withCredentials,
+                headers: axiosConfig.headers,
+                timeout: axiosConfig.timeout
+            })
+            if (res) {
+                const reader = new FileReader();
+                reader.readAsDataURL(res.data);
 
-        const res = await axios.get(`${import.meta.env.VITE_OPS_URL}/get/file/${lotto.img_flag}`, {
-            responseType: "blob",
-            withCredentials: axiosConfig.withCredentials,
-            headers: axiosConfig.headers,
-            timeout: axiosConfig.timeout
-        })
-        if (res) {
-            const reader = new FileReader();
-            reader.readAsDataURL(res.data);
+                reader.onloadend = function () {
+                    const base64data = reader.result;
+                    setImage(base64data);
+                };
+            }
+        } catch (error) {
 
-            reader.onloadend = function () {
-                const base64data = reader.result;
-                setImage(base64data);
-            };
         }
+
+
     }
 
     let count = 0

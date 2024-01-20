@@ -24,11 +24,11 @@ export function Home() {
     const dateNow = new Date();
 
     const fetchLottoAll = async () => {
-        const res = await axios.get(import.meta.env.VITE_OPS_URL + "/get/lotto/all", axiosConfig)
-        const lottos = res.data as ILottoDoc[]
-        setLotto(lottos)
-        mapLotto(lottos!)
         try {
+            const res = await axios.get(import.meta.env.VITE_OPS_URL + "/get/lotto/all", axiosConfig)
+            const lottos = res.data as ILottoDoc[]
+            setLotto(lottos)
+            mapLotto(lottos!)
             if (lottos) {
                 lottos!.map((res) => {
                     const cd = countdown(res.open, res.close)
@@ -48,21 +48,25 @@ export function Home() {
 
     const [image, setImage] = useState<string[]>([]);
     const fetchImage = async (lotto: ILotto, amount: number) => {
-        const res = await axios.get(`${import.meta.env.VITE_OPS_URL}/get/file/${lotto.img_flag}`, {
-            responseType: "blob",
-            withCredentials: axiosConfig.withCredentials,
-            headers: axiosConfig.headers,
-            timeout: axiosConfig.timeout
-        },)
-        if (res) {
-            const reader = new FileReader();
-            reader.readAsDataURL(res.data);
-            reader.onloadend = function () {
-                const base64data = reader.result;
-                if (image.length < amount) {
-                    setImage(prevArray => [...prevArray, base64data!.toString()])
-                }
-            };
+        try {
+            const res = await axios.get(`${import.meta.env.VITE_OPS_URL}/get/file/${lotto.img_flag}`, {
+                responseType: "blob",
+                withCredentials: axiosConfig.withCredentials,
+                headers: axiosConfig.headers,
+                timeout: axiosConfig.timeout
+            },)
+            if (res) {
+                const reader = new FileReader();
+                reader.readAsDataURL(res.data);
+                reader.onloadend = function () {
+                    const base64data = reader.result;
+                    if (image.length < amount) {
+                        setImage(prevArray => [...prevArray, base64data!.toString()])
+                    }
+                };
+            }
+        } catch (error) {
+
         }
     }
 
