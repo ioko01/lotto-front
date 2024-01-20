@@ -17,6 +17,7 @@ export interface UserCredentials {
 
 export class AuthService {
     static async login(credentials: UserCredentials): Promise<AuthResponse> {
+        sessionStorage.setItem("test", "asd")
         const response = await axios.post<AuthResponse>(
             `${API_URL}/auth/login`,
             credentials

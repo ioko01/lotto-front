@@ -14,7 +14,7 @@ function Login() {
         try {
             isLoading!.removeAttribute("style")
             isLoading!.style.position = "fixed"
-            sessionStorage.setItem("test", "asd")
+            
             await login({ username: usernameRef.current!.value, password: passwordRef.current!.value })
 
             if (isUser && status == "SUCCESS") {
