@@ -255,6 +255,19 @@ export function Leftbar() {
                     </nav>
                     <div className="mx-auto py-10 h-64 w-full px-3">
                         <div className="w-full h-full">
+                            <Routes>
+                                <Route path="/" element={<Home />} />
+                                <Route path="/bill/:id" element={<Bill />} />
+                                {/* <Route path="/order/list" element={<OrderList />} /> */}
+                                {/* <Route path="/order/group" element={<OrderGroup />} /> */}
+                                <Route path="/report" element={<Report />} />
+                                <Route path="/reward" element={<Reward />} />
+                                <Route path="/about/rule" element={<Rule />} />
+                                <Route path="/about/howto" element={<Howto />} />
+                                <Route path="/about/link" element={<Link />} />
+                                <Route path="/bill/check/:id" element={<BillCheck />} />
+                                <Route path="*" element={<PageNotFound />} />
+                            </Routes>
                         </div>
                     </div>
                 </div>
