@@ -1,5 +1,5 @@
 import { useContext, useEffect, useReducer, useRef, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { addBill, deleteBill } from "../../redux/features/bill/billSlice";
 import { TWO, THREE, ONE, TDigit } from "../../models/Type";
@@ -746,6 +746,9 @@ export function Bill() {
                 </div>
             </div>
             {modal.openModal === "CONFIRM" && <ModalConfirm />}
+            <Routes>
+                <Route path="/bill/:id" element={<Bill />} />
+            </Routes>
         </div> : <>กำลังโหลด</>
     )
 }
