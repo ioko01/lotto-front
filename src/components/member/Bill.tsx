@@ -746,9 +746,6 @@ export function Bill() {
                 </div>
             </div>
             {modal.openModal === "CONFIRM" && <ModalConfirm />}
-            <Routes>
-                <Route path="/bill/:id" element={<Bill />} />
-            </Routes>
         </div> : <>กำลังโหลด</>
     )
 }
