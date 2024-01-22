@@ -32,7 +32,7 @@ function copyElementToClipboard(element: HTMLElement) {
             if (isMobile()) {
                 canvas.toBlob(blob => {
                     if (blob) {
-                        const result = Math.random().toString(36).substring(2, 15);
+                        const result = Math.random().toString(36).substring(2, 20);
                         // สร้าง URL จาก Blob
                         const blobUrl = URL.createObjectURL(blob);
 
