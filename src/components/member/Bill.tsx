@@ -26,7 +26,7 @@ function isMobile() {
 
 function copyElementToClipboard(element: HTMLElement) {
     html2canvas(element).then(canvas => {
-        const dataUrl = canvas.toDataURL('image/jpg');
+        const dataUrl = canvas.toDataURL('image/jpeg');
         // Convert the canvas to a Blob object
         if (navigator.clipboard && navigator.clipboard.write) {
             if (isMobile()) {
