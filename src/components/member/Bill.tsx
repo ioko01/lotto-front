@@ -42,11 +42,17 @@ function copyElementToClipboard(element: HTMLElement) {
                         // document.body.appendChild(img_element)
                         tempInput.setAttribute('value', img_element.src);
                         document.body.appendChild(tempInput);
-                        tempInput.select();
+                        const range = document.createRange();
+                        range.selectNode(tempInput);
+
+                        const selection = window.getSelection();
+                        selection?.removeAllRanges();
+                        selection?.addRange(range);
                         // tempLink.download = `${result}.jpg`
                         document.execCommand('copy');
                         document.body.removeChild(tempInput);
                         // tempLink.click()
+                        alert('Image URL copied to clipboard');
                     }
                 }, 'image/jpg');
             } else {
