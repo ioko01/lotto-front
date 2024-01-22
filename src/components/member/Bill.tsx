@@ -33,30 +33,19 @@ function copyElementToClipboard(element: HTMLElement) {
                 // const result = Math.random().toString(36).substring(2, 20);
                 // const tempLink = document.createElement('a');
                 const img_element = document.createElement("img")
-                const tempInput = document.createElement('input');
+                const tempText = document.createElement("textarea")
+
                 canvas.toBlob(blob => {
                     if (blob) {
                         // สร้าง URL จาก Blob
                         // tempLink.href = URL.createObjectURL(blob);
                         img_element.src = URL.createObjectURL(blob);
-                        // document.body.appendChild(img_element)
-                        tempInput.setAttribute('value', img_element.src);
-                        document.body.appendChild(tempInput);
-                        const range = document.createRange();
-                        range.selectNode(tempInput);
-
-                        const selection = window.getSelection();
-                        selection?.removeAllRanges();
-                        selection?.addRange(range);
+                        tempText.value = img_element.src
+                        document.body.appendChild(tempText)
+                        tempText.select()
                         // tempLink.download = `${result}.jpg`
-                        navigator.clipboard.writeText(img_element.src)
-                            .then(() => {
-                                alert('Image URL copied to clipboard');
-                            })
-                            .catch(err => {
-                                console.error('Unable to copy to clipboard', err);
-                            });
-                        // document.body.removeChild(tempInput);
+                        document.execCommand('copy');
+                        document.body.removeChild(tempText)
                         // tempLink.click()
                     }
                 }, 'image/jpg');
