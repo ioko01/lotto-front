@@ -49,10 +49,15 @@ function copyElementToClipboard(element: HTMLElement) {
                         selection?.removeAllRanges();
                         selection?.addRange(range);
                         // tempLink.download = `${result}.jpg`
-                        document.execCommand('copy');
-                        document.body.removeChild(tempInput);
+                        navigator.clipboard.writeText(img_element.src)
+                            .then(() => {
+                                alert('Image URL copied to clipboard');
+                            })
+                            .catch(err => {
+                                console.error('Unable to copy to clipboard', err);
+                            });
+                        // document.body.removeChild(tempInput);
                         // tempLink.click()
-                        alert('Image URL copied to clipboard');
                     }
                 }, 'image/jpg');
             } else {
