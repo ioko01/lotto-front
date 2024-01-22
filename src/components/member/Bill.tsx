@@ -33,15 +33,19 @@ function copyElementToClipboard(element: HTMLElement) {
                 // const result = Math.random().toString(36).substring(2, 20);
                 // const tempLink = document.createElement('a');
                 const img_element = document.createElement("img")
-                
+                const tempInput = document.createElement('input');
                 canvas.toBlob(blob => {
                     if (blob) {
                         // สร้าง URL จาก Blob
                         // tempLink.href = URL.createObjectURL(blob);
                         img_element.src = URL.createObjectURL(blob);
-                        document.body.appendChild(img_element)
+                        // document.body.appendChild(img_element)
+                        tempInput.setAttribute('value', img_element.src);
+                        document.body.appendChild(tempInput);
+                        tempInput.select();
                         // tempLink.download = `${result}.jpg`
                         document.execCommand('copy');
+                        document.body.removeChild(tempInput);
                         // tempLink.click()
                     }
                 }, 'image/jpg');
