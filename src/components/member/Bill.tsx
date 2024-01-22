@@ -26,7 +26,7 @@ function isMobile() {
 
 function copyElementToClipboard(element: HTMLElement) {
     html2canvas(element).then(canvas => {
-        const dataUrl = canvas.toDataURL('image/png');
+        const dataUrl = canvas.toDataURL('image/jpg');
         // Convert the canvas to a Blob object
         if (navigator.clipboard && navigator.clipboard.write) {
             if (isMobile()) {
@@ -38,11 +38,11 @@ function copyElementToClipboard(element: HTMLElement) {
                         // สร้าง URL จาก Blob
                         tempLink.href = URL.createObjectURL(blob);
                         document.body.appendChild(tempLink).style.display = "none"
-                        tempLink.download = `${result}.png`
+                        tempLink.download = `${result}.jpg`
                         document.execCommand('copy');
                         tempLink.click()
                     }
-                }, 'image/png');
+                }, 'image/jpg');
             } else {
                 canvas.toBlob(blob => {
                     if (blob) {
