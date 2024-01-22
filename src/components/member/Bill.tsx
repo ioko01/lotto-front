@@ -366,16 +366,17 @@ export function Bill() {
         try {
             const id = location.pathname.split("/")[2]
 
-            const res = await axios.get(import.meta.env.VITE_OPS_URL + `/get/digitclose/id/${id}`, axiosConfig)
-            if (res.status != 200) {
+            axios.get(import.meta.env.VITE_OPS_URL + `/get/digitclose/id/${id}`, axiosConfig)
+                .then((res) => {
+                    if (res.data) {
+                        setDigitClose(res.data)
+                    } else {
+                        setDigitClose(null)
+                    }
+                })
+                .catch((error) => {
 
-            } else {
-                if (res.data) {
-                    setDigitClose(res.data)
-                } else {
-                    setDigitClose(null)
-                }
-            }
+                })
 
 
         } catch (error) {
