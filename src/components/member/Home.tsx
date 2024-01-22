@@ -29,7 +29,7 @@ export function Home() {
             const lottos = res.data as ILottoDoc[]
             setLotto(lottos)
             mapLotto(lottos!)
-            if (lottos) {
+            if (lottos && res.status == 200) {
                 lottos!.map((res) => {
                     const cd = countdown(res.open, res.close)
                     if (cd.days < 0) {
@@ -55,7 +55,7 @@ export function Home() {
                 headers: axiosConfig.headers,
                 timeout: axiosConfig.timeout
             },)
-            if (res) {
+            if (res && res.status == 200) {
                 const reader = new FileReader();
                 reader.readAsDataURL(res.data);
                 reader.onloadend = function () {

@@ -312,7 +312,7 @@ export function Bill() {
             const id = location.pathname.split("/")[2]
 
             const res = await axios.get(import.meta.env.VITE_OPS_URL + `/get/lotto/id/${id}`, axiosConfig)
-            if (res.data) {
+            if (res.data && res.status == 200) {
                 const data = res.data as ILottoDoc
                 if (data.date!.includes(day[dateNow.getDay()])) {
                     fetchImage(res.data!);
@@ -337,7 +337,7 @@ export function Bill() {
             const id = location.pathname.split("/")[2]
 
             const res = await axios.get(import.meta.env.VITE_OPS_URL + `/get/rate/id/${id}`, axiosConfig)
-            if (res.data) {
+            if (res.data && res.status == 200) {
                 const data = res.data as IRate
                 setRate(data)
                 const commission: ICommission = {
@@ -366,17 +366,12 @@ export function Bill() {
         try {
             const id = location.pathname.split("/")[2]
 
-            axios.get(import.meta.env.VITE_OPS_URL + `/get/digitclose/id/${id}`, axiosConfig)
-                .then((res) => {
-                    if (res.data) {
-                        setDigitClose(res.data)
-                    } else {
-                        setDigitClose(null)
-                    }
-                })
-                .catch((error) => {
-
-                })
+            const res = await axios.get(import.meta.env.VITE_OPS_URL + `/get/digitclose/id/${id}`, axiosConfig)
+            if (res.data && res.status == 200) {
+                setDigitClose(res.data)
+            } else {
+                setDigitClose(null)
+            }
 
 
         } catch (error) {
@@ -392,7 +387,7 @@ export function Bill() {
                 headers: axiosConfig.headers,
                 timeout: axiosConfig.timeout
             })
-            if (res) {
+            if (res && res.status == 200) {
                 const reader = new FileReader();
                 reader.readAsDataURL(res.data);
 

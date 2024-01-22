@@ -46,8 +46,9 @@ async function fetchAuth(token: string): Promise<AxiosResponse<any, any> | any> 
     try {
         const axiosConfig: AxiosRequestConfig = { withCredentials: true, timeout: 10000, headers: { Authorization: `Bearer ${token}` } }
         const response = await axios.get(import.meta.env.VITE_OPS_URL + "/me", axiosConfig)
-
-        return response
+        if (response && response.status == 200) {
+            return response
+        }
     } catch (error) {
         return error
     }

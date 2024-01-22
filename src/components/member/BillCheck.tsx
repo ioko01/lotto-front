@@ -87,20 +87,20 @@ export function BillCheck() {
 
     const fetchRate = async () => {
         const id = location.pathname.split("/")[3]
-        axios.get(import.meta.env.VITE_OPS_URL + `/get/rate/id/${id}`, axiosConfig)
-            .then((res) => {
-                setRate(res.data)
-            })
+        const res = await axios.get(import.meta.env.VITE_OPS_URL + `/get/rate/id/${id}`, axiosConfig)
+        if (res && res.status == 200) {
+            setRate(res.data)
+        }
     }
 
     const fetchLotto = async () => {
         const id = location.pathname.split("/")[3]
-        axios.get(import.meta.env.VITE_OPS_URL + `/get/lotto/id/${id}`, axiosConfig)
-            .then((res) => {
-                const data = res.data as ILottoDoc
-                setLotto(data)
-                fetchImage(data)
-            })
+        const res = await axios.get(import.meta.env.VITE_OPS_URL + `/get/lotto/id/${id}`, axiosConfig)
+        if (res && res.status == 200) {
+            const data = res.data as ILottoDoc
+            setLotto(data)
+            fetchImage(data)
+        }
     }
 
 

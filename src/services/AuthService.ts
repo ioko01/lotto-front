@@ -22,7 +22,11 @@ export class AuthService {
                 `${API_URL}/auth/login`,
                 credentials
             );
-            return response.data;
+            if (response.data && response.status == 200) {
+                return response.data;
+            } else {
+                return { token: "invalid" };
+            }
         } catch (error) {
             return { token: "invalid" };
         }
