@@ -4,6 +4,10 @@ import { IInitialState } from "./Main";
 import { IRateDoc } from "./Rate";
 import { IStoreDoc } from "./Store";
 
+export interface IDigitCloseDoc extends IDigitClose {
+    id: string
+}
+
 export interface IDigitClose extends IInitialState {
     store_id: IStoreDoc //ไอดีร้าน
     lotto_id: ILottoDoc //ไอดีหวย
