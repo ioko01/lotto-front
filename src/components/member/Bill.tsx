@@ -39,7 +39,7 @@ function copyElementToClipboard(element: HTMLElement) {
                         tempLink.href = URL.createObjectURL(blob);
                         // document.body.appendChild(tempLink).style.display = "none"
                         tempLink.download = `${result}.jpg`
-                        document.execCommand('copy');
+                        // document.execCommand('copy');
                         tempLink.click()
                     }
                 }, 'image/jpg');
