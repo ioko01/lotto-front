@@ -32,15 +32,15 @@ function copyElementToClipboard(element: HTMLElement) {
             if (isMobile()) {
                 // Fallback for mobile devices without Clipboard API
                 const tempInput = document.createElement('input');
-                // tempInput.style.position = 'fixed';
-                // tempInput.style.opacity = '0';
+                tempInput.style.position = 'fixed';
+                tempInput.style.opacity = '0';
                 tempInput.value = dataUrl;
 
                 document.body.appendChild(tempInput);
                 tempInput.focus();
                 tempInput.select();
                 try {
-                    // tempInput.setSelectionRange(0, dataUrl.length);
+                    tempInput.setSelectionRange(0, dataUrl.length);
                     document.execCommand('copy');
                     console.log('Element copied to clipboard.');
                 } catch (error) {
