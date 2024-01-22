@@ -32,7 +32,6 @@ function copyElementToClipboard(element: HTMLElement) {
             if (isMobile()) {
                 const result = Math.random().toString(36).substring(2, 20);
                 const tempLink = document.createElement('a');
-                tempLink.download = result + '.png'
                 canvas.toBlob(blob => {
                     if (blob) {
                         // สร้าง URL จาก Blob
