@@ -30,25 +30,7 @@ function copyElementToClipboard(element: HTMLElement) {
         // Convert the canvas to a Blob object
         if (navigator.clipboard && navigator.clipboard.write) {
             if (isMobile()) {
-                // const result = Math.random().toString(36).substring(2, 20);
-                // const tempLink = document.createElement('a');
-                const img_element = document.createElement("img")
-                const tempText = document.createElement("textarea")
 
-                canvas.toBlob(blob => {
-                    if (blob) {
-                        // สร้าง URL จาก Blob
-                        // tempLink.href = URL.createObjectURL(blob);
-                        img_element.src = URL.createObjectURL(blob);
-                        tempText.value = img_element.src
-                        document.body.appendChild(tempText)
-                        tempText.select()
-                        // tempLink.download = `${result}.jpg`
-                        document.execCommand('copy');
-                        document.body.removeChild(tempText)
-                        // tempLink.click()
-                    }
-                }, 'image/jpg');
             } else {
                 canvas.toBlob(blob => {
                     if (blob) {
@@ -657,12 +639,14 @@ export function Bill() {
                                 <span>{price.reduce((price, current) => price + current, 0)} บาท</span>
                             </div>
                             <div className="flex justify-center w-full p-2 gap-2">
-                                <button onClick={() => copyElementToClipboard(document.getElementById("bill_content")!)} style={{ minWidth: "60px" }} className="whitespace-nowrap inline-flex text-xs bg-green-600 hover:bg-green-500 text-white font-light p-2 rounded shadow">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-4 h-4">
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zM18.75 10.5h.008v.008h-.008V10.5z" />
-                                    </svg>
-                                    &nbsp;Screenshot</button>
+                                {!isMobile() ?
+                                    <button onClick={() => copyElementToClipboard(document.getElementById("bill_content")!)} style={{ minWidth: "60px" }} className="whitespace-nowrap inline-flex text-xs bg-green-600 hover:bg-green-500 text-white font-light p-2 rounded shadow">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-4 h-4">
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zM18.75 10.5h.008v.008h-.008V10.5z" />
+                                        </svg>
+                                        &nbsp;Screenshot</button> : null}
+
                                 <Link to={billTemp.length > 0 ? `/bill/check/${location.pathname.split("/")[2]}` : "#"}>
                                     <button onClick={saveBill} style={{ minWidth: "60px" }} className={"whitespace-nowrap text-xs text-white font-light p-2 rounded shadow " + (billTemp.length === 0 ? "bg-gray-200 cursor-default" : "bg-blue-600 hover:bg-blue-500")}>บันทึก</button>
                                 </Link>
