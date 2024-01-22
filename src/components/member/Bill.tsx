@@ -20,12 +20,34 @@ import { IRate } from "../../models/Rate";
 import { ICommission } from "../../models/Commission";
 import { addCommission } from "../../redux/features/bill/commissionSlice";
 
+function isOS() {
+    return navigator.userAgent.match(/ipad|iphone/i);
+}
+
 function copyElementToClipboard(element: HTMLElement) {
     html2canvas(element).then(canvas => {
         const dataUrl = canvas.toDataURL('image/png');
         // Convert the canvas to a Blob object
         if (navigator.clipboard && navigator.clipboard.write) {
-            try {
+            if (isOS()) {
+                // Fallback for mobile devices without Clipboard API
+                const tempInput = document.createElement('input');
+                // tempInput.style.position = 'fixed';
+                // tempInput.style.opacity = '0';
+                tempInput.value = dataUrl;
+
+                document.body.appendChild(tempInput);
+                tempInput.focus();
+                tempInput.select();
+                try {
+                    // tempInput.setSelectionRange(0, dataUrl.length);
+                    document.execCommand('copy');
+                    console.log('Element copied to clipboard.');
+                } catch (error) {
+                    console.error('Unable to copy to clipboard', error)
+                }
+                document.body.removeChild(tempInput);
+            } else {
                 canvas.toBlob(blob => {
                     if (blob) {
                         // Create a new ClipboardItem with the Blob
@@ -41,8 +63,6 @@ function copyElementToClipboard(element: HTMLElement) {
                             });
                     }
                 }, 'image/png');
-            } catch (error) {
-                console.log("object");
             }
 
         } else {
