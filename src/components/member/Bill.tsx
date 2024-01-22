@@ -41,19 +41,24 @@ function copyElementToClipboard(element: HTMLElement) {
                 }
             }, 'image/png');
         } else {
+
             // Fallback for mobile devices without Clipboard API
             const tempInput = document.createElement('input');
-            tempInput.style.position = 'fixed';
-            tempInput.style.opacity = '0';
+            // tempInput.style.position = 'fixed';
+            // tempInput.style.opacity = '0';
             tempInput.value = dataUrl;
 
             document.body.appendChild(tempInput);
+            tempInput.focus();
             tempInput.select();
-            // tempInput.setSelectionRange(0, dataUrl.length);
-            document.execCommand('copy');
+            try {
+                // tempInput.setSelectionRange(0, dataUrl.length);
+                document.execCommand('copy');
+                console.log('Element copied to clipboard.');
+            } catch (error) {
+                console.error('Unable to copy to clipboard', error)
+            }
             document.body.removeChild(tempInput);
-
-            console.log('Element copied to clipboard.');
         }
 
     });
