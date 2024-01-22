@@ -21,7 +21,7 @@ import { ICommission } from "../../models/Commission";
 import { addCommission } from "../../redux/features/bill/commissionSlice";
 
 function isMobile() {
-    return navigator.userAgent.match(/ipad|iphone|iPod|android/i);
+    return navigator.userAgent.match(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i);
 }
 
 function copyElementToClipboard(element: HTMLElement) {
@@ -30,28 +30,14 @@ function copyElementToClipboard(element: HTMLElement) {
         // Convert the canvas to a Blob object
         if (navigator.clipboard && navigator.clipboard.write) {
             if (isMobile()) {
+                const result = Math.random().toString(36).substring(2, 20);
+                const tempLink = document.createElement('a');
+                tempLink.download = result + '.png'
                 canvas.toBlob(blob => {
                     if (blob) {
-                        const result = Math.random().toString(36).substring(2, 20);
                         // สร้าง URL จาก Blob
-                        const blobUrl = URL.createObjectURL(blob);
-
-                        // สร้าง temporary link element
-                        const tempLink = document.createElement('a');
-                        tempLink.href = blobUrl;
-                        tempLink.download = result + '.png'
-
-                        // แทรก link element ใน DOM
-                        // document.body.appendChild(tempLink);
-
-                        // ใช้ document.execCommand('copy') เพื่อคัดลอก
-                        // tempLink.click();
-
-                        // ลบ link element ที่เพิ่มเข้าไป
-                        // document.body.removeChild(tempLink);
-
-                        // ลบ URL object
-                        URL.revokeObjectURL(blobUrl);
+                        tempLink.href = URL.createObjectURL(blob);
+                        tempLink.click()
                     }
                 }, 'image/png');
             } else {
