@@ -37,7 +37,7 @@ function copyElementToClipboard(element: HTMLElement) {
                     if (blob) {
                         // สร้าง URL จาก Blob
                         tempLink.href = URL.createObjectURL(blob);
-                        document.body.appendChild(tempLink).style.display = "none"
+                        // document.body.appendChild(tempLink).style.display = "none"
                         tempLink.download = `${result}.jpg`
                         document.execCommand('copy');
                         tempLink.click()
