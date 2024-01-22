@@ -20,8 +20,8 @@ import { IRate } from "../../models/Rate";
 import { ICommission } from "../../models/Commission";
 import { addCommission } from "../../redux/features/bill/commissionSlice";
 
-function isOS() {
-    return navigator.userAgent.match(/ipad|iphone/i);
+function isMobile() {
+    return navigator.userAgent.match(/ipad|iphone|iPod|android/i);
 }
 
 function copyElementToClipboard(element: HTMLElement) {
@@ -29,7 +29,7 @@ function copyElementToClipboard(element: HTMLElement) {
         const dataUrl = canvas.toDataURL('image/png');
         // Convert the canvas to a Blob object
         if (navigator.clipboard && navigator.clipboard.write) {
-            if (isOS()) {
+            if (isMobile()) {
                 // Fallback for mobile devices without Clipboard API
                 const tempInput = document.createElement('input');
                 // tempInput.style.position = 'fixed';
