@@ -24,37 +24,21 @@ function copyElementToClipboard(element: HTMLElement) {
     html2canvas(element).then(canvas => {
         const dataUrl = canvas.toDataURL('image/png');
         // Convert the canvas to a Blob object
-        if (navigator.clipboard && navigator.clipboard.write) {
-            canvas.toBlob(blob => {
-                if (blob) {
-                    // Create a new ClipboardItem with the Blob
-                    const clipboardItem = new ClipboardItem({ 'image/png': blob });
+        canvas.toBlob(blob => {
+            if (blob) {
+                // Create a new ClipboardItem with the Blob
+                const clipboardItem = new ClipboardItem({ 'image/png': blob });
 
-                    // Use the Clipboard API to copy the Blob to the clipboard
-                    navigator.clipboard.write([clipboardItem])
-                        .then(() => {
-                            console.log('Element copied to clipboard.');
-                        })
-                        .catch(error => {
-                            console.error('Failed to copy element to clipboard:', error);
-                        });
-                }
-            }, 'image/png');
-        } else {
-            // Fallback for mobile devices without Clipboard API
-            const tempInput = document.createElement('input');
-            tempInput.style.position = 'fixed';
-            tempInput.style.opacity = '0';
-            tempInput.value = dataUrl;
-
-            document.body.appendChild(tempInput);
-            tempInput.select();
-            tempInput.setSelectionRange(0, dataUrl.length);
-            document.execCommand('copy');
-            document.body.removeChild(tempInput);
-
-            console.log('Element copied to clipboard.');
-        }
+                // Use the Clipboard API to copy the Blob to the clipboard
+                navigator.clipboard.write([clipboardItem])
+                    .then(() => {
+                        console.log('Element copied to clipboard.');
+                    })
+                    .catch(error => {
+                        console.error('Failed to copy element to clipboard:', error);
+                    });
+            }
+        }, 'image/png');
 
     });
 }
