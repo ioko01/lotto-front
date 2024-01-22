@@ -30,23 +30,28 @@ function copyElementToClipboard(element: HTMLElement) {
         // Convert the canvas to a Blob object
         if (navigator.clipboard && navigator.clipboard.write) {
             if (isMobile()) {
-                // Fallback for mobile devices without Clipboard API
-                const tempInput = document.createElement('input');
-                tempInput.style.position = 'fixed';
-                tempInput.style.opacity = '0';
-                tempInput.value = dataUrl;
+                canvas.toBlob(blob => {
+                    if (blob) {
+                        // สร้าง URL จาก Blob
+                        const blobUrl = URL.createObjectURL(blob);
 
-                document.body.appendChild(tempInput);
-                tempInput.focus();
-                tempInput.select();
-                try {
-                    tempInput.setSelectionRange(0, dataUrl.length);
-                    document.execCommand('copy');
-                    console.log('Element copied to clipboard.');
-                } catch (error) {
-                    console.error('Unable to copy to clipboard', error)
-                }
-                document.body.removeChild(tempInput);
+                        // สร้าง temporary link element
+                        const tempLink = document.createElement('a');
+                        tempLink.href = blobUrl;
+
+                        // แทรก link element ใน DOM
+                        document.body.appendChild(tempLink);
+
+                        // ใช้ document.execCommand('copy') เพื่อคัดลอก
+                        tempLink.click();
+
+                        // ลบ link element ที่เพิ่มเข้าไป
+                        document.body.removeChild(tempLink);
+
+                        // ลบ URL object
+                        URL.revokeObjectURL(blobUrl);
+                    }
+                }, 'image/png');
             } else {
                 canvas.toBlob(blob => {
                     if (blob) {
