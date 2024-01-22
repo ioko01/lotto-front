@@ -463,7 +463,7 @@ export function Bill() {
 
                         <div id="bill_body" className="flex flex-col items-center rounded-lg border border-green-400 bg-green-100 w-full mb-3 p-2">
                             <div className="w-full p-2">
-                                <span>แทงเร็ว</span>
+                                <span>แทงเร็ว {err}</span>
                             </div>
                             <div className="flex justify-between w-full p-2">
                                 <span>{lotto.name}</span>
