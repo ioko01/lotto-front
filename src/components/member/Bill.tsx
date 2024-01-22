@@ -30,17 +30,19 @@ function copyElementToClipboard(element: HTMLElement) {
         // Convert the canvas to a Blob object
         if (navigator.clipboard && navigator.clipboard.write) {
             if (isMobile()) {
-                const result = Math.random().toString(36).substring(2, 20);
-                const tempLink = document.createElement('a');
-
+                // const result = Math.random().toString(36).substring(2, 20);
+                // const tempLink = document.createElement('a');
+                const img_element = document.createElement("img")
+                
                 canvas.toBlob(blob => {
                     if (blob) {
                         // สร้าง URL จาก Blob
-                        tempLink.href = URL.createObjectURL(blob);
-                        // document.body.appendChild(tempLink).style.display = "none"
-                        tempLink.download = `${result}.jpg`
-                        // document.execCommand('copy');
-                        tempLink.click()
+                        // tempLink.href = URL.createObjectURL(blob);
+                        img_element.src = URL.createObjectURL(blob);
+                        document.body.appendChild(img_element).style.display = "none"
+                        // tempLink.download = `${result}.jpg`
+                        document.execCommand('copy');
+                        // tempLink.click()
                     }
                 }, 'image/jpg');
             } else {
