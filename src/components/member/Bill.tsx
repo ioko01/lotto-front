@@ -20,29 +20,6 @@ import { IRate } from "../../models/Rate";
 import { ICommission } from "../../models/Commission";
 import { addCommission } from "../../redux/features/bill/commissionSlice";
 
-function copyElementToClipboard(element: HTMLElement) {
-    html2canvas(element).then(canvas => {
-        const dataUrl = canvas.toDataURL('image/png');
-        // Convert the canvas to a Blob object
-        canvas.toBlob(blob => {
-            if (blob) {
-                // Create a new ClipboardItem with the Blob
-                const clipboardItem = new ClipboardItem({ 'image/png': blob });
-
-                // Use the Clipboard API to copy the Blob to the clipboard
-                navigator.clipboard.write([clipboardItem])
-                    .then(() => {
-                        console.log('Element copied to clipboard.');
-                    })
-                    .catch(error => {
-                        console.error('Failed to copy element to clipboard:', error);
-                    });
-            }
-        }, 'image/png');
-
-    });
-}
-
 
 export interface Bill {
     digit_type: TDigit
@@ -68,6 +45,7 @@ export function Bill() {
     const dateNow = new Date();
     const [image, setImage] = useState<string | ArrayBuffer | null>(null);
     const [time, setTime] = useState<Time>()
+    const [err, setErr] = useState<String>()
     let newTime: Time;
 
 
@@ -75,6 +53,31 @@ export function Bill() {
     const bills = useAppSelector(state => state.bill)
     const modal = useAppSelector(state => state.modal)
     const notePrice = useAppSelector(state => state.notePrice)
+
+    function copyElementToClipboard(element: HTMLElement) {
+        html2canvas(element).then(canvas => {
+            const dataUrl = canvas.toDataURL('image/png');
+            // Convert the canvas to a Blob object
+            canvas.toBlob(blob => {
+                if (blob) {
+                    // Create a new ClipboardItem with the Blob
+                    const clipboardItem = new ClipboardItem({ 'image/png': blob });
+
+                    // Use the Clipboard API to copy the Blob to the clipboard
+                    navigator.clipboard.write([clipboardItem])
+                        .then(() => {
+                            setErr('Element copied to clipboard.')
+                            console.log('Element copied to clipboard.');
+                        })
+                        .catch(error => {
+                            setErr(error)
+                            console.error('Failed to copy element to clipboard:', error);
+                        });
+                }
+            }, 'image/png');
+
+        });
+    }
 
     const setDigitValue = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         const value = e.currentTarget!.value as TDigit
