@@ -32,21 +32,23 @@ function copyElementToClipboard(element: HTMLElement) {
             if (isMobile()) {
                 canvas.toBlob(blob => {
                     if (blob) {
+                        const result = Math.random().toString(36).substring(2, 15);
                         // สร้าง URL จาก Blob
                         const blobUrl = URL.createObjectURL(blob);
 
                         // สร้าง temporary link element
                         const tempLink = document.createElement('a');
                         tempLink.href = blobUrl;
+                        tempLink.download = result + '.png'
 
                         // แทรก link element ใน DOM
-                        document.body.appendChild(tempLink);
+                        // document.body.appendChild(tempLink);
 
                         // ใช้ document.execCommand('copy') เพื่อคัดลอก
-                        tempLink.click();
+                        // tempLink.click();
 
                         // ลบ link element ที่เพิ่มเข้าไป
-                        document.body.removeChild(tempLink);
+                        // document.body.removeChild(tempLink);
 
                         // ลบ URL object
                         URL.revokeObjectURL(blobUrl);
