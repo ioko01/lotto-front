@@ -113,7 +113,7 @@ const ManageLotto = (props: Props) => {
             report: `${reportHoursRef.current?.value}:${reportMinutesRef.current?.value}`,
             status: TLottoStatusEnum.OPEN,
             date_type: date,
-            img_flag: currentFile!.name
+            img_flag: currentFile!.name.trim()
         }
 
         axios.post(`${import.meta.env.VITE_OPS_URL}/add/lotto`, lotto, axiosConfig).then((res) => {
