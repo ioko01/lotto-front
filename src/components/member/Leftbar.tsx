@@ -43,7 +43,9 @@ export function Leftbar() {
     const isLogout = async () => {
         try {
             isLoading!.removeAttribute("style")
-            await logout(isUser!.username)
+            logout(isUser!.username).then(() => {
+                navigate("/")
+            })
         } catch (error) {
             console.log(error);
         }

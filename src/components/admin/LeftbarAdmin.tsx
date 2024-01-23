@@ -86,10 +86,9 @@ export function LeftbarAdmin() {
     const handleSubmit = async () => {
         try {
             isLoading!.removeAttribute("style")
-            const response = await logout(isUser!.username)
-            if(response.username){
+            logout(isUser!.username).then(() => {
                 navigate("/")
-            }
+            })
         } catch (error) {
             // console.log(error);
         }

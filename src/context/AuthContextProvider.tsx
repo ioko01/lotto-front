@@ -11,7 +11,6 @@ import { IUser, IUserDoc } from '../models/User'
 import { getToken } from '../utils/token'
 import { AuthService, UserCredentials } from '../services/AuthService'
 import { IToken } from '../models/Token'
-import { useNavigate } from 'react-router-dom'
 
 export interface AuthProviderProps {
     children?: ReactNode
@@ -111,12 +110,10 @@ export const AuthContextProvider = ({ children }: AuthProviderProps): JSX.Elemen
     };
 
     const logout = async (username: string) => {
-        const navigate = useNavigate()
         const response = await AuthService.logout(username, token!)
         sessionStorage.removeItem(import.meta.env.VITE_OPS_COOKIE_NAME)
         if (response) {
             setStatus("LOGOUT")
-            navigate("/")
         }
         return response
     };
