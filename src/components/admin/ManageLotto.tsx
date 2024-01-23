@@ -94,7 +94,7 @@ const ManageLotto = (props: Props) => {
     const uploadFile = () => {
         const formData = new FormData();
         formData.append("File", currentFile!);
-        axiosConfig.headers = { "Content-Type": "multipart/form-data" }
+        axios.defaults.headers.common['Content-Type'] = 'multipart/form-data'
 
         return axios.post(`${import.meta.env.VITE_OPS_URL}/upload/file`, formData, axiosConfig)
     }
