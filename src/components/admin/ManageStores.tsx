@@ -93,10 +93,8 @@ const ManageStores = (props: Props) => {
             fetchStoresAll()
         })
 
-        return () => {
-            io.off('get_store')
-            fetchStoresAll()
-        };
+        io.off('get_store')
+        fetchStoresAll()
     }, [])
 
     return (

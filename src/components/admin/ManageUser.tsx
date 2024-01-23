@@ -148,10 +148,8 @@ const ManageUser = (props: Props) => {
       fetchUserAll()
     })
 
-    return () => {
-      io.off('get_user')
-      fetchUserAll()
-    };
+    io.off('get_user')
+    fetchUserAll()
   }, [])
 
 

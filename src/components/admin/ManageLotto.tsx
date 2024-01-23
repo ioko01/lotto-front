@@ -130,9 +130,7 @@ const ManageLotto = (props: Props) => {
     };
 
     useEffect(() => {
-        return () => {
-            fetchLotto()
-        }
+        fetchLotto()
     }, [dateRef])
 
     return (

@@ -146,9 +146,7 @@ const ManageRate = (props: Props) => {
     }
 
     useEffect(() => {
-        return () => {
-            fetchRatesAll()
-        }
+        fetchRatesAll()
     }, [])
 
 
