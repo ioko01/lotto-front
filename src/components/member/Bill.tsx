@@ -7,7 +7,7 @@ import { stateModal } from "../../redux/features/modal/modalSlice";
 import { ModalConfirm } from "./ModalConfirm";
 import { INote, addNotePrice } from "../../redux/features/bill/notePriceSlice";
 import { AuthContext } from "../../context/AuthContextProvider";
-import axios from "axios";
+import axios, { AxiosRequestConfig } from "axios";
 import { axiosConfig } from "../../utils/headers";
 import { ILottoDoc } from "./Home";
 import { IDigitClose } from "../../models/DigitClose";
@@ -19,6 +19,7 @@ import { Time } from "../../models/Time";
 import { IRate } from "../../models/Rate";
 import { ICommission } from "../../models/Commission";
 import { addCommission } from "../../redux/features/bill/commissionSlice";
+import { getToken } from "../../utils/token";
 
 function isMobile() {
     return navigator.userAgent.match(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i);
@@ -375,12 +376,9 @@ export function Bill() {
 
     const fetchImage = async (lotto: ILotto) => {
         try {
-            const res = await axios.get(`${import.meta.env.VITE_OPS_URL}/get/file/${lotto.img_flag}`, {
-                responseType: "blob",
-                withCredentials: axiosConfig.withCredentials,
-                headers: axiosConfig.headers,
-                timeout: axiosConfig.timeout
-            })
+            const token = getToken()
+            const axiosConfig: AxiosRequestConfig = { responseType: "blob", withCredentials: true, timeout: 10000, headers: { Authorization: `Bearer ${token}` } }
+            const res = await axios.get(`${import.meta.env.VITE_OPS_URL}/get/file/${lotto.img_flag}`, axiosConfig)
             if (res && res.status == 200) {
                 const reader = new FileReader();
                 reader.readAsDataURL(res.data);

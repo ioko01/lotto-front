@@ -49,12 +49,8 @@ export function Home() {
     const [image, setImage] = useState<string[]>([]);
     const fetchImage = async (lotto: ILotto, amount: number) => {
         try {
-            const res = await axios.get(`${import.meta.env.VITE_OPS_URL}/get/file/${lotto.img_flag}`, {
-                responseType: "blob",
-                withCredentials: axiosConfig.withCredentials,
-                headers: axiosConfig.headers,
-                timeout: axiosConfig.timeout
-            },)
+            axios.defaults.responseType = 'blob'
+            const res = await axios.get(`${import.meta.env.VITE_OPS_URL}/get/file/${lotto.img_flag}`, axiosConfig)
             if (res && res.status == 200) {
                 const reader = new FileReader();
                 reader.readAsDataURL(res.data);
