@@ -4,11 +4,12 @@ import { useDispatch } from 'react-redux'
 import { Modal } from '../modal/Modal'
 import { io } from '../../utils/socket-io'
 import { useAppSelector } from '../../redux/hooks'
-import axios from 'axios'
+import axios, { AxiosRequestConfig } from 'axios'
 import { axiosConfig } from '../../utils/headers'
 import { IStore } from '../../models/Store'
 import { IUser, TUserRoleEnum } from '../../models/User'
 import { ILotto, TLottoDate, TLottoDateEnum, TLottoStatusEnum } from '../../models/Lotto'
+import { getToken } from '../../utils/token'
 
 type Props = {}
 
@@ -35,7 +36,7 @@ const ManageLotto = (props: Props) => {
     const [lottosAll, setLottosAll] = useState<ILotto[]>([]);
 
     const fetchLotto = () => {
-        axios.get(`${import.meta.env.VITE_OPS_URL}/get/lotto/all`)
+        axios.get(`${import.meta.env.VITE_OPS_URL}/get/lotto/all`, axiosConfig)
             .then((res) => {
                 setLottosAll(res.data)
             })
@@ -93,13 +94,9 @@ const ManageLotto = (props: Props) => {
     const uploadFile = () => {
         const formData = new FormData();
         formData.append("File", currentFile!);
+        axiosConfig.headers = { "Content-Type": "multipart/form-data" }
 
-        return axios.post(`${import.meta.env.VITE_OPS_URL}/upload/file`, formData, {
-            headers: {
-                "Content-Type": "multipart/form-data"
-            },
-            withCredentials: true
-        })
+        return axios.post(`${import.meta.env.VITE_OPS_URL}/upload/file`, formData, axiosConfig)
     }
 
     const addLotto = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
