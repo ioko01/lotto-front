@@ -376,8 +376,7 @@ export function Bill() {
 
     const fetchImage = async (lotto: ILotto) => {
         try {
-            const token = getToken()
-            const axiosConfig: AxiosRequestConfig = { responseType: "blob", withCredentials: true, timeout: 10000, headers: { Authorization: `Bearer ${token}` } }
+            axios.defaults.responseType = 'blob'
             const res = await axios.get(`${import.meta.env.VITE_OPS_URL}/get/file/${lotto.img_flag}`, axiosConfig)
             if (res && res.status == 200) {
                 const reader = new FileReader();
