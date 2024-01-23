@@ -6,6 +6,7 @@ import { axiosConfig } from "../../utils/headers";
 import { ILotto, TLottoStatusEnum } from "../../models/Lotto";
 import { countdown } from "../../utils/countdown";
 import { Time } from "../../models/Time";
+import { getToken } from "../../utils/token";
 
 export interface ILottoDoc extends ILotto {
     id: string
@@ -49,8 +50,13 @@ export function Home() {
     const [image, setImage] = useState<string[]>([]);
     const fetchImage = async (lotto: ILotto, amount: number) => {
         try {
-            axios.defaults.responseType = 'blob'
-            const res = await axios.get(`${import.meta.env.VITE_OPS_URL}/get/file/${lotto.img_flag}`, axiosConfig)
+            const token = getToken()
+            const res = await axios.get(`${import.meta.env.VITE_OPS_URL}/get/file/${lotto.img_flag}`, {
+                responseType: 'blob',
+                withCredentials: true,
+                timeout: 10000,
+                headers: { Authorization: `Bearer ${token}` }
+            })
             if (res && res.status == 200) {
                 const reader = new FileReader();
                 reader.readAsDataURL(res.data);
