@@ -300,66 +300,61 @@ export function Bill() {
     }
 
 
-
     const { isUser } = useContext(AuthContext)
     const [lotto, setLotto] = useState<ILottoDoc | null>(null)
     const [digitClose, setDigitClose] = useState<IDigitClose | null>(null)
     const location = useLocation()
     const [rate, setRate] = useState<IRate>()
 
-    const fetchLotto = async () => {
-        try {
-            const id = location.pathname.split("/")[2]
+    const initialLotto = async () => {
+        const id = location.pathname.split("/")[2]
+        const [fetchLotto, fetchRate, fetchDigitclose] = await axios.all([
+            axios.get(import.meta.env.VITE_OPS_URL + `/get/lotto/id/${id}`, axiosConfig),
+            axios.get(import.meta.env.VITE_OPS_URL + `/get/rate/id/${id}`, axiosConfig),
+            axios.get(import.meta.env.VITE_OPS_URL + `/get/digitclose/id/${id}`, axiosConfig)
+        ])
 
-            const res = await axios.get(import.meta.env.VITE_OPS_URL + `/get/lotto/id/${id}`, axiosConfig)
-            if (res.data && res.status == 200) {
-                const data = res.data as ILottoDoc
-                if (data.date!.includes(day[dateNow.getDay()])) {
-                    fetchImage(res.data!);
-                    setLotto(res.data)
-                    timer(data.id, data.open, data.close, data.status as TLottoStatusEnum, 1)
-                } else {
-                    setLotto(null)
-                    navigate("/")
-                }
+
+        if (fetchLotto.data && fetchLotto.status == 200) {
+            const data = fetchLotto.data as ILottoDoc
+            if (data.date!.includes(day[dateNow.getDay()])) {
+                fetchImage(fetchLotto.data!);
+                setLotto(fetchLotto.data)
+                timer(data.id, data.open, data.close, data.status as TLottoStatusEnum, 1)
             } else {
                 setLotto(null)
                 navigate("/")
             }
-        } catch (error) {
-
+        } else {
+            setLotto(null)
+            navigate("/")
         }
 
-    }
-
-    const fetchRate = async () => {
-        try {
-            const id = location.pathname.split("/")[2]
-
-            const res = await axios.get(import.meta.env.VITE_OPS_URL + `/get/rate/id/${id}`, axiosConfig)
-            if (res.data && res.status == 200) {
-                const data = res.data as IRate
-                setRate(data)
-                const commission: ICommission = {
-                    one_digits: {
-                        top: data.committion.one_digits.top,
-                        bottom: data.committion.one_digits.bottom
-                    },
-                    two_digits: {
-                        top: data.committion.two_digits.top,
-                        bottom: data.committion.two_digits.bottom
-                    },
-                    three_digits: {
-                        top: data.committion.three_digits.top,
-                        toad: data.committion.three_digits.toad
-                    }
+        if (fetchRate.data && fetchRate.status == 200) {
+            const data = fetchRate.data as IRate
+            setRate(data)
+            const commission: ICommission = {
+                one_digits: {
+                    top: data.committion.one_digits.top,
+                    bottom: data.committion.one_digits.bottom
+                },
+                two_digits: {
+                    top: data.committion.two_digits.top,
+                    bottom: data.committion.two_digits.bottom
+                },
+                three_digits: {
+                    top: data.committion.three_digits.top,
+                    toad: data.committion.three_digits.toad
                 }
-                dispatch(addCommission(commission))
             }
-        } catch (error) {
-
+            dispatch(addCommission(commission))
         }
 
+        if (fetchDigitclose.data && fetchDigitclose.status == 200) {
+            setDigitClose(fetchDigitclose.data)
+        } else {
+            setDigitClose(null)
+        }
     }
 
     const fetchDigitClose = async () => {
@@ -372,7 +367,6 @@ export function Bill() {
             } else {
                 setDigitClose(null)
             }
-
 
         } catch (error) {
         }
@@ -437,9 +431,7 @@ export function Bill() {
         })
 
         io.off('get_digit_close')
-        fetchDigitClose()
-        fetchLotto()
-        fetchRate()
+        initialLotto()
     }, [])
 
 
