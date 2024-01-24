@@ -285,18 +285,18 @@ export function BillCheck() {
         bills.map(bill => {
             if (ONE.includes(bill.digit_type)) {
                 bill.digit.map((digit) => {
-                    commission += (parseFloat(digit.split(":")[1]) / 100) * parseFloat(commissions.one_digits.top!.toString())
-                    commission += (parseFloat(digit.split(":")[1]) / 100) * parseFloat(commissions.one_digits.bottom!.toString())
+                    commission += (parseFloat(digit.split(":")[1])) * parseFloat(commissions.one_digits.top!.toString())
+                    commission += (parseFloat(digit.split(":")[1])) * parseFloat(commissions.one_digits.bottom!.toString())
                 })
             } else if (TWO.includes(bill.digit_type)) {
                 bill.digit.map((digit) => {
-                    commission += (parseFloat(digit.split(":")[1]) / 100) * parseFloat(commissions.two_digits.top!.toString())
-                    commission += (parseFloat(digit.split(":")[1]) / 100) * parseFloat(commissions.two_digits.top!.toString())
+                    commission += (parseFloat(digit.split(":")[1])) * parseFloat(commissions.two_digits.top!.toString())
+                    commission += (parseFloat(digit.split(":")[1])) * parseFloat(commissions.two_digits.top!.toString())
                 })
             } else if (THREE.includes(bill.digit_type)) {
                 bill.digit.map((digit) => {
-                    commission += (parseFloat(digit.split(":")[1]) / 100) * parseFloat(commissions.three_digits.top!.toString())
-                    commission += (parseFloat(digit.split(":")[1]) / 100) * parseFloat(commissions.three_digits.toad!.toString())
+                    commission += (parseFloat(digit.split(":")[1])) * parseFloat(commissions.three_digits.top!.toString())
+                    commission += (parseFloat(digit.split(":")[1])) * parseFloat(commissions.three_digits.toad!.toString())
                 })
             }
         })
@@ -352,22 +352,22 @@ export function BillCheck() {
                                             ONE.includes(bill.digit_type) ?
                                                 bill.digit.map((digit, index) =>
                                                     <React.Fragment key={"one" + index}>
-                                                        {digit.split(":")[1] != "0" && <TableBill digit={digit} digit_type={bill.digit_type} index={1} rate={rate! && String(rate!.one_digits.top!)} commission={(parseFloat(digit.split(":")[1]) / 100) * parseFloat(commissions.one_digits.top!.toString())} />}
-                                                        {digit.split(":")[2] != "0" && <TableBill digit={digit} digit_type={bill.digit_type} index={2} rate={rate! && String(rate!.one_digits.bottom!)} commission={(parseFloat(digit.split(":")[2]) / 100) * parseFloat(commissions.one_digits.bottom!.toString())} />}
+                                                        {digit.split(":")[1] != "0" && <TableBill digit={digit} digit_type={bill.digit_type} index={1} rate={rate! && String(rate!.one_digits.top!)} commission={(parseFloat(digit.split(":")[1])) * parseFloat(commissions.one_digits.top!.toString())} />}
+                                                        {digit.split(":")[2] != "0" && <TableBill digit={digit} digit_type={bill.digit_type} index={2} rate={rate! && String(rate!.one_digits.bottom!)} commission={(parseFloat(digit.split(":")[2])) * parseFloat(commissions.one_digits.bottom!.toString())} />}
                                                     </React.Fragment>
                                                 )
                                                 : TWO.includes(bill.digit_type) ?
                                                     bill.digit.map((digit, index) =>
                                                         <React.Fragment key={"two" + index}>
-                                                            {digit.split(":")[1] != "0" && <TableBill digit={digit} digit_type={bill.digit_type} index={1} rate={rate! && String(rate!.two_digits.top!)} commission={(parseFloat(digit.split(":")[1]) / 100) * parseFloat(commissions.two_digits.top!.toString())} />}
-                                                            {digit.split(":")[2] != "0" && <TableBill digit={digit} digit_type={bill.digit_type} index={2} rate={rate! && String(rate!.two_digits.bottom!)} commission={(parseFloat(digit.split(":")[2]) / 100) * parseFloat(commissions.two_digits.bottom!.toString())} />}
+                                                            {digit.split(":")[1] != "0" && <TableBill digit={digit} digit_type={bill.digit_type} index={1} rate={rate! && String(rate!.two_digits.top!)} commission={(parseFloat(digit.split(":")[1])) * parseFloat(commissions.two_digits.top!.toString())} />}
+                                                            {digit.split(":")[2] != "0" && <TableBill digit={digit} digit_type={bill.digit_type} index={2} rate={rate! && String(rate!.two_digits.bottom!)} commission={(parseFloat(digit.split(":")[2])) * parseFloat(commissions.two_digits.bottom!.toString())} />}
                                                         </React.Fragment>
                                                     )
                                                     : THREE.includes(bill.digit_type) &&
                                                     bill.digit.map((digit, index) =>
                                                         <React.Fragment key={"three" + index}>
-                                                            {digit.split(":")[1] != "0" && <TableBill key={"three_t" + index} digit={digit} digit_type={bill.digit_type} index={1} rate={rate! && String(rate!.three_digits.top!)} commission={(parseFloat(digit.split(":")[1]) / 100) * parseFloat(commissions.three_digits.top!.toString())} />}
-                                                            {digit.split(":")[2] != "0" && <TableBill key={"three_b" + index} digit={digit} digit_type={bill.digit_type} index={2} rate={rate! && String(rate!.three_digits.toad!)} commission={(parseFloat(digit.split(":")[2]) / 100) * parseFloat(commissions.three_digits.toad!.toString())} />}
+                                                            {digit.split(":")[1] != "0" && <TableBill key={"three_t" + index} digit={digit} digit_type={bill.digit_type} index={1} rate={rate! && String(rate!.three_digits.top!)} commission={(parseFloat(digit.split(":")[1])) * parseFloat(commissions.three_digits.top!.toString())} />}
+                                                            {digit.split(":")[2] != "0" && <TableBill key={"three_b" + index} digit={digit} digit_type={bill.digit_type} index={2} rate={rate! && String(rate!.three_digits.toad!)} commission={(parseFloat(digit.split(":")[2])) * parseFloat(commissions.three_digits.toad!.toString())} />}
                                                         </React.Fragment>
                                                     )
                                         ))}
