@@ -53,7 +53,7 @@ export function Leftbar() {
 
     return (
         isUser &&
-        <div className="w-full h-full" >
+        <div className="w-full" style={{ minHeight: "2500px" }} >
             <div className="flex flex-no-wrap h-full">
                 <div style={{ minHeight: "716px", minWidth: "180px" }} className="absolute relative bg-gray-800 shadow h-full flex-col justify-between">
                     <div className="px-2">
