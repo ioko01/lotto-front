@@ -80,10 +80,10 @@ export function BillCheck() {
         navigate(-1)
     }
 
-    const fetchBills = async () => {
-        // const getBills = await axios.get<IBillDoc[]>(import.meta.env.VITE_OPS_URL + "/getbill")
-        // setIsBills(getBills.data)
-    }
+    // const fetchBills = async () => {
+    //     const getBills = await axios.get<IBillDoc[]>(import.meta.env.VITE_OPS_URL + "/getbill")
+    //     setIsBills(getBills.data)
+    // }
 
     const fetchRate = async () => {
         const id = location.pathname.split("/")[3]
@@ -230,7 +230,7 @@ export function BillCheck() {
         fetchLotto()
         fetchRate()
 
-    }, [bills, notePrice])
+    }, [])
 
     const totalPrice = notePrice.price.reduce((price, current) => {
         return price + current
