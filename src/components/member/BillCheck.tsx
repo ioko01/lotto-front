@@ -1,12 +1,10 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { addBill } from "../../redux/features/bill/billSlice";
 import { TWO, THREE, ONE, TDigit } from "../../models/Type";
 import { addNotePrice } from "../../redux/features/bill/notePriceSlice";
-import { IBillDoc } from "../../helpers/Bill";
 import axios from "axios";
-import { AuthContext } from "../../context/AuthContextProvider";
 import { axiosConfig } from "../../utils/headers";
 import { IRate } from "../../models/Rate";
 import { ILottoDoc } from "./Home";
