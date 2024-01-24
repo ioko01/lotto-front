@@ -104,7 +104,7 @@ export function BillCheck() {
     }
 
 
-    // console.log(isBills)
+    console.log(isBills)
     // const BILL: IBill = {
     //     store: {
     //         name: "ร้านมั่งมี",
