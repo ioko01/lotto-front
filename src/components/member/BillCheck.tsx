@@ -11,8 +11,10 @@ import { AuthContext } from "../../context/AuthContextProvider";
 import { axiosConfig } from "../../utils/headers";
 import { IRate } from "../../models/Rate";
 import { ILottoDoc } from "./Home";
-import { ILotto } from "../../models/Lotto";
+import { ILotto, TLottoStatusEnum } from "../../models/Lotto";
 import { ICommission } from "../../models/Commission";
+import { countdown } from "../../utils/countdown";
+import { Time } from "../../models/Time";
 
 interface Props {
     digit: string
@@ -69,9 +71,14 @@ export function BillCheck() {
     const isLoading = document.getElementById("loading")
     const location = useLocation()
     const [rate, setRate] = useState<IRate>()
-    const [lotto, setLotto] = useState<ILotto>()
+    const [lotto, setLotto] = useState<ILottoDoc | null>(null)
     const [image, setImage] = useState<string | ArrayBuffer | null>(null);
     const commissions = useAppSelector(state => state.commission)
+
+    let newTime: Time;
+    const [time, setTime] = useState<Time>()
+    const day = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']
+    const dateNow = new Date();
 
 
     const pagePrev = () => {
@@ -95,11 +102,21 @@ export function BillCheck() {
 
     const fetchLotto = async () => {
         const id = location.pathname.split("/")[3]
-        const res = await axios.get(import.meta.env.VITE_OPS_URL + `/get/lotto/id/${id}`, axiosConfig)
-        if (res && res.status == 200) {
-            const data = res.data as ILottoDoc
-            setLotto(data)
-            await fetchImage(data)
+        const fetchLotto = await axios.get(import.meta.env.VITE_OPS_URL + `/get/lotto/id/${id}`, axiosConfig)
+        const data = fetchLotto.data as ILottoDoc
+        if (fetchLotto && fetchLotto.status == 200) {
+
+            if (data.date!.includes(day[dateNow.getDay()])) {
+                setLotto(data)
+                timer(data.id, data.open, data.close, data.status as TLottoStatusEnum, 1)
+
+                await fetchImage(data)
+                timer(data.id, data.open, data.close, data.status as TLottoStatusEnum, 1)
+            } else {
+                setLotto(null)
+                navigate("/")
+            }
+
         }
     }
 
@@ -212,6 +229,34 @@ export function BillCheck() {
         }
     }
 
+    let count = 0
+    const timer = (id: string, open: string, close: string, status: TLottoStatusEnum, amount: number) => {
+
+        const interval = setInterval(() => {
+            const cd = countdown(open, close)
+
+            // if (cd.days < 0) {
+            //     clearInterval(interval)
+            // }
+
+            const days = status == TLottoStatusEnum.OPEN ? cd.days < 10 ? `0${cd.days.toString()}` : cd.days.toString() : "00"
+            const hours = status == TLottoStatusEnum.OPEN ? cd.hours < 10 ? `0${cd.hours.toString()}` : cd.hours.toString() : "00"
+            const minutes = status == TLottoStatusEnum.OPEN ? cd.minutes < 10 ? `0${cd.minutes.toString()}` : cd.minutes.toString() : "00"
+            const seconds = status == TLottoStatusEnum.OPEN ? cd.seconds < 10 ? `0${cd.seconds.toString()}` : cd.seconds.toString() : "00"
+
+            newTime = {
+                id: id,
+                days: days,
+                hours: hours,
+                minutes: minutes,
+                seconds: seconds
+            }
+            setTime(newTime)
+            count++
+        }, 1000)
+
+    }
+
     useEffect(() => {
         isLoading!.removeAttribute("style")
         isLoading!.style.position = "fixed"
@@ -240,7 +285,7 @@ export function BillCheck() {
         rate! ? <div id="bill_check" className="flex flex-col">
             <div className="basis-full w-full p-2">
                 <div id="bill_time" className="flex flex-col w-full mb-3 p-2 text-red-500">
-                    เหลือเวลา 02: 35: 08
+                    เหลือเวลา {time?.hours ?? "00"}:{time?.minutes ?? "00"}:{time?.seconds ?? "00"}
                 </div>
             </div>
             <div className="flex flex-row">
