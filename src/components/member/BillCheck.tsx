@@ -278,7 +278,27 @@ export function BillCheck() {
     }, [bills, notePrice])
 
     const totalPrice = notePrice.price.reduce((price, current) => {
-        return price + current
+        let commission = 0
+        bills.map(bill => {
+            if (ONE.includes(bill.digit_type)) {
+                bill.digit.map((digit) => {
+                    commission += (parseFloat(digit.split(":")[1]) / 100) * parseFloat(commissions.one_digits.top!.toString())
+                    commission += (parseFloat(digit.split(":")[1]) / 100) * parseFloat(commissions.one_digits.bottom!.toString())
+                })
+            } else if (TWO.includes(bill.digit_type)) {
+                bill.digit.map((digit) => {
+                    commission += (parseFloat(digit.split(":")[1]) / 100) * parseFloat(commissions.two_digits.top!.toString())
+                    commission += (parseFloat(digit.split(":")[1]) / 100) * parseFloat(commissions.two_digits.top!.toString())
+                })
+            } else if (THREE.includes(bill.digit_type)) {
+                bill.digit.map((digit) => {
+                    commission += (parseFloat(digit.split(":")[1]) / 100) * parseFloat(commissions.three_digits.top!.toString())
+                    commission += (parseFloat(digit.split(":")[1]) / 100) * parseFloat(commissions.three_digits.toad!.toString())
+                })
+            }
+        })
+
+        return price + current - commission
     }, 0)
 
     return (
