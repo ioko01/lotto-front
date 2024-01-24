@@ -53,9 +53,9 @@ export function Leftbar() {
 
     return (
         isUser &&
-        <div className="w-full" style={{ minHeight: "2500px" }} >
+        <div className="w-full" style={{ minHeight: "2000x" }} >
             <div className="flex flex-no-wrap h-full">
-                <div style={{ minHeight: "716px", minWidth: "180px" }} className="absolute relative bg-gray-800 shadow h-full flex-col justify-between">
+                <div style={{ minHeight: "2000px", minWidth: "180px"}} className="absolute relative bg-gray-800 shadow h-full flex-col justify-between">
                     <div className="px-2">
                         <div className="h-16 w-full flex items-center justify-center">
                             <svg aria-label="Ripples. Logo" role="img" xmlns="http://www.w3.org/2000/svg" width="144" height="30" viewBox="0 0 144 30">
