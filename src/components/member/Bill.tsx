@@ -40,7 +40,7 @@ function copyElementToClipboard(element: HTMLElement) {
         // Convert the canvas to a Blob object
         if (navigator.clipboard && navigator.clipboard.write) {
             if (isMobile()) {
-                copyElementToClipboardWithMobile(element)
+                console.log(navigator.clipboard.write);
             } else {
                 canvas.toBlob(blob => {
                     if (blob) {
