@@ -99,7 +99,7 @@ export function BillCheck() {
         if (res && res.status == 200) {
             const data = res.data as ILottoDoc
             setLotto(data)
-            fetchImage(data)
+            await fetchImage(data)
         }
     }
 
@@ -194,20 +194,22 @@ export function BillCheck() {
         // })
     }
 
-    const fetchImage = (lotto: ILotto) => {
-        axios.get(`${import.meta.env.VITE_OPS_URL}/get/file/${lotto.img_flag}`, {
-            responseType: "blob",
-            withCredentials: true
+    const fetchImage = async (lotto: ILotto) => {
+        const res = await axios.get(`${import.meta.env.VITE_OPS_URL}/get/file/${lotto.img_flag}`, {
+            responseType: 'blob',
+            withCredentials: axiosConfig.withCredentials,
+            timeout: axiosConfig.timeout,
+            headers: axiosConfig.headers
         })
-            .then((res) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(res.data);
+        if (res && res.status == 200) {
+            const reader = new FileReader();
+            reader.readAsDataURL(res.data);
 
-                reader.onloadend = function () {
-                    const base64data = reader.result;
-                    setImage(base64data);
-                };
-            })
+            reader.onloadend = function () {
+                const base64data = reader.result;
+                setImage(base64data);
+            };
+        }
     }
 
     useEffect(() => {
