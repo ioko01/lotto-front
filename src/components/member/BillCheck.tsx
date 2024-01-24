@@ -4,15 +4,13 @@ import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { addBill } from "../../redux/features/bill/billSlice";
 import { TWO, THREE, ONE, TDigit } from "../../models/Type";
 import { addNotePrice } from "../../redux/features/bill/notePriceSlice";
-import BillHelperClass, { IBillDoc } from "../../helpers/Bill";
+import { IBillDoc } from "../../helpers/Bill";
 import axios from "axios";
-import { IBill } from "../../models/Bill";
 import { AuthContext } from "../../context/AuthContextProvider";
 import { axiosConfig } from "../../utils/headers";
 import { IRate } from "../../models/Rate";
 import { ILottoDoc } from "./Home";
 import { ILotto, TLottoStatusEnum } from "../../models/Lotto";
-import { ICommission } from "../../models/Commission";
 import { countdown } from "../../utils/countdown";
 import { Time } from "../../models/Time";
 
@@ -63,11 +61,11 @@ export function BillCheck() {
     const bills = useAppSelector(state => state.bill)
     const notePrice = useAppSelector(state => state.notePrice)
     const navigate = useNavigate();
-    const [isBills, setIsBills] = useState<IBillDoc[]>([])
-    const [digitOne, setDigitOne] = useState<string[]>([])
-    const [digitTwo, setDigitTwo] = useState<string[]>([])
-    const [digitThree, setDigiThree] = useState<string[]>([])
-    const { isUser } = useContext(AuthContext)
+    // const [isBills, setIsBills] = useState<IBillDoc[]>([])
+    // const [digitOne, setDigitOne] = useState<string[]>([])
+    // const [digitTwo, setDigitTwo] = useState<string[]>([])
+    // const [digitThree, setDigiThree] = useState<string[]>([])
+    // const { isUser } = useContext(AuthContext)
     const isLoading = document.getElementById("loading")
     const location = useLocation()
     const [rate, setRate] = useState<IRate>()
@@ -265,11 +263,11 @@ export function BillCheck() {
         }
 
 
-        bills.map(digit => {
-            ONE.includes(digit.digit_type) && setDigitOne(digit.digit)
-            TWO.includes(digit.digit_type) && setDigitTwo(digit.digit)
-            THREE.includes(digit.digit_type) && setDigiThree(digit.digit)
-        })
+        // bills.map(digit => {
+        //     ONE.includes(digit.digit_type) && setDigitOne(digit.digit)
+        //     TWO.includes(digit.digit_type) && setDigitTwo(digit.digit)
+        //     THREE.includes(digit.digit_type) && setDigiThree(digit.digit)
+        // })
 
 
         fetchLotto()
