@@ -11,6 +11,8 @@ import { ILottoDoc } from "./Home";
 import { ILotto, TLottoStatusEnum } from "../../models/Lotto";
 import { countdown } from "../../utils/countdown";
 import { Time } from "../../models/Time";
+import { stateModal } from "../../redux/features/modal/modalSlice";
+import { ModalTimeout } from "./ModalTimeout";
 
 interface Props {
     digit: string
@@ -70,6 +72,8 @@ export function BillCheck() {
     const [lotto, setLotto] = useState<ILottoDoc | null>(null)
     const [image, setImage] = useState<string | ArrayBuffer | null>(null);
     const commissions = useAppSelector(state => state.commission)
+
+    const modal = useAppSelector(state => state.modal)
 
     let newTime: Time;
     const [time, setTime] = useState<Time>()
@@ -226,31 +230,34 @@ export function BillCheck() {
     }
 
     let count = 0
+    const [billTimeout, setBillTimeout] = useState<Boolean>(false)
     const timer = (id: string, open: string, close: string, status: TLottoStatusEnum, amount: number) => {
+        if (!billTimeout) {
+            const interval = setInterval(() => {
+                const cd = countdown(open, close)
 
-        const interval = setInterval(() => {
-            const cd = countdown(open, close)
+                if (cd.days < 0) {
+                    dispatch(stateModal({ show: true, openModal: "TIMEOUT", confirm: false }))
+                    setBillTimeout(true)
+                    clearInterval(interval)
+                }
 
-            // if (cd.days < 0) {
-            //     clearInterval(interval)
-            // }
+                const days = status == TLottoStatusEnum.OPEN ? cd.days < 10 ? `0${cd.days.toString()}` : cd.days.toString() : "00"
+                const hours = status == TLottoStatusEnum.OPEN ? cd.hours < 10 ? `0${cd.hours.toString()}` : cd.hours.toString() : "00"
+                const minutes = status == TLottoStatusEnum.OPEN ? cd.minutes < 10 ? `0${cd.minutes.toString()}` : cd.minutes.toString() : "00"
+                const seconds = status == TLottoStatusEnum.OPEN ? cd.seconds < 10 ? `0${cd.seconds.toString()}` : cd.seconds.toString() : "00"
 
-            const days = status == TLottoStatusEnum.OPEN ? cd.days < 10 ? `0${cd.days.toString()}` : cd.days.toString() : "00"
-            const hours = status == TLottoStatusEnum.OPEN ? cd.hours < 10 ? `0${cd.hours.toString()}` : cd.hours.toString() : "00"
-            const minutes = status == TLottoStatusEnum.OPEN ? cd.minutes < 10 ? `0${cd.minutes.toString()}` : cd.minutes.toString() : "00"
-            const seconds = status == TLottoStatusEnum.OPEN ? cd.seconds < 10 ? `0${cd.seconds.toString()}` : cd.seconds.toString() : "00"
-
-            newTime = {
-                id: id,
-                days: days,
-                hours: hours,
-                minutes: minutes,
-                seconds: seconds
-            }
-            setTime(newTime)
-            count++
-        }, 1000)
-
+                newTime = {
+                    id: id,
+                    days: days,
+                    hours: hours,
+                    minutes: minutes,
+                    seconds: seconds
+                }
+                setTime(newTime)
+                count++
+            }, 1000)
+        }
     }
 
     useEffect(() => {
@@ -298,88 +305,96 @@ export function BillCheck() {
     }, 0)
 
     return (
-        rate! ? <div id="bill_check" className="flex flex-col">
-            <div className="basis-full w-full p-2">
-                <div id="bill_time" className="flex flex-col w-full mb-3 p-2 text-red-500">
-                    เหลือเวลา {time?.hours ?? "00"}:{time?.minutes ?? "00"}:{time?.seconds ?? "00"}
+        rate! ? <>
+            {
+                billTimeout && <div className="overlay-timeout">
+                    {modal.openModal === "TIMEOUT" && <ModalTimeout />}
                 </div>
-            </div>
-            <div className="flex flex-row">
-                <div className="basis-3/6 w-full p-2">
-                    <div id="bill_content" style={{ minWidth: "420px", maxWidth: "568px" }} className="flex flex-col items-center">
+            }
+            <div id="bill_check" className="flex flex-col">
+                <div className="basis-full w-full p-2">
+                    <div id="bill_time" className="flex flex-col w-full mb-3 p-2 text-red-500">
+                        เหลือเวลา {time?.hours ?? "00"}:{time?.minutes ?? "00"}:{time?.seconds ?? "00"}
+                    </div>
+                </div>
+                <div className="flex flex-row">
+                    <div className="basis-3/6 w-full p-2">
+                        <div id="bill_content" style={{ minWidth: "420px", maxWidth: "568px" }} className="flex flex-col items-center">
 
-                        <div id="bill_header" className="flex flex-col items-center rounded-lg border border-green-400 bg-green-100 w-full mb-3 p-2">
-                            <div className="flex justify-between w-full p-2">
-                                <span>{lotto?.name}</span>
-                                <span>2022-12-65</span>
+                            <div id="bill_header" className="flex flex-col items-center rounded-lg border border-green-400 bg-green-100 w-full mb-3 p-2">
+                                <div className="flex justify-between w-full p-2">
+                                    <span>{lotto?.name}</span>
+                                    <span>2022-12-65</span>
+                                </div>
+                                <div className="flex justify-between w-full p-2">
+                                    <span>อัตราจ่าย</span>
+                                    <span>{`${rate?.two_digits.top}`}</span>
+                                    <span>ดูรายละเอียด</span>
+                                    <span><img width={60} src={`${image}`} alt="flag" className="object-cover" /></span>
+                                </div>
                             </div>
-                            <div className="flex justify-between w-full p-2">
-                                <span>อัตราจ่าย</span>
-                                <span>{`${rate?.two_digits.top}`}</span>
-                                <span>ดูรายละเอียด</span>
-                                <span><img width={60} src={`${image}`} alt="flag" className="object-cover" /></span>
-                            </div>
-                        </div>
 
-                        <div id="bill_body" className="flex flex-col items-center w-full mb-3 p-2">
-                            <table className="w-full">
-                                <caption className="text-left text-lg">รายการแทง</caption>
-                                <thead className="bg-blue-800 text-white">
-                                    <tr>
-                                        <th>ประเภท</th>
-                                        <th>หมายเลข</th>
-                                        <th>ยอดเดิมพัน</th>
-                                        <th>เรทจ่าย</th>
-                                        <th>ส่วนลด</th>
-                                        <th>#</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {bills.map((bill) => (
-                                        ONE.includes(bill.digit_type) ?
-                                            bill.digit.map((digit, index) =>
-                                                <React.Fragment key={"one" + index}>
-                                                    {digit.split(":")[1] != "0" && <TableBill digit={digit} digit_type={bill.digit_type} index={1} rate={rate! && String(rate!.one_digits.top!)} commission={(parseFloat(digit.split(":")[1]) / 100) * parseFloat(commissions.one_digits.top!.toString())} />}
-                                                    {digit.split(":")[2] != "0" && <TableBill digit={digit} digit_type={bill.digit_type} index={2} rate={rate! && String(rate!.one_digits.bottom!)} commission={(parseFloat(digit.split(":")[2]) / 100) * parseFloat(commissions.one_digits.bottom!.toString())} />}
-                                                </React.Fragment>
-                                            )
-                                            : TWO.includes(bill.digit_type) ?
+                            <div id="bill_body" className="flex flex-col items-center w-full mb-3 p-2">
+                                <table className="w-full">
+                                    <caption className="text-left text-lg">รายการแทง</caption>
+                                    <thead className="bg-blue-800 text-white">
+                                        <tr>
+                                            <th>ประเภท</th>
+                                            <th>หมายเลข</th>
+                                            <th>ยอดเดิมพัน</th>
+                                            <th>เรทจ่าย</th>
+                                            <th>ส่วนลด</th>
+                                            <th>#</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {bills.map((bill) => (
+                                            ONE.includes(bill.digit_type) ?
                                                 bill.digit.map((digit, index) =>
-                                                    <React.Fragment key={"two" + index}>
-                                                        {digit.split(":")[1] != "0" && <TableBill digit={digit} digit_type={bill.digit_type} index={1} rate={rate! && String(rate!.two_digits.top!)} commission={(parseFloat(digit.split(":")[1]) / 100) * parseFloat(commissions.two_digits.top!.toString())} />}
-                                                        {digit.split(":")[2] != "0" && <TableBill digit={digit} digit_type={bill.digit_type} index={2} rate={rate! && String(rate!.two_digits.bottom!)} commission={(parseFloat(digit.split(":")[2]) / 100) * parseFloat(commissions.two_digits.bottom!.toString())} />}
+                                                    <React.Fragment key={"one" + index}>
+                                                        {digit.split(":")[1] != "0" && <TableBill digit={digit} digit_type={bill.digit_type} index={1} rate={rate! && String(rate!.one_digits.top!)} commission={(parseFloat(digit.split(":")[1]) / 100) * parseFloat(commissions.one_digits.top!.toString())} />}
+                                                        {digit.split(":")[2] != "0" && <TableBill digit={digit} digit_type={bill.digit_type} index={2} rate={rate! && String(rate!.one_digits.bottom!)} commission={(parseFloat(digit.split(":")[2]) / 100) * parseFloat(commissions.one_digits.bottom!.toString())} />}
                                                     </React.Fragment>
                                                 )
-                                                : THREE.includes(bill.digit_type) &&
-                                                bill.digit.map((digit, index) =>
-                                                    <React.Fragment key={"three" + index}>
-                                                        {digit.split(":")[1] != "0" && <TableBill key={"three_t" + index} digit={digit} digit_type={bill.digit_type} index={1} rate={rate! && String(rate!.three_digits.top!)} commission={(parseFloat(digit.split(":")[1]) / 100) * parseFloat(commissions.three_digits.top!.toString())} />}
-                                                        {digit.split(":")[2] != "0" && <TableBill key={"three_b" + index} digit={digit} digit_type={bill.digit_type} index={2} rate={rate! && String(rate!.three_digits.toad!)} commission={(parseFloat(digit.split(":")[2]) / 100) * parseFloat(commissions.three_digits.toad!.toString())} />}
-                                                    </React.Fragment>
-                                                )
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
+                                                : TWO.includes(bill.digit_type) ?
+                                                    bill.digit.map((digit, index) =>
+                                                        <React.Fragment key={"two" + index}>
+                                                            {digit.split(":")[1] != "0" && <TableBill digit={digit} digit_type={bill.digit_type} index={1} rate={rate! && String(rate!.two_digits.top!)} commission={(parseFloat(digit.split(":")[1]) / 100) * parseFloat(commissions.two_digits.top!.toString())} />}
+                                                            {digit.split(":")[2] != "0" && <TableBill digit={digit} digit_type={bill.digit_type} index={2} rate={rate! && String(rate!.two_digits.bottom!)} commission={(parseFloat(digit.split(":")[2]) / 100) * parseFloat(commissions.two_digits.bottom!.toString())} />}
+                                                        </React.Fragment>
+                                                    )
+                                                    : THREE.includes(bill.digit_type) &&
+                                                    bill.digit.map((digit, index) =>
+                                                        <React.Fragment key={"three" + index}>
+                                                            {digit.split(":")[1] != "0" && <TableBill key={"three_t" + index} digit={digit} digit_type={bill.digit_type} index={1} rate={rate! && String(rate!.three_digits.top!)} commission={(parseFloat(digit.split(":")[1]) / 100) * parseFloat(commissions.three_digits.top!.toString())} />}
+                                                            {digit.split(":")[2] != "0" && <TableBill key={"three_b" + index} digit={digit} digit_type={bill.digit_type} index={2} rate={rate! && String(rate!.three_digits.toad!)} commission={(parseFloat(digit.split(":")[2]) / 100) * parseFloat(commissions.three_digits.toad!.toString())} />}
+                                                        </React.Fragment>
+                                                    )
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
 
-                        <div id="bill_footer" className="flex flex-col items-center rounded-lg w-full mb-3 p-2">
-                            <div className="flex justify-center w-full p-2 gap-2">
-                                <span>หมายเหตุ: {notePrice.note}</span>
-                            </div>
-                            <div className="flex justify-center w-full p-2 gap-2">
-                                <span>รวม:</span>
-                                <span>{totalPrice} บาท</span>
-                            </div>
-                            <div className="flex justify-center w-full p-2 gap-2">
-                                <button onClick={pagePrev} style={{ minWidth: "60px" }} className="whitespace-nowrap text-xs bg-gray-400 hover:bg-gray-500 text-white font-light p-2 rounded shadow">ย้อนกลับ</button>
-                                <Link to="/bill/check">
-                                    <button onClick={addBillToDatabase} style={{ minWidth: "60px" }} className="whitespace-nowrap text-xs bg-blue-600 hover:bg-blue-500 text-white font-light p-2 rounded shadow">ยืนยัน</button>
-                                </Link>
+                            <div id="bill_footer" className="flex flex-col items-center rounded-lg w-full mb-3 p-2">
+                                <div className="flex justify-center w-full p-2 gap-2">
+                                    <span>หมายเหตุ: {notePrice.note}</span>
+                                </div>
+                                <div className="flex justify-center w-full p-2 gap-2">
+                                    <span>รวม:</span>
+                                    <span>{totalPrice} บาท</span>
+                                </div>
+                                <div className="flex justify-center w-full p-2 gap-2">
+                                    <button onClick={pagePrev} style={{ minWidth: "60px" }} className="whitespace-nowrap text-xs bg-gray-400 hover:bg-gray-500 text-white font-light p-2 rounded shadow">ย้อนกลับ</button>
+                                    <Link to="/bill/check">
+                                        <button onClick={addBillToDatabase} style={{ minWidth: "60px" }} className="whitespace-nowrap text-xs bg-blue-600 hover:bg-blue-500 text-white font-light p-2 rounded shadow">ยืนยัน</button>
+                                    </Link>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div> : <>ไม่มีอัตราการจ่าย</>
+        </> : <>ไม่มีอัตราการจ่าย</>
+
     )
 }

@@ -80,9 +80,9 @@ export function Home() {
                 setTimes([])
                 count = 0
             }
-            // if (cd.days < 0) {
-            //     clearInterval(interval)
-            // }
+            if (cd.days < 0) {
+                clearInterval(interval)
+            }
 
             const days = status == TLottoStatusEnum.OPEN ? cd.days < 10 ? `0${cd.days.toString()}` : cd.days.toString() : "00"
             const hours = status == TLottoStatusEnum.OPEN ? cd.hours < 10 ? `0${cd.hours.toString()}` : cd.hours.toString() : "00"
@@ -135,7 +135,7 @@ export function Home() {
                         </p>
                         <p className="flex justify-between w-full">
                             <span className="font-light">สถานะ</span>
-                            <span className="font-light">{lotto.date!.includes(day[dateNow.getDay()]) && times[index] ? times[index].id == lotto.id && `ปิดรับใน ${times[index]?.hours}:${times[index]?.minutes}:${times[index]?.seconds}` : ''}</span>
+                            <span className="font-light">{lotto.date!.includes(day[dateNow.getDay()]) && times[index] ? times[index].id == lotto.id && `ปิดรับใน ${times[index]?.hours ?? "00"}:${times[index]?.minutes ?? "00"}:${times[index]?.seconds ?? "00"}` : ''}</span>
                         </p>
                     </div>
                 </Link>
