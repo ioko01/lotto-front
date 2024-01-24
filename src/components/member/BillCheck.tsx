@@ -104,7 +104,7 @@ export function BillCheck() {
     }
 
 
-    console.log(bills)
+    // console.log(isBills)
     // const BILL: IBill = {
     //     store: {
     //         name: "ร้านมั่งมี",
@@ -230,7 +230,7 @@ export function BillCheck() {
         fetchLotto()
         fetchRate()
 
-    }, [])
+    }, [bills, notePrice])
 
     const totalPrice = notePrice.price.reduce((price, current) => {
         return price + current
@@ -319,6 +319,6 @@ export function BillCheck() {
                     </div>
                 </div>
             </div>
-        </div> : <>กำลังโหลด</>
+        </div> : <>ไม่มีอัตราการจ่าย</>
     )
 }
