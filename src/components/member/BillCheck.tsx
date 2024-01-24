@@ -225,10 +225,8 @@ export function BillCheck() {
         })
 
 
-        return () => {
-            fetchLotto()
-            fetchRate()
-        }
+        fetchLotto()
+        fetchRate()
 
     }, [bills, notePrice])
 
