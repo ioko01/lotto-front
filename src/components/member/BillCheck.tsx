@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { addBill } from "../../redux/features/bill/billSlice";
@@ -6,13 +6,15 @@ import { TWO, THREE, ONE, TDigit } from "../../models/Type";
 import { addNotePrice } from "../../redux/features/bill/notePriceSlice";
 import axios from "axios";
 import { axiosConfig } from "../../utils/headers";
-import { IRate } from "../../models/Rate";
+import { IRate, IRateDoc } from "../../models/Rate";
 import { ILottoDoc } from "./Home";
 import { ILotto, TLottoStatusEnum } from "../../models/Lotto";
 import { countdown } from "../../utils/countdown";
 import { Time } from "../../models/Time";
 import { stateModal } from "../../redux/features/modal/modalSlice";
 import { ModalTimeout } from "./ModalTimeout";
+import { IBill, IBillInsert } from "../../models/Bill";
+import { AuthContext } from "../../context/AuthContextProvider";
 
 interface Props {
     digit: string
@@ -65,13 +67,13 @@ export function BillCheck() {
     // const [digitOne, setDigitOne] = useState<string[]>([])
     // const [digitTwo, setDigitTwo] = useState<string[]>([])
     // const [digitThree, setDigiThree] = useState<string[]>([])
-    // const { isUser } = useContext(AuthContext)
     const isLoading = document.getElementById("loading")
     const location = useLocation()
-    const [rate, setRate] = useState<IRate>()
+    const [rate, setRate] = useState<IRateDoc>()
     const [lotto, setLotto] = useState<ILottoDoc | null>(null)
     const [image, setImage] = useState<string | ArrayBuffer | null>(null);
     const commissions = useAppSelector(state => state.commission)
+    const { isUser } = useContext(AuthContext)
 
     const modal = useAppSelector(state => state.modal)
 
@@ -103,10 +105,11 @@ export function BillCheck() {
     const fetchLotto = async () => {
         const id = location.pathname.split("/")[3]
         const fetchLotto = await axios.get(import.meta.env.VITE_OPS_URL + `/get/lotto/id/${id}`, axiosConfig)
-        const data = fetchLotto.data as ILottoDoc
+        let data = fetchLotto.data as ILottoDoc
         if (fetchLotto && fetchLotto.status == 200) {
 
             if (data.date!.includes(day[dateNow.getDay()])) {
+                data = Object.assign({ id: id }, data)
                 setLotto(data)
                 timer(data.id, data.open, data.close, data.status as TLottoStatusEnum, 1)
 
@@ -201,14 +204,57 @@ export function BillCheck() {
     // }
 
     const addBillToDatabase = async () => {
-        // await axios.post(import.meta.env.VITE_OPS_URL + "/addbill", BILL).then(res => {
-        //     console.log(res)
-        //     setIsLoading(true)
-        // }).catch(error => {
-        //     console.log(error)
-        // }).finally(() => {
-        //     setIsLoading(false)
-        // })
+        const digitOne: string[] = []
+        const digitTwo: string[] = []
+        const digitThree: string[] = []
+
+
+        bills.map((bill) => {
+            if (bill.digit_type == "ONE") {
+                digitOne.push(...bill.digit)
+            }
+            if (bill.digit_type == "TWO") {
+                console.log("asd");
+                digitTwo.push(...bill.digit)
+            }
+            if (bill.digit_type == "THREE") {
+                digitThree.push(...bill.digit)
+            }
+            if (bill.digit_type == "NINETEEN") {
+                digitTwo.push(...bill.digit)
+            }
+            if (bill.digit_type == "SIX") {
+                digitThree.push(...bill.digit)
+            }
+            if (bill.digit_type == "WIN") {
+                digitTwo.push(...bill.digit)
+            }
+
+        })
+
+        const BILL: IBill = {
+            store_id: isUser!.store_id!,
+            lotto_id: lotto!,
+            rate_id: rate!,
+            times: "12-01-2566",
+            one_digits: digitOne,
+            two_digits: digitTwo,
+            three_digits: digitThree,
+            note: notePrice?.note,
+            status: "WAIT",
+            created_at: new Date(),
+            updated_at: new Date(),
+            user_create_id: "1",
+        }
+        
+        await axios.post(import.meta.env.VITE_OPS_URL + "/add/bill", BILL, axiosConfig).then(res => {
+            console.log(res)
+            // setIsLoading(true)
+        }).catch(error => {
+            console.log(error)
+        }).finally(() => {
+            // setIsLoading(false)
+        })
     }
 
     const fetchImage = async (lotto: ILotto) => {
@@ -385,9 +431,7 @@ export function BillCheck() {
                                 </div>
                                 <div className="flex justify-center w-full p-2 gap-2">
                                     <button onClick={pagePrev} style={{ minWidth: "60px" }} className="whitespace-nowrap text-xs bg-gray-400 hover:bg-gray-500 text-white font-light p-2 rounded shadow">ย้อนกลับ</button>
-                                    <Link to="/bill/check">
-                                        <button onClick={addBillToDatabase} style={{ minWidth: "60px" }} className="whitespace-nowrap text-xs bg-blue-600 hover:bg-blue-500 text-white font-light p-2 rounded shadow">ยืนยัน</button>
-                                    </Link>
+                                    <button onClick={addBillToDatabase} style={{ minWidth: "60px" }} className="whitespace-nowrap text-xs bg-blue-600 hover:bg-blue-500 text-white font-light p-2 rounded shadow">ยืนยัน</button>
                                 </div>
                             </div>
                         </div>
