@@ -7,8 +7,8 @@ export interface IInitialState {
     // agent_create_id?: IUserDoc
     // manager_create_id?: IUserDoc
     // user_create_id?: IUserDoc
-    admin_create_id?: String
-    agent_create_id?: String
-    manager_create_id?: String
-    user_create_id?: String
+    admin_create_id?: string
+    agent_create_id?: string
+    manager_create_id?: string
+    user_create_id?: string
 }
