@@ -244,7 +244,7 @@ export function BillCheck() {
             status: "WAIT",
             created_at: new Date(),
             updated_at: new Date(),
-            user_create_id: "1",
+            // user_create_id: "1",
         }
         
         await axios.post(import.meta.env.VITE_OPS_URL + "/add/bill", BILL, axiosConfig).then(res => {
