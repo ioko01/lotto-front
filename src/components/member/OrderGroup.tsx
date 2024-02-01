@@ -79,12 +79,12 @@ export function OrderGroup() {
                             </div>
                         </div>
 
-                        <div className="flex flex-row mt-3 whitespace-nowrap">
+                        <div className="flex flex-row mt-3 whitespace-nowrap w-full">
                             <div className="flex items-center mr-6">
                                 <input onChange={() => toggleDisabled(true, false)} id="custom_date" type="radio" name="order_filter" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
                                 <label htmlFor="custom_date" className="font-bold ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">เลือกวันที่</label>
                             </div>
-                            <div className="flex items-center w-auto border rounded-lg w-auto">
+                            <div className=" items-center border rounded-lg w-full">
                                 <Datepicker
                                     primaryColor="indigo"
                                     i18n="th"
@@ -102,6 +102,7 @@ export function OrderGroup() {
                                     onChange={handleDateChange}
                                     readOnly={true}
                                     disabled={disabledDatepicker}
+                                    dateLooking="forward"
                                 />
                             </div>
                         </div>
