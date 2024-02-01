@@ -61,7 +61,7 @@ export function OrderGroup() {
                             </div>
                             <div className="flex items-center mr-6">
                                 <label htmlFor="select_month" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"></label>
-                                <select style={{ width: "320px" }} disabled={disabledMonth} id="select_month" className="py-2.5 text-center font-normal bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 disabled:opacity-40 disabled:cursor-not-allowed">
+                                <select style={{ width: "320px" }} disabled={disabledMonth} id="select_month" className="text-center transition-all duration-300 py-2.5 w-full border border-gray-300 dark:bg-slate-800 dark:text-white/80 dark:border-slate-600 rounded-lg tracking-wide font-light text-sm placeholder-gray-400 bg-white focus:ring disabled:opacity-40 disabled:cursor-not-allowed focus:border-indigo-500 focus:ring-indigo-500/20">
                                     <option className="font-normal">-- เลือกเดือน --</option>
                                     <option value="1" className="font-normal">มกราคม</option>
                                     <option value="2" className="font-normal">กุมภาพันธ์</option>
