@@ -17,6 +17,7 @@
     "@types/react-router-dom": "5.3.3",
     "@types/socket.io-client": "^3.0.0",
     "axios": "^1.2.2",
+    "date-fns": "^3.3.1",
     "firebase": "^9.15.0",
     "get-headers": "^1.0.5",
     "html2canvas": "^1.4.1",

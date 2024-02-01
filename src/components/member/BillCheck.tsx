@@ -74,7 +74,7 @@ export function BillCheck() {
     const [image, setImage] = useState<string | ArrayBuffer | null>(null);
     const commissions = useAppSelector(state => state.commission)
     const { isUser } = useContext(AuthContext)
-    const [isAddBill, setIsAddBill] = useState<Boolean>(false)
+    const [isAddBill, setIsAddBill] = useState<boolean>(false)
 
     const modal = useAppSelector(state => state.modal)
 
@@ -285,7 +285,7 @@ export function BillCheck() {
     }
 
     let count = 0
-    const [billTimeout, setBillTimeout] = useState<Boolean>(false)
+    const [billTimeout, setBillTimeout] = useState<boolean>(false)
     const timer = (id: string, open: string, close: string, status: TLottoStatusEnum, amount: number) => {
         if (!billTimeout) {
             const interval = setInterval(() => {

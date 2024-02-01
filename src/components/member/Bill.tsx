@@ -401,7 +401,7 @@ export function Bill() {
     }
 
     let count = 0
-    const [billTimeout, setBillTimeout] = useState<Boolean>(false)
+    const [billTimeout, setBillTimeout] = useState<boolean>(false)
     const timer = (id: string, open: string, close: string, status: TLottoStatusEnum, amount: number) => {
         if (!billTimeout) {
             const interval = setInterval(() => {
