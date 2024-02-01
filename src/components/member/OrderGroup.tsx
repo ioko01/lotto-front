@@ -36,55 +36,55 @@ export function OrderGroup() {
                     <div className="flex flex-col border rounded w-full p-4">
                         <strong>ตัวเลือกการค้นหา</strong>
                         <div className="flex flex-row mt-3">
-                            <div className="flex items-center mr-6">
+                            <div className="flex items-center mr-10">
                                 <input onChange={() => toggleDisabled(true, true)} defaultChecked id="today" type="radio" name="order_filter" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
                                 <label htmlFor="today" className="font-bold ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">วันนี้</label>
                             </div>
-                            <div className="flex items-center mr-6">
+                            <div className="flex items-center mr-10">
                                 <input onChange={() => toggleDisabled(true, true)} id="yesterday" type="radio" name="order_filter" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
                                 <label htmlFor="yesterday" className="font-bold ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">เมื่อวาน</label>
                             </div>
-                            <div className="flex items-center mr-6">
+                            <div className="flex items-center mr-10">
                                 <input onChange={() => toggleDisabled(true, true)} id="weeked" type="radio" name="order_filter" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
                                 <label htmlFor="weeked" className="font-bold ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">สัปดาห์นี้</label>
                             </div>
-                            <div className="flex items-center mr-6">
+                            <div className="flex items-center mr-10">
                                 <input onChange={() => toggleDisabled(true, true)} id="last_week" type="radio" name="order_filter" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
                                 <label htmlFor="last_week" className="font-bold ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">สัปดาห์ที่แล้ว</label>
                             </div>
                         </div>
 
                         <div className="flex flex-row mt-3">
-                            <div className="flex items-center mr-6">
+                            <div style={{ width: "90px" }} className="flex items-center">
                                 <input onChange={() => toggleDisabled(false, true)} id="month" type="radio" name="order_filter" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
                                 <label htmlFor="month" className="font-bold ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">เดือน</label>
                             </div>
                             <div className="flex items-center mr-6">
                                 <label htmlFor="select_month" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"></label>
-                                <select disabled={disabledMonth} id="select_month" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                                    <option>-- เลือกเดือน --</option>
-                                    <option value="1">มกราคม</option>
-                                    <option value="2">กุมภาพันธ์</option>
-                                    <option value="3">มีนาคม</option>
-                                    <option value="4">เมษายน</option>
-                                    <option value="5">พฤษภาคม</option>
-                                    <option value="6">มิถุนายน</option>
-                                    <option value="7">กรกฎาคม</option>
-                                    <option value="8">สิงหาคม</option>
-                                    <option value="9">กันยายน</option>
-                                    <option value="10">ตุลาคม</option>
-                                    <option value="11">พฤษจิกายน</option>
-                                    <option value="12">ธันวาคม</option>
+                                <select placeholder="เลือกเดือน" style={{ width: "320px" }} disabled={disabledMonth} id="select_month" className="text-center font-normal bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 disabled:opacity-40 disabled:cursor-not-allowed">
+                                    <option className="font-normal">-- เลือกเดือน --</option>
+                                    <option value="1" className="font-normal">มกราคม</option>
+                                    <option value="2" className="font-normal">กุมภาพันธ์</option>
+                                    <option value="3" className="font-normal">มีนาคม</option>
+                                    <option value="4" className="font-normal">เมษายน</option>
+                                    <option value="5" className="font-normal">พฤษภาคม</option>
+                                    <option value="6" className="font-normal">มิถุนายน</option>
+                                    <option value="7" className="font-normal">กรกฎาคม</option>
+                                    <option value="8" className="font-normal">สิงหาคม</option>
+                                    <option value="9" className="font-normal">กันยายน</option>
+                                    <option value="10" className="font-normal">ตุลาคม</option>
+                                    <option value="11" className="font-normal">พฤษจิกายน</option>
+                                    <option value="12" className="font-normal">ธันวาคม</option>
                                 </select>
                             </div>
                         </div>
 
                         <div className="flex flex-row mt-3 whitespace-nowrap w-full">
-                            <div className="flex items-center mr-6">
+                            <div style={{ width: "90px" }} className="flex items-center">
                                 <input onChange={() => toggleDisabled(true, false)} id="custom_date" type="radio" name="order_filter" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
                                 <label htmlFor="custom_date" className="font-bold ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">เลือกวันที่</label>
                             </div>
-                            <div className=" items-center border rounded-lg w-full">
+                            <div style={{ width: "320px" }} className="border rounded-lg">
                                 <Datepicker
                                     primaryColor="indigo"
                                     i18n="th"
@@ -97,12 +97,13 @@ export function OrderGroup() {
                                     placeholder="วัน/เดือน/ปี - วัน/เดือน/ปี"
                                     value={isDate}
                                     useRange={false}
+                                    showFooter={true} 
                                     separator="-"
+                                    inputClassName={"relative text-center transition-all duration-300 py-2.5 pl-4 pr-14 w-full border-gray-300 dark:bg-slate-800 dark:text-white/80 dark:border-slate-600 rounded-lg tracking-wide font-light text-sm placeholder-gray-400 bg-white focus:ring disabled:opacity-40 disabled:cursor-not-allowed focus:border-indigo-500 focus:ring-indigo-500/20"}
                                     displayFormat={"DD/MM/YYYY"}
                                     onChange={handleDateChange}
                                     readOnly={true}
                                     disabled={disabledDatepicker}
-                                    dateLooking="forward"
                                 />
                             </div>
                         </div>
