@@ -3,13 +3,13 @@ import { stateModal } from "../../redux/features/modal/modalSlice";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 
 
-export function ModalTimeout() {
+export function ModalNotice() {
     const dispatch = useAppDispatch()
     const modal = useAppSelector(state => state.modal)
     const navigate = useNavigate()
 
     const returnToHome = () => {
-        dispatch(stateModal({ show: false, openModal: "TIMEOUT" }))
+        dispatch(stateModal({ show: false, openModal: modal.openModal }))
         navigate("/")
     }
 
@@ -38,7 +38,9 @@ export function ModalTimeout() {
                                     </div>
                                     <div className="mt-2 text-center w-full">
                                         <h4 className="text-lg font-medium text-gray-800">
-                                            หมดเวลาแล้ว
+                                            {modal.openModal == "TIMEOUT" && "หมดเวลาแล้ว"}
+                                            {modal.openModal == "ADDBILLTRUE" && "เพิ่มบิลสำเร็จ"}
+                                            {modal.openModal == "ADDBILLFALSE" && "ผิดพลาด"}
                                         </h4>
                                         <div className="items-center gap-2 mt-3 sm:flex">
                                             <button

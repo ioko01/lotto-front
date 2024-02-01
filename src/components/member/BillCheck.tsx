@@ -12,7 +12,7 @@ import { ILotto, TLottoStatusEnum } from "../../models/Lotto";
 import { countdown } from "../../utils/countdown";
 import { Time } from "../../models/Time";
 import { stateModal } from "../../redux/features/modal/modalSlice";
-import { ModalTimeout } from "./ModalTimeout";
+import { ModalNotice } from "./ModalNotice";
 import { IBill, IBillInsert } from "../../models/Bill";
 import { AuthContext } from "../../context/AuthContextProvider";
 
@@ -74,6 +74,7 @@ export function BillCheck() {
     const [image, setImage] = useState<string | ArrayBuffer | null>(null);
     const commissions = useAppSelector(state => state.commission)
     const { isUser } = useContext(AuthContext)
+    const [isAddBill, setIsAddBill] = useState<Boolean>(false)
 
     const modal = useAppSelector(state => state.modal)
 
@@ -246,14 +247,22 @@ export function BillCheck() {
             updated_at: new Date(),
             // user_create_id: "1",
         }
-        
+
+        // setIsLoading(true)
+
+        isLoading!.removeAttribute("style")
+        isLoading!.style.position = "fixed"
         await axios.post(import.meta.env.VITE_OPS_URL + "/add/bill", BILL, axiosConfig).then(res => {
-            console.log(res)
-            // setIsLoading(true)
+            if (res.status == 200) {
+                setIsAddBill(true)
+                dispatch(stateModal({ show: true, openModal: "ADDBILLTRUE", confirm: false }))
+            }
         }).catch(error => {
             console.log(error)
         }).finally(() => {
             // setIsLoading(false)
+            isLoading!.style.display = "none"
+            dispatch(stateModal({ show: true, openModal: "ADDBILLFALSE", confirm: false }))
         })
     }
 
@@ -354,7 +363,7 @@ export function BillCheck() {
         rate! ? <>
             {
                 billTimeout && <div className="overlay-timeout">
-                    {modal.openModal === "TIMEOUT" && <ModalTimeout />}
+                    {modal.openModal === "TIMEOUT" && <ModalNotice />}
                 </div>
             }
             <div id="bill_check" className="flex flex-col">
@@ -438,6 +447,9 @@ export function BillCheck() {
                     </div>
                 </div>
             </div>
+
+            {modal.openModal === "ADDBILLTRUE" && <div className="overlay-timeout"><ModalNotice /></div>}
+
         </> : <>ไม่มีอัตราการจ่าย</>
 
     )

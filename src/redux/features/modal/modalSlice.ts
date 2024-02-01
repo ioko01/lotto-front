@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import type { RootState } from '../../store'
 
-type Modal = "DETAIL" | "DELETE" | "CONFIRM" | "CONFIG" | "TIMEOUT"
+type Modal = "DETAIL" | "DELETE" | "CONFIRM" | "CONFIG" | "TIMEOUT" | "ADDBILLTRUE" | "ADDBILLFALSE"
 
 interface ModalState {
   show: boolean,

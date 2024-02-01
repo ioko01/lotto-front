@@ -19,7 +19,7 @@ import { Time } from "../../models/Time";
 import { IRate } from "../../models/Rate";
 import { ICommission } from "../../models/Commission";
 import { addCommission } from "../../redux/features/bill/commissionSlice";
-import { ModalTimeout } from "./ModalTimeout";
+import { ModalNotice } from "./ModalNotice";
 
 function isMobile() {
     return navigator.userAgent.match(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i);
@@ -119,8 +119,8 @@ export function Bill() {
             document.getElementById("input_digits")!.focus()
         }
     }
-
-
+    
+    
     const addDigitDoubleAndTripleValue = () => {
         if (TWO.includes(digitsType)) {
             setDigitsTemp([...digitsTemp, "00", "11", "22", "33", "44", "55", "66", "77", "88", "99"])
@@ -468,7 +468,7 @@ export function Bill() {
             lotto ? <>
             {
                 billTimeout && <div className="overlay-timeout">
-                    {modal.openModal === "TIMEOUT" && <ModalTimeout />}
+                    {modal.openModal === "TIMEOUT" && <ModalNotice />}
                 </div>
             }
 

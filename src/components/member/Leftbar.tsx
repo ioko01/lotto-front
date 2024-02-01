@@ -20,6 +20,7 @@ import { Cookies } from "typescript-cookie";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { stateRequest } from "../../redux/features/request/requestSlice";
 import { stateRoute } from "../../redux/features/route/routeSlice";
+import { OrderGroup } from "./OrderGroup";
 
 export function Leftbar() {
     const { isUser, status, logout } = useContext(AuthContext)
@@ -258,7 +259,7 @@ export function Leftbar() {
                                 <Route path="/" element={<Home />} />
                                 <Route path="/bill/:id" element={<Bill />} />
                                 {/* <Route path="/order/list" element={<OrderList />} /> */}
-                                {/* <Route path="/order/group" element={<OrderGroup />} /> */}
+                                <Route path="/order/group" element={<OrderGroup />} />
                                 <Route path="/report" element={<Report />} />
                                 <Route path="/reward" element={<Reward />} />
                                 <Route path="/about/rule" element={<Rule />} />
