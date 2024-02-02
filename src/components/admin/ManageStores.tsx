@@ -82,7 +82,6 @@ const ManageStores = (props: Props) => {
                     } else {
                         io.emit("create_store")
                         dispatch(stateModal({ show: false, openModal: "CONFIG" }))
-                        console.log("success");
                     }
                 })
         }
