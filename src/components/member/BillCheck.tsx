@@ -15,6 +15,7 @@ import { stateModal } from "../../redux/features/modal/modalSlice";
 import { ModalNotice } from "./ModalNotice";
 import { IBill, IBillInsert } from "../../models/Bill";
 import { AuthContext } from "../../context/AuthContextProvider";
+import { io } from "../../utils/socket-io";
 
 interface Props {
     digit: string
@@ -245,10 +246,7 @@ export function BillCheck() {
             status: "WAIT",
             created_at: new Date(),
             updated_at: new Date(),
-            // user_create_id: "1",
         }
-
-        // setIsLoading(true)
 
         isLoading!.removeAttribute("style")
         isLoading!.style.position = "fixed"
@@ -264,7 +262,9 @@ export function BillCheck() {
             console.log(error)
             dispatch(stateModal({ show: true, openModal: "ADDBILLFALSE", confirm: false }))
         }).finally(() => {
-            // setIsLoading(false)
+            io.connect()
+            io.emit("create_credit")
+            io.disconnect()
         })
     }
 
