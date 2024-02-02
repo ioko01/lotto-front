@@ -11,9 +11,9 @@ import { BillCheck } from "./BillCheck";
 import { PageNotFound } from "./PageNotFound";
 import { NavLink } from "react-router-dom";
 import { Link } from "./Link";
-import { IUser } from "../../models/User";
-import axios from "axios";
-import { useContext, useEffect } from "react";
+import { IUser, IUserDoc } from "../../models/User";
+import axios, { AxiosRequestConfig } from "axios";
+import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../context/AuthContextProvider";
 import { axiosConfig } from "../../utils/headers";
 import { Cookies } from "typescript-cookie";
@@ -21,14 +21,28 @@ import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { stateRequest } from "../../redux/features/request/requestSlice";
 import { stateRoute } from "../../redux/features/route/routeSlice";
 import { OrderGroup } from "./OrderGroup";
+import { io } from "../../utils/socket-io";
 
 export function Leftbar() {
     const { isUser, status, logout } = useContext(AuthContext)
     const navigate = useNavigate()
     const isLoading = document.getElementById("loading")
-    const dispatch = useAppDispatch()
-    const route = useAppSelector(state => state.route)
-    const location = useLocation()
+    const [credit, setCredit] = useState<string>("")
+
+    const getCredit = async () => {
+        const res = await axios.get(import.meta.env.VITE_OPS_URL + "/credit", axiosConfig)
+        if (res && res.status == 200) {
+            const data = res.data as { credit: number }
+            setCredit(data.credit.toLocaleString('en-us', { minimumFractionDigits: 2 }))
+        }
+    }
+    useEffect(() => {
+        io.on("get_credit", () => {
+            getCredit()
+        })
+
+        io.off('get_credit')
+    }, [])
 
 
     if (isLoading) {
@@ -56,7 +70,7 @@ export function Leftbar() {
         isUser &&
         <div className="w-full" style={{ minHeight: "2000x" }} >
             <div className="flex flex-no-wrap h-full">
-                <div style={{ minHeight: "2000px", minWidth: "180px"}} className="absolute relative bg-gray-800 shadow h-full flex-col justify-between">
+                <div style={{ minHeight: "2000px", minWidth: "180px" }} className="absolute relative bg-gray-800 shadow h-full flex-col justify-between">
                     <div className="px-2">
                         <div className="h-16 w-full flex items-center justify-center">
                             <svg aria-label="Ripples. Logo" role="img" xmlns="http://www.w3.org/2000/svg" width="144" height="30" viewBox="0 0 144 30">
@@ -85,7 +99,7 @@ export function Leftbar() {
                                 <div className='flex flex-row'>
                                     <li className="flex w-full justify-between text-white font-light items-center">
                                         <span>Balance</span>
-                                        <span>{isUser.credit.toLocaleString('en-us', { minimumFractionDigits: 2 })}</span>
+                                        <span>{isUser.credit.toLocaleString('en-us', { minimumFractionDigits: 2 }) ?? credit}</span>
                                     </li>
                                 </div>
 
