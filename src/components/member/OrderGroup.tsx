@@ -51,8 +51,8 @@ export function OrderGroup() {
                         bill.one_digits.map((p) => {
                             prices[index] += parseInt(p.split(":")[1]) + parseInt(p.split(":")[2])
                             if (bill.rate_id.committion.one_digits) {
-                                commissions[index] += (parseFloat(bill.rate_id.committion.one_digits.top!.toString()) / 100)
-                                commissions[index] += (parseFloat(bill.rate_id.committion.one_digits.bottom!.toString()) / 100)
+                                commissions[index] += (parseFloat(p.split(":")[1]) * parseFloat(bill.rate_id.committion.one_digits.top!.toString()) / 100)
+                                commissions[index] += (parseFloat(p.split(":")[2]) * parseFloat(bill.rate_id.committion.one_digits.bottom!.toString()) / 100)
                             }
                         })
                     }
@@ -62,8 +62,8 @@ export function OrderGroup() {
                             prices[index] += parseInt(p.split(":")[1]) + parseInt(p.split(":")[2])
 
                             if (bill.rate_id.committion.two_digits) {
-                                commissions[index] += (parseFloat(bill.rate_id.committion.two_digits.top!.toString()) / 100)
-                                commissions[index] += (parseFloat(bill.rate_id.committion.two_digits.bottom!.toString()) / 100)
+                                commissions[index] += (parseFloat(p.split(":")[1]) * parseFloat(bill.rate_id.committion.two_digits.top!.toString()) / 100)
+                                commissions[index] += (parseFloat(p.split(":")[2]) * parseFloat(bill.rate_id.committion.two_digits.bottom!.toString()) / 100)
                             }
                         })
                     }
@@ -73,8 +73,8 @@ export function OrderGroup() {
                             prices[index] += parseInt(p.split(":")[1]) + parseInt(p.split(":")[2])
 
                             if (bill.rate_id.committion.three_digits) {
-                                commissions[index] += (parseFloat(bill.rate_id.committion.three_digits.top!.toString()) / 100)
-                                commissions[index] += (parseFloat(bill.rate_id.committion.three_digits.toad!.toString()) / 100)
+                                commissions[index] += (parseFloat(p.split(":")[1]) * parseFloat(bill.rate_id.committion.three_digits.top!.toString()) / 100)
+                                commissions[index] += (parseFloat(p.split(":")[2]) * parseFloat(bill.rate_id.committion.three_digits.toad!.toString()) / 100)
                             }
                         })
                     }
