@@ -255,16 +255,15 @@ export function BillCheck() {
                 isLoading!.style.display = "none"
                 setIsAddBill(true)
                 dispatch(stateModal({ show: true, openModal: "ADDBILLTRUE", confirm: false }))
+                io.connect()
+                io.emit("create_credit")
+                io.disconnect()
             } else {
                 dispatch(stateModal({ show: true, openModal: "ADDBILLFALSE", confirm: false }))
             }
         }).catch(error => {
             console.log(error)
             dispatch(stateModal({ show: true, openModal: "ADDBILLFALSE", confirm: false }))
-        }).finally(() => {
-            io.connect()
-            io.emit("create_credit")
-            io.disconnect()
         })
     }
 
