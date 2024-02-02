@@ -22,7 +22,6 @@ export function OrderGroup() {
     const [bills, setBills] = useState<IBill[]>([])
     const [price, setPrice] = useState<number[]>([])
     const [commission, setCommission] = useState<number[]>([])
-    const [isTotal, setIsTotal] = useState<number[]>([])
 
 
 
