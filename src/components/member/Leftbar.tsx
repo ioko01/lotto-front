@@ -1,4 +1,4 @@
-import { Route, Routes, useNavigate, useLocation } from "react-router-dom";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import { Home } from "./Home";
 import { Bill } from "./Bill";
 // import { OrderList } from "./OrderList";
@@ -11,15 +11,10 @@ import { BillCheck } from "./BillCheck";
 import { PageNotFound } from "./PageNotFound";
 import { NavLink } from "react-router-dom";
 import { Link } from "./Link";
-import { IUser, IUserDoc } from "../../models/User";
-import axios, { AxiosRequestConfig } from "axios";
+import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../context/AuthContextProvider";
 import { axiosConfig } from "../../utils/headers";
-import { Cookies } from "typescript-cookie";
-import { useAppDispatch, useAppSelector } from "../../redux/hooks";
-import { stateRequest } from "../../redux/features/request/requestSlice";
-import { stateRoute } from "../../redux/features/route/routeSlice";
 import { OrderGroup } from "./OrderGroup";
 import { io } from "../../utils/socket-io";
 
@@ -37,6 +32,7 @@ export function Leftbar() {
         }
     }
     useEffect(() => {
+        setCredit(isUser!.credit.toLocaleString('en-us', { minimumFractionDigits: 2 }))
         io.on("get_credit", () => {
             getCredit()
         })
@@ -99,7 +95,7 @@ export function Leftbar() {
                                 <div className='flex flex-row'>
                                     <li className="flex w-full justify-between text-white font-light items-center">
                                         <span>Balance</span>
-                                        <span>{isUser.credit.toLocaleString('en-us', { minimumFractionDigits: 2 }) ?? credit}</span>
+                                        <span>{credit}</span>
                                     </li>
                                 </div>
 
