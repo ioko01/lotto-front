@@ -119,8 +119,8 @@ export function Bill() {
             document.getElementById("input_digits")!.focus()
         }
     }
-    
-    
+
+
     const addDigitDoubleAndTripleValue = () => {
         if (TWO.includes(digitsType)) {
             setDigitsTemp([...digitsTemp, "00", "11", "22", "33", "44", "55", "66", "77", "88", "99"])
@@ -435,9 +435,10 @@ export function Bill() {
     useEffect(() => {
         io.on("get_digit_close", () => {
             fetchDigitClose()
+            // io.off('get_digit_close')
         })
 
-        io.off('get_digit_close')
+
         initialLotto()
     }, [])
 

@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+
 import { stateModal } from "../../redux/features/modal/modalSlice";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 
@@ -6,11 +6,11 @@ import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 export function ModalNotice() {
     const dispatch = useAppDispatch()
     const modal = useAppSelector(state => state.modal)
-    const navigate = useNavigate()
+    // const navigate = useNavigate()
 
     const returnToHome = () => {
         dispatch(stateModal({ show: false, openModal: modal.openModal }))
-        navigate("/")
+        window.location.href = "/"
     }
 
     return (

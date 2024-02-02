@@ -20,9 +20,10 @@ export const noteSlice = createSlice({
             state.note = notePrice.note
             state.price = notePrice.price
         },
+        deleteNotePrice: (state) => { },
     },
 })
 
-export const { addNotePrice } = noteSlice.actions
+export const { addNotePrice, deleteNotePrice } = noteSlice.actions
 export const selectBill = (state: RootState) => state.notePrice
 export default noteSlice.reducer
