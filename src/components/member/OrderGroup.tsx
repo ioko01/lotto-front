@@ -21,6 +21,7 @@ export function OrderGroup() {
     const [disabledMonth, setDisabledMonth] = useState<boolean>(true)
     const [bills, setBills] = useState<IBill[]>([])
     const [price, setPrice] = useState<number[]>([])
+    const [commission, setCommission] = useState<number[]>([])
     const [isTotal, setIsTotal] = useState<number[]>([])
 
 
@@ -39,54 +40,49 @@ export function OrderGroup() {
             const res = await axios.get(`${import.meta.env.VITE_OPS_URL}/get/bill/me`, axiosConfig)
             if (res && res.status == 200) {
                 const data = res.data as IBill[]
-                let totalPrice: number[] = []
-                let total: number[] = []
+                let prices: number[] = []
+                let commissions: number[] = []
                 setBills(data)
                 data.map((bill, index) => {
                     //price
-                    totalPrice[index] = 0
+                    prices[index] = 0
+                    commissions[index] = 0
                     if (bill.one_digits) {
                         bill.one_digits.map((p) => {
-                            totalPrice[index] += parseInt(p.split(":")[1]) + parseInt(p.split(":")[2])
+                            prices[index] += parseInt(p.split(":")[1]) + parseInt(p.split(":")[2])
+                            if (bill.rate_id.committion.one_digits) {
+                                commissions[index] += (parseFloat(bill.rate_id.committion.one_digits.top!.toString()) / 100)
+                                commissions[index] += (parseFloat(bill.rate_id.committion.one_digits.bottom!.toString()) / 100)
+                            }
                         })
                     }
 
                     if (bill.two_digits) {
                         bill.two_digits.map((p) => {
-                            totalPrice[index] += parseInt(p.split(":")[1]) + parseInt(p.split(":")[2])
+                            prices[index] += parseInt(p.split(":")[1]) + parseInt(p.split(":")[2])
+
+                            if (bill.rate_id.committion.two_digits) {
+                                commissions[index] += (parseFloat(bill.rate_id.committion.two_digits.top!.toString()) / 100)
+                                commissions[index] += (parseFloat(bill.rate_id.committion.two_digits.bottom!.toString()) / 100)
+                            }
                         })
                     }
 
                     if (bill.three_digits) {
                         bill.three_digits.map((p) => {
-                            totalPrice[index] += parseInt(p.split(":")[1]) + parseInt(p.split(":")[2])
+                            prices[index] += parseInt(p.split(":")[1]) + parseInt(p.split(":")[2])
+
+                            if (bill.rate_id.committion.three_digits) {
+                                commissions[index] += (parseFloat(bill.rate_id.committion.three_digits.top!.toString()) / 100)
+                                commissions[index] += (parseFloat(bill.rate_id.committion.three_digits.toad!.toString()) / 100)
+                            }
                         })
                     }
 
                 })
 
-                data.map((bill, index) => {
-                    total[index] = 0
-                    //commission
-                    if (bill.rate_id.committion.one_digits) {
-                        totalPrice[index] -= (parseFloat(bill.rate_id.committion.one_digits.top!.toString()) / 100)
-                        totalPrice[index] -= (parseFloat(bill.rate_id.committion.one_digits.bottom!.toString()) / 100)
-                    }
-                    if (bill.rate_id.committion.two_digits) {
-                        totalPrice[index] -= (parseFloat(bill.rate_id.committion.two_digits.top!.toString()) / 100)
-                        totalPrice[index] -= (parseFloat(bill.rate_id.committion.two_digits.bottom!.toString()) / 100)
-                    }
-                    if (bill.rate_id.committion.three_digits) {
-                        totalPrice[index] -= (parseFloat(bill.rate_id.committion.three_digits.top!.toString()) / 100)
-                        totalPrice[index] -= (parseFloat(bill.rate_id.committion.three_digits.bottom!.toString()) / 100)
-                        totalPrice[index] -= (parseFloat(bill.rate_id.committion.three_digits.toad!.toString()) / 100)
-                    }
-
-                })
-                setPrice(totalPrice)
-                setIsTotal(total)
-                console.log(total);
-                console.log(totalPrice);
+                setPrice(prices)
+                setCommission(commissions)
             }
         } catch (error) {
 
@@ -208,14 +204,14 @@ export function OrderGroup() {
                                     {
                                         bills.map((bill, index) => (
                                             <tr key={index}>
-                                                <td className="border border-slate-300 font-light">{moment(new Date(Object(bill.created_at)['seconds'] * 1000 + Object(bill.created_at)['nanoseconds']).toString()).format("DD-MM-YYYY HH:mm:ss")}</td>
+                                                <td className="border border-slate-300 font-light">{moment(new Date(Object(bill.created_at)['seconds'] * 1000 + Object(bill.created_at)['nanoseconds'])).format("DD-MM-YYYY HH:mm:ss")}</td>
                                                 <td className="border border-slate-300 font-light">{bill.lotto_id.name}</td>
                                                 <td className="border border-slate-300 font-light">{bill.times}</td>
-                                                <td className="border border-slate-300 text-green-600">{isTotal[index]}</td>
-                                                <td className="border border-slate-300">0</td>
-                                                <td className="border border-slate-300 text-red-500">ไม่ถูกรางวัล</td>
+                                                <td className="border border-slate-300 text-green-600">{(price[index] - commission[index]).toFixed(2)}</td>
+                                                <td className="border border-slate-300">{commission[index].toFixed(2)}</td>
+                                                <td className="border border-slate-300 text-red-500">{bill.status == "WAIT" ? "รอผล" : bill.status == "CANCEL" ? "ยกเลิก" : bill.status == "REWARD" && "ไม่ถูกรางวัล"}</td>
                                                 <td className="border border-slate-300 text-red-500">-70</td>
-                                                <td className="border border-slate-300 font-light">พี่อิน</td>
+                                                <td className="border border-slate-300 font-light">{bill.note}</td>
                                                 <td className="border border-slate-300 font-light">
                                                     <div className="flex flex-row justify-around items-center">
                                                         <button className="text-[blue] hover:text-blue-500 hover:bg-gray-100">ดูรายละเอียด</button>

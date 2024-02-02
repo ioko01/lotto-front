@@ -254,15 +254,17 @@ export function BillCheck() {
         isLoading!.style.position = "fixed"
         await axios.post(import.meta.env.VITE_OPS_URL + "/add/bill", BILL, axiosConfig).then(res => {
             if (res.status == 200) {
+                isLoading!.style.display = "none"
                 setIsAddBill(true)
                 dispatch(stateModal({ show: true, openModal: "ADDBILLTRUE", confirm: false }))
+            } else {
+                dispatch(stateModal({ show: true, openModal: "ADDBILLFALSE", confirm: false }))
             }
         }).catch(error => {
             console.log(error)
+            dispatch(stateModal({ show: true, openModal: "ADDBILLFALSE", confirm: false }))
         }).finally(() => {
             // setIsLoading(false)
-            isLoading!.style.display = "none"
-            dispatch(stateModal({ show: true, openModal: "ADDBILLFALSE", confirm: false }))
         })
     }
 
