@@ -28,7 +28,7 @@ export function Home() {
             const res = await axios.get(import.meta.env.VITE_OPS_URL + "/get/lotto/all", axiosConfig)
             const lottos = res.data as ILottoDoc[]
             setLotto(lottos)
-            
+
             if (lottos && res.status == 200) {
                 mapLotto(lottos!)
                 lottos!.map((res) => {
@@ -112,9 +112,11 @@ export function Home() {
     }
 
     const display = () => {
+        const hours = new Date().getHours()
+        const minutes = new Date().getMinutes()
         return lotto!.map((lotto, index) => (
             <div key={index} className="p-2 xl:basis-1/5 lg:basis-1/4 basis-1/3">
-                <Link to={times ? lotto.date!.includes(day[dateNow.getDay()]) && lotto.status == TLottoStatusEnum.OPEN ? `/bill/${lotto.id}` : '#' : '#'} className={`flex flex-col items-center rounded-none shadow-md dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700 ${times ? lotto.date!.includes(day[dateNow.getDay()]) && lotto.status == TLottoStatusEnum.OPEN ? `bg-green-600 text-white` : `bg-gray-300 text-dark` : `bg-gray-300 text-dark`}`}>
+                <Link to={(hours.toString() <= lotto.close.split(":")[0] ? hours.toString() == lotto.close.split(":")[0] ? minutes.toString() < lotto.close.split(":")[1] : true : false) ? times ? lotto.date!.includes(day[dateNow.getDay()]) && lotto.status == TLottoStatusEnum.OPEN ? `/bill/${lotto.id}` : '#' : '#' : '#'} className={`flex flex-col items-center rounded-none shadow-md dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700 ${(hours.toString() <= lotto.close.split(":")[0] ? hours.toString() == lotto.close.split(":")[0] ? minutes.toString() < lotto.close.split(":")[1] : true : false) ? times ? lotto.date!.includes(day[dateNow.getDay()]) && lotto.status == TLottoStatusEnum.OPEN ? `bg-green-600 text-white` : `bg-gray-300 text-dark` : `bg-gray-300 text-dark` : `bg-gray-300 text-dark`}`}>
                     <div className="flex flex-row items-center p-2 w-full">
                         <img style={{ height: 40 }} className="object-cover rounded-none" src={`${image[index]}`} alt={lotto.name} />
                         <div className="flex text-end w-full flex-col justify-between leading-normal">
@@ -135,7 +137,7 @@ export function Home() {
                         </p>
                         <p className="flex justify-between w-full">
                             <span className="font-light">สถานะ</span>
-                            <span className="font-light">{lotto.date!.includes(day[dateNow.getDay()]) && times[index] ? times[index].id == lotto.id && `ปิดรับใน ${times[index]?.hours ?? "00"}:${times[index]?.minutes ?? "00"}:${times[index]?.seconds ?? "00"}` : ''}</span>
+                            <span className="font-light">{(hours.toString() <= lotto.close.split(":")[0] ? hours.toString() == lotto.close.split(":")[0] ? minutes.toString() < lotto.close.split(":")[1] : true : false) ? lotto.date!.includes(day[dateNow.getDay()]) && times[index] ? times[index].id == lotto.id && `ปิดรับใน ${times[index]?.hours ?? "00"}:${times[index]?.minutes ?? "00"}:${times[index]?.seconds ?? "00"}` : '' : ''}</span>
                         </p>
                     </div>
                 </Link>
