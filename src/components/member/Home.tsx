@@ -6,7 +6,6 @@ import { axiosConfig } from "../../utils/headers";
 import { ILotto, TLottoStatusEnum } from "../../models/Lotto";
 import { countdown } from "../../utils/countdown";
 import { Time } from "../../models/Time";
-import { getToken } from "../../utils/token";
 
 export interface ILottoDoc extends ILotto {
     id: string
@@ -29,8 +28,9 @@ export function Home() {
             const res = await axios.get(import.meta.env.VITE_OPS_URL + "/get/lotto/all", axiosConfig)
             const lottos = res.data as ILottoDoc[]
             setLotto(lottos)
-            mapLotto(lottos!)
+            
             if (lottos && res.status == 200) {
+                mapLotto(lottos!)
                 lottos!.map((res) => {
                     const cd = countdown(res.open, res.close)
                     if (cd.days < 0) {
@@ -114,7 +114,7 @@ export function Home() {
     const display = () => {
         return lotto!.map((lotto, index) => (
             <div key={index} className="p-2 xl:basis-1/5 lg:basis-1/4 basis-1/3">
-                <Link to={lotto.date!.includes(day[dateNow.getDay()]) && lotto.status == TLottoStatusEnum.OPEN ? `/bill/${lotto.id}` : '#'} className={`flex flex-col items-center rounded-none shadow-md dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700 ${lotto.date!.includes(day[dateNow.getDay()]) && lotto.status == TLottoStatusEnum.OPEN ? `bg-green-600 text-white` : `bg-gray-300 text-dark`}`}>
+                <Link to={times ? lotto.date!.includes(day[dateNow.getDay()]) && lotto.status == TLottoStatusEnum.OPEN ? `/bill/${lotto.id}` : '#' : '#'} className={`flex flex-col items-center rounded-none shadow-md dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700 ${times ? lotto.date!.includes(day[dateNow.getDay()]) && lotto.status == TLottoStatusEnum.OPEN ? `bg-green-600 text-white` : `bg-gray-300 text-dark` : `bg-gray-300 text-dark`}`}>
                     <div className="flex flex-row items-center p-2 w-full">
                         <img style={{ height: 40 }} className="object-cover rounded-none" src={`${image[index]}`} alt={lotto.name} />
                         <div className="flex text-end w-full flex-col justify-between leading-normal">
