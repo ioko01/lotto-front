@@ -33,17 +33,12 @@ export function Leftbar() {
     }
     useEffect(() => {
         io.on("get_credit", () => {
-            console.log(credit);
             getCredit()
+            // io.off('get_credit')
         })
-
-        io.off('get_credit')
+        getCredit()
     }, [])
 
-    useEffect(() => {
-        setCredit(isUser!.credit.toLocaleString('en-us', { minimumFractionDigits: 2 }))
-
-    }, [isUser])
 
 
     if (isLoading) {

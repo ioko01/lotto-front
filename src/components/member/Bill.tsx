@@ -453,9 +453,10 @@ export function Bill() {
     useEffect(() => {
         io.on("get_digit_close", () => {
             fetchDigitClose()
+            // io.off('get_digit_close')
         })
 
-        io.off('get_digit_close')
+
         initialLotto()
     }, [])
 

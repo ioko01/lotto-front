@@ -1,9 +1,9 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
-import { addBill } from "../../redux/features/bill/billSlice";
+import { addBill, deleteBill } from "../../redux/features/bill/billSlice";
 import { TWO, THREE, ONE, TDigit } from "../../models/Type";
-import { addNotePrice } from "../../redux/features/bill/notePriceSlice";
+import { addNotePrice, deleteNotePrice } from "../../redux/features/bill/notePriceSlice";
 import axios from "axios";
 import { axiosConfig } from "../../utils/headers";
 import { IRate, IRateDoc } from "../../models/Rate";
@@ -16,6 +16,7 @@ import { ModalNotice } from "./ModalNotice";
 import { IBill, IBillInsert } from "../../models/Bill";
 import { AuthContext } from "../../context/AuthContextProvider";
 import { io } from "../../utils/socket-io";
+import { deleteCommission } from "../../redux/features/bill/commissionSlice";
 
 interface Props {
     digit: string
@@ -78,7 +79,7 @@ export function BillCheck() {
     const [isAddBill, setIsAddBill] = useState<boolean>(false)
 
     const modal = useAppSelector(state => state.modal)
-
+    document.getElementById("add_bill")?.focus()
     let newTime: Time;
     const [time, setTime] = useState<Time>()
     const day = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']
@@ -254,6 +255,7 @@ export function BillCheck() {
             if (res.status == 200) {
                 isLoading!.style.display = "none"
                 setIsAddBill(true)
+                // dispatch(deleteBill())
                 dispatch(stateModal({ show: true, openModal: "ADDBILLTRUE", confirm: false }))
                 io.connect()
                 io.emit("create_credit")
@@ -482,7 +484,7 @@ export function BillCheck() {
                                 </div>
                                 <div className="flex justify-center w-full p-2 gap-2">
                                     <button onClick={pagePrev} style={{ minWidth: "60px" }} className="whitespace-nowrap text-xs bg-gray-400 hover:bg-gray-500 text-white font-light p-2 rounded shadow">ย้อนกลับ</button>
-                                    <button onClick={addBillToDatabase} style={{ minWidth: "60px" }} className="whitespace-nowrap text-xs bg-blue-600 hover:bg-blue-500 text-white font-light p-2 rounded shadow">ยืนยัน</button>
+                                    <button id="add_bill" onClick={addBillToDatabase} style={{ minWidth: "60px" }} className="whitespace-nowrap text-xs bg-blue-600 hover:bg-blue-500 text-white font-light p-2 rounded shadow">ยืนยัน</button>
                                 </div>
                             </div>
                         </div>
