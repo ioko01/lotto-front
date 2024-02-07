@@ -48,7 +48,7 @@ function TableBill({ digit, digit_type, index, rate, commission }: Props) {
             <td className="border px-1 font-light">{digit.split(":")[0]}</td>
             <td className="border px-1 font-light">{digit.split(":")[index]}</td>
             <td className="border px-1 font-light">{rate!}</td>
-            <td className="border px-1 font-light">{commission}</td>
+            <td className="border px-1 font-light">{commission.toFixed(2)}</td>
             <td className="border px-1 font-light text-center">
                 {/* <button className="text-xs text-red-600 hover:text-red-400 font-bold p-2 rounded shadow mx-2">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-4 h-4">
@@ -290,8 +290,12 @@ export function BillCheck() {
     const timer = (id: string, open: string, close: string, status: TLottoStatusEnum, amount: number) => {
         if (!billTimeout) {
             const interval = setInterval(() => {
-                const cd = countdown(open, close)
+                const this_hours = new Date().getHours()
+                const this_minutes = new Date().getMinutes()
+                const t = `${this_hours}:${this_minutes}`
 
+                const cd = countdown(open, close, getTomorrow(open, close, t))
+                
                 if (cd.days < 0) {
                     dispatch(stateModal({ show: true, openModal: "TIMEOUT", confirm: false }))
                     setBillTimeout(true)
@@ -313,6 +317,43 @@ export function BillCheck() {
                 setTime(newTime)
                 count++
             }, 1000)
+        }
+    }
+
+    const getTomorrow = (t1: string, t2: string, t3: string) => {
+        //check เวลาปิดน้อยกว่าหรือเท่ากับเวลาเปิด ถ้าน้อยกว่า จะเท่ากับงวด พรุ่งนี้
+        if (t2.split(":")[0] <= t1.split(":")[0]) {
+            // ถ้าเวลาปิด == เวลาเปิด
+            if (t2.split(":")[0] == t1.split(":")[0]) {
+                // ให้เช็ค นาที ปิด น้อยกว่า นาทีเปิด
+                if (t2.split(":")[1] < t1.split(":")[1]) return true
+                return false
+            }
+            return true
+        }
+        return false
+    }
+
+    const getCountdownTime = (t1: string, t2: string, t3: string) => {
+        //check เวลาปิดน้อยกว่าหรือเท่ากับเวลาเปิด ถ้าน้อยกว่า จะเท่ากับงวด พรุ่งนี้
+        if (t2.split(":")[0] <= t1.split(":")[0]) {
+            // ถ้าเวลาปิด == เวลาเปิด
+            if (t2.split(":")[0] == t1.split(":")[0]) {
+                // ให้เช็ค นาที ปิด น้อยกว่า นาทีเปิด
+                if (t2.split(":")[1] < t1.split(":")[1]) return true
+                return false
+            }
+            return true
+        } else {
+            if (t3.split(":")[0] <= t2.split(":")[0]) {
+                if (t3.split(":")[0] == t2.split(":")[0]) {
+                    // ให้เช็ค นาที ปิด น้อยกว่า นาทีเปิด
+                    if (t3.split(":")[1] < t2.split(":")[1]) return true
+                    return false
+                }
+                return true
+            }
+            return false
         }
     }
 

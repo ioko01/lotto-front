@@ -119,8 +119,8 @@ export function Bill() {
             document.getElementById("input_digits")!.focus()
         }
     }
-    
-    
+
+
     const addDigitDoubleAndTripleValue = () => {
         if (TWO.includes(digitsType)) {
             setDigitsTemp([...digitsTemp, "00", "11", "22", "33", "44", "55", "66", "77", "88", "99"])
@@ -405,7 +405,11 @@ export function Bill() {
     const timer = (id: string, open: string, close: string, status: TLottoStatusEnum, amount: number) => {
         if (!billTimeout) {
             const interval = setInterval(() => {
-                const cd = countdown(open, close)
+                const this_hours = new Date().getHours()
+                const this_minutes = new Date().getMinutes()
+                const t = `${this_hours}:${this_minutes}`
+
+                const cd = countdown(open, close, getTomorrow(open, close, t))
 
                 if (cd.days < 0) {
                     dispatch(stateModal({ show: true, openModal: "TIMEOUT", confirm: false }))
@@ -430,6 +434,20 @@ export function Bill() {
                 count++
             }, 1000)
         }
+    }
+
+    const getTomorrow = (t1: string, t2: string, t3: string) => {
+        //check เวลาปิดน้อยกว่าหรือเท่ากับเวลาเปิด ถ้าน้อยกว่า จะเท่ากับงวด พรุ่งนี้
+        if (t2.split(":")[0] <= t1.split(":")[0]) {
+            // ถ้าเวลาปิด == เวลาเปิด
+            if (t2.split(":")[0] == t1.split(":")[0]) {
+                // ให้เช็ค นาที ปิด น้อยกว่า นาทีเปิด
+                if (t2.split(":")[1] < t1.split(":")[1]) return true
+                return false
+            }
+            return true
+        }
+        return false
     }
 
     useEffect(() => {

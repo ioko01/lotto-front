@@ -1,13 +1,19 @@
-export const countdown = (open: string, close: string) => {
+export const countdown = (open: string, close: string, tomorrow = false) => {
     const date = new Date()
+
     let day = date.getDate().toString()
     let month = (date.getMonth() + 1).toString()
     let year = date.getFullYear().toString()
+
+    if (tomorrow) {
+        date.setDate(date.getDate() + 1).toString()
+        day = date.getDate().toString()
+    }
     if (parseInt(month) < 10) month = `0${month}`
     if (parseInt(day) < 10) day = `0${day}`
-    if (parseInt(close.split(":")[0]) < parseInt(open.split(":")[0])) {
-        day = (parseInt(day) + 1).toString()
-    }
+    // if (parseInt(close.split(":")[0]) < parseInt(open.split(":")[0])) {
+    //     day = (parseInt(day) + 1).toString()
+    // }
 
     const closeLotto = new Date(`${year}-${month}-${day}T${close}:00`)
     const now = new Date().getTime();
