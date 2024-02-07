@@ -336,29 +336,6 @@ export function BillCheck() {
         return false
     }
 
-    const getCountdownTime = (t1: string, t2: string, t3: string) => {
-        //check เวลาปิดน้อยกว่าหรือเท่ากับเวลาเปิด ถ้าน้อยกว่า จะเท่ากับงวด พรุ่งนี้
-        if (t2.split(":")[0] <= t1.split(":")[0]) {
-            // ถ้าเวลาปิด == เวลาเปิด
-            if (t2.split(":")[0] == t1.split(":")[0]) {
-                // ให้เช็ค นาที ปิด น้อยกว่า นาทีเปิด
-                if (t2.split(":")[1] < t1.split(":")[1]) return true
-                return false
-            }
-            return true
-        } else {
-            if (t3.split(":")[0] <= t2.split(":")[0]) {
-                if (t3.split(":")[0] == t2.split(":")[0]) {
-                    // ให้เช็ค นาที ปิด น้อยกว่า นาทีเปิด
-                    if (t3.split(":")[1] < t2.split(":")[1]) return true
-                    return false
-                }
-                return true
-            }
-            return false
-        }
-    }
-
     useEffect(() => {
         isLoading!.removeAttribute("style")
         isLoading!.style.position = "fixed"
