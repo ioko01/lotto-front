@@ -438,11 +438,11 @@ export function Bill() {
 
     const getTomorrow = (t1: string, t2: string, t3: string) => {
         //check เวลาปิดน้อยกว่าหรือเท่ากับเวลาเปิด ถ้าน้อยกว่า จะเท่ากับงวด พรุ่งนี้
-        if (t2.split(":")[0] <= t1.split(":")[0]) {
+        if (parseInt(t2.split(":")[0]) <= parseInt(t1.split(":")[0])) {
             // ถ้าเวลาปิด == เวลาเปิด
-            if (t2.split(":")[0] == t1.split(":")[0]) {
+            if (parseInt(t2.split(":")[0]) == parseInt(t1.split(":")[0])) {
                 // ให้เช็ค นาที ปิด น้อยกว่า นาทีเปิด
-                if (t2.split(":")[1] < t1.split(":")[1]) return true
+                if (parseInt(t2.split(":")[1]) < parseInt(t1.split(":")[1])) return true
                 return false
             }
             return true

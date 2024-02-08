@@ -297,7 +297,7 @@ export function BillCheck() {
                 const t = `${this_hours}:${this_minutes}`
 
                 const cd = countdown(open, close, getTomorrow(open, close, t))
-                
+
                 if (cd.days < 0) {
                     dispatch(stateModal({ show: true, openModal: "TIMEOUT", confirm: false }))
                     setBillTimeout(true)
@@ -324,11 +324,11 @@ export function BillCheck() {
 
     const getTomorrow = (t1: string, t2: string, t3: string) => {
         //check เวลาปิดน้อยกว่าหรือเท่ากับเวลาเปิด ถ้าน้อยกว่า จะเท่ากับงวด พรุ่งนี้
-        if (t2.split(":")[0] <= t1.split(":")[0]) {
+        if (parseInt(t2.split(":")[0]) <= parseInt(t1.split(":")[0])) {
             // ถ้าเวลาปิด == เวลาเปิด
-            if (t2.split(":")[0] == t1.split(":")[0]) {
+            if (parseInt(t2.split(":")[0]) == parseInt(t1.split(":")[0])) {
                 // ให้เช็ค นาที ปิด น้อยกว่า นาทีเปิด
-                if (t2.split(":")[1] < t1.split(":")[1]) return true
+                if (parseInt(t2.split(":")[1]) < parseInt(t1.split(":")[1])) return true
                 return false
             }
             return true
@@ -359,24 +359,21 @@ export function BillCheck() {
     const totalPrice = notePrice.price.reduce((price, current) => {
         let commission = 0
         bills.map(bill => {
-            if (ONE.includes(bill.digit_type)) {
-                bill.digit.map((digit) => {
-                    commission += (parseFloat(digit.split(":")[1]) / 100) * parseFloat(commissions.one_digits.top!.toString())
-                    commission += (parseFloat(digit.split(":")[1]) / 100) * parseFloat(commissions.one_digits.bottom!.toString())
-                })
-            } else if (TWO.includes(bill.digit_type)) {
-                bill.digit.map((digit) => {
-                    commission += (parseFloat(digit.split(":")[1]) / 100) * parseFloat(commissions.two_digits.top!.toString())
-                    commission += (parseFloat(digit.split(":")[1]) / 100) * parseFloat(commissions.two_digits.top!.toString())
-                })
-            } else if (THREE.includes(bill.digit_type)) {
-                bill.digit.map((digit) => {
-                    commission += (parseFloat(digit.split(":")[1]) / 100) * parseFloat(commissions.three_digits.top!.toString())
-                    commission += (parseFloat(digit.split(":")[1]) / 100) * parseFloat(commissions.three_digits.toad!.toString())
-                })
-            }
+            bill.digit.map(digit => {
+                let top = parseFloat(digit.split(":")[1]) / 100
+                let bottom = parseFloat(digit.split(":")[2]) / 100
+                if (ONE.includes(bill.digit_type)) {
+                    commission += top * parseFloat(commissions.one_digits.top!.toString())
+                    commission += bottom * parseFloat(commissions.one_digits.bottom!.toString())
+                } else if (TWO.includes(bill.digit_type)) {
+                    commission += top * parseFloat(commissions.two_digits.top!.toString())
+                    commission += bottom * parseFloat(commissions.two_digits.bottom!.toString())
+                } else if (THREE.includes(bill.digit_type)) {
+                    commission += top * parseFloat(commissions.three_digits.top!.toString())
+                    commission += bottom * parseFloat(commissions.three_digits.toad!.toString())
+                }
+            })
         })
-
         return price + current - commission
     }, 0)
 
