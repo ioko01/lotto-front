@@ -1,24 +1,9 @@
 import { Route, Routes, useNavigate, useLocation } from "react-router-dom";
-import { Home } from "../member/Home";
-import { Bill } from "../member/Bill";
-// import { OrderList } from "./OrderList";
-// import { OrderGroup } from "./OrderGroup";
-import { Report } from "../member/Report";
-import { Reward } from "../member/Reward";
-import { Rule } from "../member/Rule";
-import { Howto } from "../member/Howto";
-import { BillCheck } from "../member/BillCheck";
-import { PageNotFound } from "../member/PageNotFound";
 import { NavLink } from "react-router-dom";
-import { Link } from "../member/Link";
-import { IUser } from "../../models/User";
 import axios from "axios";
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContextProvider";
 import { axiosConfig } from "../../utils/headers";
-import { Cookies } from "typescript-cookie";
-import { useAppDispatch, useAppSelector } from "../../redux/hooks";
-import { stateRoute } from "../../redux/features/route/routeSlice";
 import { io } from "../../utils/socket-io";
 import ManageUser from "./ManageUser";
 import { Dashboard } from "./Dashboard";
@@ -31,10 +16,7 @@ export function LeftbarAdmin() {
     const { isUser, status, logout } = useContext(AuthContext)
     const navigate = useNavigate()
     const isLoading = document.getElementById("loading")
-    const dispatch = useAppDispatch()
-    const route = useAppSelector(state => state.route)
     const location = useLocation()
-    const [isRoute, setIsRoute] = useState("")
 
 
     if (isLoading) {

@@ -1,8 +1,6 @@
 import { Route, Routes, useNavigate } from "react-router-dom";
 import { Home } from "./Home";
 import { Bill } from "./Bill";
-// import { OrderList } from "./OrderList";
-// import { OrderGroup } from "./OrderGroup";
 import { Report } from "./Report";
 import { Reward } from "./Reward";
 import { Rule } from "./Rule";

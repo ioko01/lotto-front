@@ -3,18 +3,16 @@ import { stateModal } from '../../redux/features/modal/modalSlice'
 import { useDispatch } from 'react-redux'
 import { Modal } from '../modal/Modal'
 import { io } from '../../utils/socket-io'
-import { useAppSelector } from '../../redux/hooks'
 import axios from 'axios'
 import { axiosConfig } from '../../utils/headers'
 import { IStore } from '../../models/Store'
-import { IUser, TUserRoleEnum } from '../../models/User'
+import { TUserRoleEnum } from '../../models/User'
+import { IUserDoc } from '../../models/Id'
 
 type Props = {}
 
 const ManageStores = (props: Props) => {
-    interface IUserDoc extends IUser {
-        id: string
-    }
+
     const dispatch = useDispatch()
     const [storesAll, setStoresAll] = useState<IStore[]>([])
     const [userAgentAll, setUserAgentAll] = useState<IUserDoc[]>([])

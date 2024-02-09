@@ -1,12 +1,7 @@
 import { ICommission } from "./Commission";
 import { IDigitPosition } from "./DigitPosition";
-import { ILottoDoc } from "./Lotto";
+import { ILottoDoc, IStoreDoc } from "./Id";
 import { IInitialState } from "./Main";
-import { IStoreDoc } from "./Store";
-
-export interface IRateDoc extends IRate {
-    id: string
-}
 
 export interface IRate extends IInitialState {
     store_id: IStoreDoc //ไอดีร้าน

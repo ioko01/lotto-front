@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { stateModal } from "../../redux/features/modal/modalSlice";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 

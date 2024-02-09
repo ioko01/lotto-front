@@ -1,22 +1,20 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
-import { addBill, deleteBill } from "../../redux/features/bill/billSlice";
+import { addBill } from "../../redux/features/bill/billSlice";
 import { TWO, THREE, ONE, TDigit } from "../../models/Type";
-import { addNotePrice, deleteNotePrice } from "../../redux/features/bill/notePriceSlice";
+import { addNotePrice } from "../../redux/features/bill/notePriceSlice";
 import axios from "axios";
 import { axiosConfig } from "../../utils/headers";
-import { IRate, IRateDoc } from "../../models/Rate";
-import { ILottoDoc } from "./Home";
 import { ILotto, TLottoStatusEnum } from "../../models/Lotto";
 import { countdown } from "../../utils/countdown";
 import { Time } from "../../models/Time";
 import { stateModal } from "../../redux/features/modal/modalSlice";
 import { ModalNotice } from "./ModalNotice";
-import { IBill, IBillInsert } from "../../models/Bill";
+import { IBill } from "../../models/Bill";
 import { AuthContext } from "../../context/AuthContextProvider";
 import { io } from "../../utils/socket-io";
-import { deleteCommission } from "../../redux/features/bill/commissionSlice";
+import { ILottoDoc, IRateDoc } from "../../models/Id";
 
 interface Props {
     digit: string

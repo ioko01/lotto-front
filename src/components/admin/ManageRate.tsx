@@ -1,25 +1,16 @@
 import axios from 'axios'
 import React, { useEffect, useRef, useState } from 'react'
 import { axiosConfig } from '../../utils/headers'
-import { io } from '../../utils/socket-io'
-import { IUser, IUserDoc, TUserRoleEnum, TUserStatusEnum } from '../../models/User'
-import { useAppDispatch, useAppSelector } from '../../redux/hooks'
+import { useAppDispatch } from '../../redux/hooks'
 import { stateModal } from '../../redux/features/modal/modalSlice'
 import { Modal } from '../modal/Modal'
-import { TUserRole } from '../../models/User'
-import { IStore } from '../../models/Store'
-import { ILottoDoc } from '../member/Home'
 import { IRate } from '../../models/Rate'
+import { ILottoDoc, IStoreDoc } from '../../models/Id'
 
 type Props = {}
 
-interface IStoreDoc extends IStore {
-    id: string
-}
-
 const ManageRate = (props: Props) => {
     const [ratesAll, setRatesAll] = useState<IRate[]>([])
-    const modal = useAppSelector(state => state.modal)
     const dispatch = useAppDispatch()
     const [store, setStore] = useState<string>("")
     const [lotto, setLotto] = useState<string>("")

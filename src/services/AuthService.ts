@@ -1,8 +1,4 @@
 import axios, { AxiosRequestConfig } from 'axios';
-import { useContext } from 'react';
-import { AuthContext } from '../context/AuthContextProvider';
-import { axiosConfig } from '../utils/headers';
-import { IUser } from '../models/User';
 
 const API_URL = import.meta.env.VITE_OPS_URL; // Replace with your API URL
 

@@ -11,10 +11,6 @@ export enum TLottoDateEnum {
     THAI = "THAI",
 }
 
-export interface ILottoDoc extends ILotto {
-    id: string
-}
-
 export interface ILotto extends IInitialState {
     name: string //ชื่อหวย
     img_flag: string //สัญลักษณ์หวย(ธง)
@@ -25,4 +21,5 @@ export interface ILotto extends IInitialState {
     date_type: TLottoDate //ชนิดวันหวยออก
     date?: string[] // วันเปิดรับ
     thai_open_date?: string // วันหวยออกของไทย
+    api?: string
 }

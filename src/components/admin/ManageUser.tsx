@@ -2,22 +2,17 @@ import axios from 'axios'
 import React, { useEffect, useRef, useState } from 'react'
 import { axiosConfig } from '../../utils/headers'
 import { io } from '../../utils/socket-io'
-import { IUser, IUserDoc, TUserRoleEnum, TUserStatusEnum } from '../../models/User'
+import { IUser, TUserRoleEnum, TUserStatusEnum } from '../../models/User'
 import { useAppDispatch, useAppSelector } from '../../redux/hooks'
 import { stateModal } from '../../redux/features/modal/modalSlice'
 import { Modal } from '../modal/Modal'
 import { TUserRole } from '../../models/User'
-import { IStore } from '../../models/Store'
+import { IStoreDoc, IUserDoc } from '../../models/Id'
 
 type Props = {}
 
-interface IStoreDoc extends IStore {
-  id: string
-}
-
 const ManageUser = (props: Props) => {
   const [usersAll, setUsersAll] = useState<IUser[]>([])
-  const modal = useAppSelector(state => state.modal)
   const dispatch = useAppDispatch()
   const [role, setRole] = useState<TUserRole>("AGENT")
   const [storesAll, setStoresAll] = useState<IStoreDoc[]>([])

@@ -2,23 +2,15 @@ import React, { useEffect, useRef, useState } from 'react'
 import { stateModal } from '../../redux/features/modal/modalSlice'
 import { useDispatch } from 'react-redux'
 import { Modal } from '../modal/Modal'
-import { io } from '../../utils/socket-io'
-import { useAppSelector } from '../../redux/hooks'
-import axios, { AxiosRequestConfig } from 'axios'
+import axios from 'axios'
 import { axiosConfig } from '../../utils/headers'
-import { IStore } from '../../models/Store'
-import { IUser, TUserRoleEnum } from '../../models/User'
 import { ILotto, TLottoDate, TLottoDateEnum, TLottoStatusEnum } from '../../models/Lotto'
-import { getToken } from '../../utils/token'
 
 type Props = {}
 
 const ManageLotto = (props: Props) => {
-    interface IUserDoc extends IUser {
-        id: string
-    }
+
     const dispatch = useDispatch()
-    const [storesAll, setStoresAll] = useState<IStore[]>([])
     const [date, setDate] = useState<TLottoDate>(TLottoDateEnum.SELECT_DATE)
     const [currentFile, setCurrentFile] = useState<File>()
     const openHoursRef = useRef<HTMLSelectElement>(null);
@@ -30,6 +22,7 @@ const ManageLotto = (props: Props) => {
     const thaiOpenRef = useRef<HTMLSelectElement>(null);
     const dateRef = useRef<HTMLSelectElement>(null);
     const lottoNameRef = useRef<HTMLInputElement>(null);
+    const lottoApiRef = useRef<HTMLInputElement>(null);
     const isLoading = document.getElementById("loading")
 
     const [daysValue, setDaysValue] = useState<string[]>([]);
@@ -114,6 +107,10 @@ const ManageLotto = (props: Props) => {
             status: TLottoStatusEnum.OPEN,
             date_type: date,
             img_flag: currentFile!.name.trim()
+        }
+
+        if (reportHoursRef.current!.value) {
+            Object.assign(lotto, { api: lottoNameRef.current!.value })
         }
 
         axios.post(`${import.meta.env.VITE_OPS_URL}/add/lotto`, lotto, axiosConfig).then((res) => {
@@ -314,6 +311,10 @@ const ManageLotto = (props: Props) => {
                                                 ))}
                                             </select>
                                         </div>
+                                    </div>
+                                    <div>
+                                        <label htmlFor="lotto_api" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Link API</label>
+                                        <input ref={lottoApiRef} type="text" name="lotto_api" id="lotto_api" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Link API" />
                                     </div>
                                     <button type="submit" disabled={!currentFile} onClick={addLotto} className={(!currentFile ? 'bg-gray-300 text-gray-500 ' : 'bg-blue-600 hover:bg-blue-700 ') + "w-full text-white focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"}>เพิ่มหวย</button>
                                 </form>

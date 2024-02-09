@@ -9,7 +9,6 @@ import { INote, addNotePrice } from "../../redux/features/bill/notePriceSlice";
 import { AuthContext } from "../../context/AuthContextProvider";
 import axios from "axios";
 import { axiosConfig } from "../../utils/headers";
-import { ILottoDoc } from "./Home";
 import { IDigitClose } from "../../models/DigitClose";
 import { io } from "../../utils/socket-io";
 import { ILotto, TLottoStatusEnum } from "../../models/Lotto";
@@ -20,6 +19,7 @@ import { IRate } from "../../models/Rate";
 import { ICommission } from "../../models/Commission";
 import { addCommission } from "../../redux/features/bill/commissionSlice";
 import { ModalNotice } from "./ModalNotice";
+import { ILottoDoc } from "../../models/Id";
 
 function isMobile() {
     return navigator.userAgent.match(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i);

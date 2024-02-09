@@ -6,10 +6,7 @@ import { axiosConfig } from "../../utils/headers";
 import { ILotto, TLottoStatusEnum } from "../../models/Lotto";
 import { countdown } from "../../utils/countdown";
 import { Time } from "../../models/Time";
-
-export interface ILottoDoc extends ILotto {
-    id: string
-}
+import { ILottoDoc } from "../../models/Id";
 
 export function Home() {
     const { isUser } = useContext(AuthContext)

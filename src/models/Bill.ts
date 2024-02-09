@@ -1,13 +1,8 @@
-import { ILotto, ILottoDoc } from "./Lotto";
+
+import { ILottoDoc, IRateDoc, IStoreDoc } from "./Id";
 import { IInitialState } from "./Main";
-import { IRate, IRateDoc } from "./Rate";
-import { IStore, IStoreDoc } from "./Store";
 
 export type TBillStatus = "WAIT" | "CANCEL" | "REWARD"
-
-export interface IBillDoc extends IBill {
-    id: string
-}
 
 export interface IBillInsert extends IInitialState {
     store_id: string //ไอดีร้าน

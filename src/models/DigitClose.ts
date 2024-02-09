@@ -1,12 +1,6 @@
 import { IDigitPosition } from "./DigitPosition";
-import { ILottoDoc } from "./Lotto";
+import { ILottoDoc, IRateDoc, IStoreDoc } from "./Id";
 import { IInitialState } from "./Main";
-import { IRateDoc } from "./Rate";
-import { IStoreDoc } from "./Store";
-
-export interface IDigitCloseDoc extends IDigitClose {
-    id: string
-}
 
 export interface IDigitClose extends IInitialState {
     store_id: IStoreDoc //ไอดีร้าน
