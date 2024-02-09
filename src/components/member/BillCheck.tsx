@@ -356,26 +356,28 @@ export function BillCheck() {
 
     }, [bills, notePrice])
 
-    const totalPrice = notePrice.price.reduce((price, current) => {
+    const totalPrice = notePrice.price.reduce((price, current) => price + current, 0)
+
+    function getCommission() {
         let commission = 0
         bills.map(bill => {
             bill.digit.map(digit => {
                 let top = parseFloat(digit.split(":")[1]) / 100
                 let bottom = parseFloat(digit.split(":")[2]) / 100
                 if (ONE.includes(bill.digit_type)) {
-                    commission += top * parseFloat(commissions.one_digits.top!.toString())
-                    commission += bottom * parseFloat(commissions.one_digits.bottom!.toString())
+                    commission += parseFloat((top * parseInt(commissions.one_digits.top!.toString())).toFixed(2))
+                    commission += parseFloat((bottom * parseInt(commissions.one_digits.bottom!.toString())).toFixed(2))
                 } else if (TWO.includes(bill.digit_type)) {
-                    commission += top * parseFloat(commissions.two_digits.top!.toString())
-                    commission += bottom * parseFloat(commissions.two_digits.bottom!.toString())
+                    commission += parseFloat((top * parseInt(commissions.two_digits.top!.toString())).toFixed(2))
+                    commission += parseFloat((bottom * parseInt(commissions.two_digits.bottom!.toString())).toFixed(2))
                 } else if (THREE.includes(bill.digit_type)) {
-                    commission += top * parseFloat(commissions.three_digits.top!.toString())
-                    commission += bottom * parseFloat(commissions.three_digits.toad!.toString())
+                    commission += parseFloat((top * parseInt(commissions.three_digits.top!.toString())).toFixed(2))
+                    commission += parseFloat((bottom * parseInt(commissions.three_digits.toad!.toString())).toFixed(2))
                 }
             })
         })
-        return price + current - commission
-    }, 0)
+        return commission
+    }
 
     return (
         rate! ? <>
@@ -452,9 +454,17 @@ export function BillCheck() {
                                 <div className="flex justify-center w-full p-2 gap-2">
                                     <span>หมายเหตุ: {notePrice.note}</span>
                                 </div>
-                                <div className="flex justify-center w-full p-2 gap-2">
+                                <div className="flex justify-center w-full gap-2">
+                                    <span>ยอดเดิมพัน:</span>
+                                    <span>{totalPrice.toFixed(2)} บาท</span>
+                                </div>
+                                <div className="flex justify-center w-full gap-2 text-red-500">
+                                    <span>ส่วนลด:</span>
+                                    <span>{getCommission().toFixed(2)} บาท</span>
+                                </div>
+                                <div className="flex justify-center w-full gap-2">
                                     <span>รวม:</span>
-                                    <span>{totalPrice} บาท</span>
+                                    <span>{(totalPrice - getCommission()).toFixed(2)} บาท</span>
                                 </div>
                                 <div className="flex justify-center w-full p-2 gap-2">
                                     <button onClick={pagePrev} style={{ minWidth: "60px" }} className="whitespace-nowrap text-xs bg-gray-400 hover:bg-gray-500 text-white font-light p-2 rounded shadow">ย้อนกลับ</button>
