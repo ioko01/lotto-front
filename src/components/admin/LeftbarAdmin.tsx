@@ -25,6 +25,7 @@ import { Dashboard } from "./Dashboard";
 import ManageStores from "./ManageStores";
 import ManageLotto from "./ManageLotto";
 import ManageRate from "./ManageRate";
+import ManageReward from "./ManageReward";
 
 export function LeftbarAdmin() {
     const { isUser, status, logout } = useContext(AuthContext)
@@ -135,13 +136,13 @@ export function LeftbarAdmin() {
                             </button>
                             <ul id="lotto-list" className={"py-2 space-y-2" + (location.pathname.split("/")[1] !== "lottos" && " hidden")}>
                                 <li>
-                                    <NavLink to={"lottos/manage"} className={({ isActive }) => "flex items-center w-full p-2 text-base font-normal text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700" + (isActive && " text-blue-600")}>รายการหวยทั้งหมด</NavLink>
+                                    <NavLink to={"lottos/manage"} className={({ isActive }) => "flex items-center w-full p-2 text-base font-normal transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700" + (isActive ? " text-blue-600" : " text-gray-900")}>รายการหวยทั้งหมด</NavLink>
                                 </li>
                                 <li>
-                                    <a href="#" onClick={addDigitClose} className="flex items-center w-full p-2 text-base font-normal text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">จัดการรายการหวย</a>
+                                    <a href="#" onClick={addDigitClose} className="flex items-center w-full p-2 text-base font-normal transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">จัดการรายการหวย</a>
                                 </li>
                                 <li>
-                                    <NavLink to={"rates/manage"} onClick={addDigitClose} className={({ isActive }) => "flex items-center w-full p-2 text-base font-normal text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700" + (isActive && " text-blue-600")}>เรทการจ่าย</NavLink>
+                                    <NavLink to={"lottos/rates/manage"} onClick={addDigitClose} className={({ isActive }) => "flex items-center w-full p-2 text-base font-normal transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700" + (isActive ? " text-blue-600" : " text-gray-900")}>เรทการจ่าย</NavLink>
                                 </li>
                             </ul>
                         </li>
@@ -168,7 +169,7 @@ export function LeftbarAdmin() {
                                     <a href="#" className="flex items-center w-full p-2 text-base font-normal text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">รายงานยอดสุทธิ</a>
                                 </li>
                                 <li>
-                                    <a href="#" className="flex items-center w-full p-2 text-base font-normal text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">ตรวจรางวัล</a>
+                                    <NavLink to={"summary/reward/manage"} className={({ isActive }) => "flex items-center w-full p-2 text-base font-normal transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700" + (isActive ? " text-blue-600" : " text-gray-900")}>ตรวจรางวัล</NavLink>
                                 </li>
                             </ul>
                         </li>
@@ -190,7 +191,8 @@ export function LeftbarAdmin() {
                         <Route path="/users/manage" element={<ManageUser />} />
                         <Route path="/lottos/manage" element={<ManageLotto />} />
                         <Route path="/stores/manage" element={<ManageStores />} />
-                        <Route path="/rates/manage" element={<ManageRate />} />
+                        <Route path="/lottos/rates/manage" element={<ManageRate />} />
+                        <Route path="/summary/reward/manage" element={<ManageReward />} />
                     </Routes>
                 </div>
             </div>
