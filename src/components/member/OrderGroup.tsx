@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Datepicker from "react-tailwindcss-datepicker";
 import { IBill } from "../../models/Bill";
 import axios from "axios";
@@ -10,11 +10,13 @@ type TypeDate = {
     endDate: string | Date | null
 } | null
 
+type TDate = "TODAY" | "YESTERDAY" | "THIS_WEEK" | "LAST_WEEK" | "MONTH" | "SELECT_DATE"
+
 export function OrderGroup() {
 
     const [isDate, setDate] = useState<TypeDate>({
         startDate: new Date(),
-        endDate: new Date().setMonth(11).toString()
+        endDate: new Date()
     });
 
     const [disabledDatepicker, setDisabledDatepicker] = useState<boolean>(true)
@@ -34,9 +36,64 @@ export function OrderGroup() {
         setDisabledDatepicker(disabledDatePicker)
     }
 
+    const selectDateType = (date: TDate) => {
+        const thisDateStart = new Date()
+        const thisDateEnd = new Date()
+        let start = new Date()
+        let end = new Date()
+
+        if (date == "TODAY") {
+            start = thisDateStart
+            end = thisDateEnd
+        }
+
+        if (date == "YESTERDAY") {
+            thisDateStart.setDate(thisDateStart.getDate() - 1).toString()
+            thisDateEnd.setDate(thisDateEnd.getDate() - 1).toString()
+
+            start = thisDateStart
+            end = thisDateEnd
+        }
+
+        if (date == "THIS_WEEK") {
+            start = thisDateStart
+
+            thisDateEnd.setDate(thisDateEnd.getDate() - thisDateEnd.getDay() + 1).toString()
+            end = thisDateEnd
+        }
+
+        if (date == "LAST_WEEK") {
+            thisDateStart.setDate(thisDateStart.getDate() - thisDateStart.getDay() - 7).toString()
+            start = thisDateStart
+
+            thisDateEnd.setDate(thisDateEnd.getDate() - thisDateEnd.getDay()).toString()
+            end = thisDateEnd
+        }
+
+        if (date == "MONTH") {
+
+        }
+
+        if (date == "SELECT_DATE") {
+
+        }
+
+        setDate({
+            startDate: start,
+            endDate: end
+        })
+    }
+
     const fetchBills = async () => {
         try {
-            const res = await axios.get(`${import.meta.env.VITE_OPS_URL}/get/bill/me`, axiosConfig)
+            const start = new Date(isDate!.startDate!)
+            const end = new Date(isDate!.endDate!)
+
+            const ds = `${start.getDate()}-${start.getMonth() + 1}-${start.getFullYear()}`
+            end.setDate(end.getDate() + 1)
+            const de = `${end.getDate()}-${end.getMonth() + 1}-${end.getFullYear()}`
+
+            const res = await axios.get(`${import.meta.env.VITE_OPS_URL}/get/bill/me/${ds}/${de}`, axiosConfig)
             if (res && res.status == 200) {
                 const data = res.data as IBill[]
                 let prices: number[] = []
@@ -104,26 +161,26 @@ export function OrderGroup() {
                         <strong>ตัวเลือกการค้นหา</strong>
                         <div className="flex flex-row mt-3">
                             <div className="flex items-center mr-10">
-                                <input onChange={() => toggleDisabled(true, true)} defaultChecked id="today" type="radio" name="order_filter" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+                                <input onChange={() => { toggleDisabled(true, true); selectDateType("TODAY"); }} defaultChecked id="today" type="radio" name="order_filter" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
                                 <label htmlFor="today" className="font-bold ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">วันนี้</label>
                             </div>
                             <div className="flex items-center mr-10">
-                                <input onChange={() => toggleDisabled(true, true)} id="yesterday" type="radio" name="order_filter" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+                                <input onChange={() => { toggleDisabled(true, true); selectDateType("YESTERDAY"); }} id="yesterday" type="radio" name="order_filter" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
                                 <label htmlFor="yesterday" className="font-bold ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">เมื่อวาน</label>
                             </div>
                             <div className="flex items-center mr-10">
-                                <input onChange={() => toggleDisabled(true, true)} id="weeked" type="radio" name="order_filter" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+                                <input onChange={() => { toggleDisabled(true, true); selectDateType("THIS_WEEK"); }} id="weeked" type="radio" name="order_filter" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
                                 <label htmlFor="weeked" className="font-bold ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">สัปดาห์นี้</label>
                             </div>
                             <div className="flex items-center mr-10">
-                                <input onChange={() => toggleDisabled(true, true)} id="last_week" type="radio" name="order_filter" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+                                <input onChange={() => { toggleDisabled(true, true); selectDateType("LAST_WEEK"); }} id="last_week" type="radio" name="order_filter" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
                                 <label htmlFor="last_week" className="font-bold ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">สัปดาห์ที่แล้ว</label>
                             </div>
                         </div>
 
                         <div className="flex flex-row mt-3">
                             <div style={{ width: "90px" }} className="flex items-center">
-                                <input onChange={() => toggleDisabled(false, true)} id="month" type="radio" name="order_filter" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+                                <input onChange={() => { toggleDisabled(false, true); selectDateType("MONTH"); }} id="month" type="radio" name="order_filter" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
                                 <label htmlFor="month" className="font-bold ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">เดือน</label>
                             </div>
                             <div className="flex items-center mr-6">
@@ -148,7 +205,7 @@ export function OrderGroup() {
 
                         <div className="flex flex-row mt-3 whitespace-nowrap w-full">
                             <div style={{ width: "90px" }} className="flex items-center">
-                                <input onChange={() => toggleDisabled(true, false)} id="custom_date" type="radio" name="order_filter" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+                                <input onChange={() => { toggleDisabled(true, false); selectDateType("SELECT_DATE"); }} id="custom_date" type="radio" name="order_filter" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
                                 <label htmlFor="custom_date" className="font-bold ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">เลือกวันที่</label>
                             </div>
                             <div style={{ width: "320px" }} className="border rounded-lg">
@@ -176,7 +233,7 @@ export function OrderGroup() {
                         </div>
 
                         <div className="flex flex-row mt-3">
-                            <button className="inline-flex font-bold text-xs bg-blue-800 hover:bg-blue-700 text-white font-light p-2 px-4 rounded-md shadow">
+                            <button onClick={fetchBills} className="inline-flex font-bold text-xs bg-blue-800 hover:bg-blue-700 text-white font-light p-2 px-4 rounded-md shadow">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-4 h-4">
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
                                 </svg>
