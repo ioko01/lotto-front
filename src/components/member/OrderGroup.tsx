@@ -36,7 +36,7 @@ export function OrderGroup() {
         setDisabledDatepicker(disabledDatePicker)
     }
 
-    const selectDateType = (date: TDate) => {
+    const selectDateType = (date: TDate, month: number = 0) => {
         const thisDateStart = new Date()
         const thisDateEnd = new Date()
         let start = new Date()
@@ -56,9 +56,9 @@ export function OrderGroup() {
         }
 
         if (date == "THIS_WEEK") {
+            thisDateStart.setDate(thisDateStart.getDate() - thisDateStart.getDay() + 1).toString()
             start = thisDateStart
 
-            thisDateEnd.setDate(thisDateEnd.getDate() - thisDateEnd.getDay() + 1).toString()
             end = thisDateEnd
         }
 
@@ -71,11 +71,18 @@ export function OrderGroup() {
         }
 
         if (date == "MONTH") {
+            thisDateStart.setDate(1).toString()
+            thisDateStart.setMonth(month - 1)
+            start = thisDateStart
+
+            thisDateEnd.setMonth(month, 0)
+            end = thisDateEnd
 
         }
 
         if (date == "SELECT_DATE") {
-
+            start = new Date(isDate!.startDate!)
+            end = new Date(isDate!.endDate!)
         }
 
         setDate({
@@ -90,7 +97,6 @@ export function OrderGroup() {
             const end = new Date(isDate!.endDate!)
 
             const ds = `${start.getDate()}-${start.getMonth() + 1}-${start.getFullYear()}`
-            end.setDate(end.getDate() + 1)
             const de = `${end.getDate()}-${end.getMonth() + 1}-${end.getFullYear()}`
 
             const res = await axios.get(`${import.meta.env.VITE_OPS_URL}/get/bill/me/${ds}/${de}`, axiosConfig)
@@ -185,7 +191,7 @@ export function OrderGroup() {
                             </div>
                             <div className="flex items-center mr-6">
                                 <label htmlFor="select_month" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"></label>
-                                <select style={{ width: "320px" }} disabled={disabledMonth} id="select_month" className="text-center transition-all duration-300 py-2.5 w-full border border-gray-300 dark:bg-slate-800 dark:text-white/80 dark:border-slate-600 rounded-lg tracking-wide font-light text-sm placeholder-gray-400 bg-white focus:ring disabled:opacity-40 disabled:cursor-not-allowed focus:border-indigo-500 focus:ring-indigo-500/20">
+                                <select onChange={(e) => { selectDateType("MONTH", parseInt(e.currentTarget.value)) }} style={{ width: "320px" }} disabled={disabledMonth} id="select_month" className="text-center transition-all duration-300 py-2.5 w-full border border-gray-300 dark:bg-slate-800 dark:text-white/80 dark:border-slate-600 rounded-lg tracking-wide font-light text-sm placeholder-gray-400 bg-white focus:ring disabled:opacity-40 disabled:cursor-not-allowed focus:border-indigo-500 focus:ring-indigo-500/20">
                                     <option className="font-normal">-- เลือกเดือน --</option>
                                     <option value="1" className="font-normal">มกราคม</option>
                                     <option value="2" className="font-normal">กุมภาพันธ์</option>
