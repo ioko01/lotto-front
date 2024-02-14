@@ -6,11 +6,9 @@ import React, {
     useEffect,
 } from 'react'
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios'
-import { axiosConfig } from '../utils/headers'
-import { IUser, IUserDoc } from '../models/User'
+import { IUser } from '../models/User'
 import { getToken } from '../utils/token'
 import { AuthService, UserCredentials } from '../services/AuthService'
-import { IToken } from '../models/Token'
 
 export interface AuthProviderProps {
     children?: ReactNode
