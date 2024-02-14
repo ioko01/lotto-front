@@ -163,8 +163,6 @@ export function BillCheck() {
             three_digits: digitThree,
             note: notePrice?.note,
             status: "WAIT",
-            created_at: new Date(),
-            updated_at: new Date(),
         }
 
         isLoading!.removeAttribute("style")
@@ -184,6 +182,7 @@ export function BillCheck() {
         }).catch(error => {
             console.log(error)
             dispatch(stateModal({ show: true, openModal: "ADDBILLFALSE", confirm: false }))
+            console.log(error);
         })
     }
 

@@ -266,7 +266,7 @@ export function OrderGroup() {
                                     {
                                         bills.map((bill, index) => (
                                             <tr key={index}>
-                                                <td className="border border-slate-300 font-light">{moment(new Date(Object(bill.created_at)['seconds'] * 1000 + Object(bill.created_at)['nanoseconds'])).format("DD-MM-YYYY HH:mm:ss")}</td>
+                                                <td className="border border-slate-300 font-light">{moment(new Date(Object(bill.created_at)['seconds'] * 1000 + Object(bill.created_at)['nanoseconds'] / 1000)).format("DD-MM-YYYY HH:mm:ss")}</td>
                                                 <td className="border border-slate-300 font-light">{bill.lotto_id.name}</td>
                                                 <td className="border border-slate-300 font-light">{bill.times}</td>
                                                 <td className="border border-slate-300 text-green-600">{(price[index] - commission[index]).toFixed(2)}</td>
