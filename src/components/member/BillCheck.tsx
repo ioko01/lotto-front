@@ -135,7 +135,6 @@ export function BillCheck() {
                 digitOne.push(...bill.digit)
             }
             if (bill.digit_type == "TWO") {
-                console.log("asd");
                 digitTwo.push(...bill.digit)
             }
             if (bill.digit_type == "THREE") {
