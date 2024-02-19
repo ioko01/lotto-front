@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import Datepicker from "react-tailwindcss-datepicker";
 import { IBill } from "../../models/Bill";
 import axios from "axios";
@@ -22,6 +22,7 @@ export function OrderGroup() {
     const [disabledDatepicker, setDisabledDatepicker] = useState<boolean>(true)
     const [disabledMonth, setDisabledMonth] = useState<boolean>(true)
     const [bills, setBills] = useState<IBill[]>([])
+    const [lottoGroup, setLottoGroup] = useState<string[]>([])
     const [price, setPrice] = useState<number[]>([])
     const [commission, setCommission] = useState<number[]>([])
 
@@ -104,8 +105,15 @@ export function OrderGroup() {
                 const data = res.data as IBill[]
                 let prices: number[] = []
                 let commissions: number[] = []
+                let group: string[] = []
                 setBills(data)
                 data.map((bill, index) => {
+                    if (group.length == 0) {
+                        group.push(bill.lotto_id.name)
+                    } else if (!group.includes(bill.lotto_id.name)) {
+                        group.push(bill.lotto_id.name)
+                    }
+
                     //price
                     prices[index] = 0
                     commissions[index] = 0
@@ -145,6 +153,7 @@ export function OrderGroup() {
 
                 setPrice(prices)
                 setCommission(commissions)
+                setLottoGroup(group)
             }
         } catch (error) {
 
@@ -245,59 +254,74 @@ export function OrderGroup() {
                                 </svg>
                                 ค้นหา</button>
                         </div>
+                        {
+                            lottoGroup.map((g, index) => (
+                                <Fragment key={index}>
+                                    <div key={index} className="flex flex-row mt-3 text-xl">{g}</div>
+                                    <div className="flex flex-row mt-3">
+                                        <table className="border-collapse border border-slate-400 w-full text-center">
+                                            <thead className="bg-blue-800 text-white text-xs">
+                                                <tr>
+                                                    <th>วันที่</th>
+                                                    <th>ชนิดหวย</th>
+                                                    <th>ชื่องวด</th>
+                                                    <th>ยอดแทง</th>
+                                                    <th>ส่วนลด</th>
+                                                    <th>ถูกรางวัล</th>
+                                                    <th>แพ้/ชนะ</th>
+                                                    <th>หมายเหตุ</th>
+                                                    <th>#</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {
+                                                    bills.map((bill, index) => (
+                                                        <Fragment key={index}>
+                                                            {
+                                                                bill.lotto_id.name == g &&
+                                                                <tr key={index}>
+                                                                    <td className="border border-slate-300 font-light">{moment(new Date(Object(bill.created_at)['seconds'] * 1000 + Object(bill.created_at)['nanoseconds'] / 1000)).format("DD-MM-YYYY HH:mm:ss")}</td>
+                                                                    <td className="border border-slate-300 font-light">{bill.lotto_id.name}</td>
+                                                                    <td className="border border-slate-300 font-light">{bill.times}</td>
+                                                                    <td className="border border-slate-300 text-green-600">{(price[index] - commission[index]).toFixed(2)}</td>
+                                                                    <td className="border border-slate-300">{commission[index].toFixed(2)}</td>
+                                                                    <td className="border border-slate-300 text-red-500">{bill.status == "WAIT" ? "รอผล" : bill.status == "CANCEL" ? "ยกเลิก" : bill.status == "REWARD" && "ไม่ถูกรางวัล"}</td>
+                                                                    <td className="border border-slate-300 text-red-500">-70</td>
+                                                                    <td className="border border-slate-300 font-light">{bill.note}</td>
+                                                                    <td className="border border-slate-300 font-light">
+                                                                        <div className="flex flex-row justify-around items-center">
+                                                                            <button className="text-[blue] hover:text-blue-500 hover:bg-gray-100">ดูรายละเอียด</button>
+                                                                            <button className="text-xs text-red-600 hover:text-red-400 font-bold p-2 rounded shadow mx-2">
+                                                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-4 h-4">
+                                                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                                                                                </svg></button>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
 
-                        <div className="flex flex-row mt-3 text-xl">หวยดาวโจนส์ VIP</div>
-                        <div className="flex flex-row mt-3">
-                            <table className="border-collapse border border-slate-400 w-full text-center">
-                                <thead className="bg-blue-800 text-white text-xs">
-                                    <tr>
-                                        <th>วันที่</th>
-                                        <th>ชนิดหวย</th>
-                                        <th>ชื่องวด</th>
-                                        <th>ยอดแทง</th>
-                                        <th>ส่วนลด</th>
-                                        <th>ถูกรางวัล</th>
-                                        <th>แพ้/ชนะ</th>
-                                        <th>หมายเหตุ</th>
-                                        <th>#</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {
-                                        bills.map((bill, index) => (
-                                            <tr key={index}>
-                                                <td className="border border-slate-300 font-light">{moment(new Date(Object(bill.created_at)['seconds'] * 1000 + Object(bill.created_at)['nanoseconds'] / 1000)).format("DD-MM-YYYY HH:mm:ss")}</td>
-                                                <td className="border border-slate-300 font-light">{bill.lotto_id.name}</td>
-                                                <td className="border border-slate-300 font-light">{bill.times}</td>
-                                                <td className="border border-slate-300 text-green-600">{(price[index] - commission[index]).toFixed(2)}</td>
-                                                <td className="border border-slate-300">{commission[index].toFixed(2)}</td>
-                                                <td className="border border-slate-300 text-red-500">{bill.status == "WAIT" ? "รอผล" : bill.status == "CANCEL" ? "ยกเลิก" : bill.status == "REWARD" && "ไม่ถูกรางวัล"}</td>
-                                                <td className="border border-slate-300 text-red-500">-70</td>
-                                                <td className="border border-slate-300 font-light">{bill.note}</td>
-                                                <td className="border border-slate-300 font-light">
-                                                    <div className="flex flex-row justify-around items-center">
-                                                        <button className="text-[blue] hover:text-blue-500 hover:bg-gray-100">ดูรายละเอียด</button>
-                                                        <button className="text-xs text-red-600 hover:text-red-400 font-bold p-2 rounded shadow mx-2">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-4 h-4">
-                                                                <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
-                                                            </svg></button>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        ))
-                                    }
 
-                                    <tr>
-                                        <td colSpan={3} className="border border-slate-300 bg-gray-200">รวม</td>
-                                        <td className="border border-slate-300 bg-gray-200 text-green-600">70</td>
-                                        <td className="border border-slate-300 bg-gray-200">0</td>
-                                        <td className="border border-slate-300 bg-gray-200 text-green-600">0</td>
-                                        <td className="border border-slate-300 bg-gray-200 text-red-500">-70</td>
-                                        <td colSpan={2} className="border border-slate-300 bg-gray-200"></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
+                                                            }
+                                                        </Fragment>
+
+                                                    ))
+                                                }
+
+                                                <tr>
+                                                    <td colSpan={3} className="border border-slate-300 bg-gray-200">รวม</td>
+                                                    <td className="border border-slate-300 bg-gray-200 text-green-600">{(price.reduce((price, cur) => price + cur, 0) - commission.reduce((price, cur) => price + cur, 0)).toFixed(2)}</td>
+                                                    <td className="border border-slate-300 bg-gray-200">{commission.reduce((price, cur) => price + cur, 0).toFixed(2)}</td>
+                                                    <td className="border border-slate-300 bg-gray-200 text-green-600">0</td>
+                                                    <td className="border border-slate-300 bg-gray-200 text-red-500">-70</td>
+                                                    <td colSpan={2} className="border border-slate-300 bg-gray-200"></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </Fragment>
+                            ))
+                        }
+
+
                     </div>
                 </div>
             </div>
