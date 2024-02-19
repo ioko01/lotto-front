@@ -315,7 +315,7 @@ export function BillCheck() {
                             <div id="bill_header" className="flex flex-col items-center rounded-lg border border-green-400 bg-green-100 w-full mb-3 p-2">
                                 <div className="flex justify-between w-full p-2">
                                     <span>{lotto?.name}</span>
-                                    <span>2022-12-65</span>
+                                    <span>{`${new Date().getDate()}-${new Date().getMonth()}-${new Date().getFullYear()}`}</span>
                                 </div>
                                 <div className="flex justify-between w-full p-2">
                                     <span>อัตราจ่าย</span>
