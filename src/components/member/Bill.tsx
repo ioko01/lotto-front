@@ -504,7 +504,7 @@ export function Bill() {
                             <div id="bill_header" className="flex flex-col items-center rounded-lg border border-green-400 bg-green-100 w-full mb-3 p-2">
                                 <div className="flex justify-between w-full p-2">
                                     <span>{lotto.name}</span>
-                                    <span>{`${new Date().getDate()}-${new Date().getMonth()}-${new Date().getFullYear()}`}</span>
+                                    <span>{`${new Date().getDate()}-${(parseInt(new Date().getMonth().toString()) + 1)}-${new Date().getFullYear()}`}</span>
                                 </div>
                                 <div className="flex justify-between w-full p-2">
                                     <span>อัตราจ่าย</span>
@@ -520,7 +520,7 @@ export function Bill() {
                                 </div>
                                 <div className="flex justify-between w-full p-2">
                                     <span>{lotto.name}</span>
-                                    <span>{`${new Date().getDate()}-${new Date().getMonth()}-${new Date().getFullYear()}`}</span>
+                                    <span>{`${new Date().getDate()}-${(parseInt(new Date().getMonth().toString()) + 1)}-${new Date().getFullYear()}`}</span>
                                 </div>
                                 <div className="border-t w-full"></div>
                                 <div className="flex justify-evenly w-full p-2">
