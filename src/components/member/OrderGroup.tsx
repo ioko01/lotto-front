@@ -275,16 +275,16 @@ export function OrderGroup() {
                                             </thead>
                                             <tbody>
                                                 {
-                                                    bills.map((bill, index) => (
-                                                        <Fragment key={index}>
+                                                    bills.map((bill, i) => (
+                                                        <Fragment key={i}>
                                                             {
                                                                 bill.lotto_id.name == g &&
-                                                                <tr key={index}>
+                                                                <tr key={i}>
                                                                     <td className="border border-slate-300 font-light">{moment(new Date(Object(bill.created_at)['seconds'] * 1000 + Object(bill.created_at)['nanoseconds'] / 1000)).format("DD-MM-YYYY HH:mm:ss")}</td>
                                                                     <td className="border border-slate-300 font-light">{bill.lotto_id.name}</td>
                                                                     <td className="border border-slate-300 font-light">{bill.times}</td>
-                                                                    <td className="border border-slate-300 text-green-600">{(price[index] - commission[index]).toFixed(2)}</td>
-                                                                    <td className="border border-slate-300">{commission[index].toFixed(2)}</td>
+                                                                    <td className="border border-slate-300 text-green-600">{(price[i] - commission[i]).toFixed(2)}</td>
+                                                                    <td className="border border-slate-300">{commission[i].toFixed(2)}</td>
                                                                     <td className="border border-slate-300 text-red-500">{bill.status == "WAIT" ? "รอผล" : bill.status == "CANCEL" ? "ยกเลิก" : bill.status == "REWARD" && "ไม่ถูกรางวัล"}</td>
                                                                     <td className="border border-slate-300 text-red-500">-70</td>
                                                                     <td className="border border-slate-300 font-light">{bill.note}</td>
@@ -308,8 +308,26 @@ export function OrderGroup() {
 
                                                 <tr>
                                                     <td colSpan={3} className="border border-slate-300 bg-gray-200">รวม</td>
-                                                    <td className="border border-slate-300 bg-gray-200 text-green-600">{(price.reduce((price, cur) => price + cur, 0) - commission.reduce((price, cur) => price + cur, 0)).toFixed(2)}</td>
-                                                    <td className="border border-slate-300 bg-gray-200">{commission.reduce((price, cur) => price + cur, 0).toFixed(2)}</td>
+                                                    <td className="border border-slate-300 bg-gray-200 text-green-600">{
+                                                        (Object.values(bills).map<number>((b: IBill, i) => {
+                                                            let iTotal = 0;
+                                                            if (b.lotto_id.name == g) iTotal += price[i]
+                                                            return iTotal
+                                                        }).reduce((price, cur) => price + cur, 0)
+                                                            -
+                                                            Object.values(bills).map<number>((b: IBill, i) => {
+                                                                let iTotal = 0;
+                                                                if (b.lotto_id.name == g) iTotal += commission[i]
+                                                                return iTotal
+                                                            }).reduce((price, cur) => price + cur, 0)).toFixed(2)
+                                                    }</td>
+                                                    <td className="border border-slate-300 bg-gray-200">{
+                                                        Object.values(bills).map<number>((b: IBill, i) => {
+                                                            let iTotal = 0;
+                                                            if (b.lotto_id.name == g) iTotal += commission[i]
+                                                            return iTotal
+                                                        }).reduce((price, cur) => price + cur, 0).toFixed(2)
+                                                    }</td>
                                                     <td className="border border-slate-300 bg-gray-200 text-green-600">0</td>
                                                     <td className="border border-slate-300 bg-gray-200 text-red-500">-70</td>
                                                     <td colSpan={2} className="border border-slate-300 bg-gray-200"></td>
