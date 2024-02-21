@@ -106,7 +106,7 @@ const ManageReward = (props: Props) => {
                                     <td className="p-3">{reward.times}</td>
                                     <td className="p-3">{(reward.top || reward.bottom) ? `${reward.top}/${reward.bottom}` : "รอผล"}</td>
                                     <td className="p-3">{reward.lotto_id.api ?? "-"}</td>
-                                    <td className="p-3"><button className='btn btn-primary' onClick={() => openCheckRewardModal(reward)}>{(reward.top && reward.bottom) ? "ใส่ผล" : "แก้ไขผล"}</button></td>
+                                    <td className="p-3"><button className='btn btn-primary' onClick={() => openCheckRewardModal(reward)}>{(reward.top && reward.bottom) ? "แก้ไขผล" : "ใส่ผล"}</button></td>
                                 </tr>
                             ))}
 
