@@ -4,6 +4,7 @@ import { IBill } from "../../models/Bill";
 import axios from "axios";
 import { axiosConfig } from "../../utils/headers";
 import moment from "moment";
+import { ICheckReward } from "../../models/CheckReward";
 
 type TypeDate = {
     startDate: string | Date | null,
@@ -107,6 +108,14 @@ export function OrderGroup() {
                 let commissions: number[] = []
                 let group: string[] = []
                 setBills(data)
+
+                const fetchReward = await axios.get(`${import.meta.env.VITE_OPS_URL}/get/reward/lotto/${ds}/${de}`, axiosConfig)
+                if (fetchReward && fetchReward.status == 200) {
+                    const reward = fetchReward.data as ICheckReward[]
+                    if (reward.length > 0) {
+                        
+                    }
+                }
                 data.map((bill, index) => {
                     if (group.length == 0) {
                         group.push(bill.lotto_id.name)

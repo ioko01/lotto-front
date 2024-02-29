@@ -30,10 +30,10 @@ const ManageReward = (props: Props) => {
                 if (fetchRewards) {
                     const rewards = fetchRewards.data as ICheckRewardDoc[]
                     lottos.map(lotto => {
-                        setRewardAll([...rewardAll, { top: "", bottom: "", lotto_id: lotto, times: "" }])
+                        setRewardAll(prevState => [...prevState, { top: "", bottom: "", lotto_id: lotto, times: "" }])
                         rewards.map(reward => {
                             if (reward.lotto_id.id == lotto.id) {
-                                setRewardAll([...rewardAll, reward])
+                                setRewardAll(prevState => [...prevState, reward])
                             }
                         })
                     })
@@ -42,7 +42,6 @@ const ManageReward = (props: Props) => {
                 }
             }
 
-            console.log(rewardAll);
         } catch (error) {
         }
     }
