@@ -8,6 +8,11 @@ import { countdown } from "../../utils/countdown";
 import { Time } from "../../models/Time";
 import { ILottoDoc } from "../../models/Id";
 
+interface ImageBase64 {
+    name: string
+    data: string
+}
+
 export function Home() {
     const { isUser } = useContext(AuthContext)
     const [lotto, setLotto] = useState<ILottoDoc[] | null>(null)
@@ -32,7 +37,7 @@ export function Home() {
                     const this_hours = new Date().getHours()
                     const this_minutes = new Date().getMinutes()
                     const t = `${this_hours}:${this_minutes}`
-
+                    
                     const cd = countdown(res.open, res.close, getTomorrow(res.open, res.close, t))
                     if (cd.days < 0) {
                         if (res.status == TLottoStatusEnum.OPEN) axios.put(`${import.meta.env.VITE_OPS_URL}/status/lotto`, { id: res.id, status: TLottoStatusEnum.CLOSE }, axiosConfig)
@@ -48,7 +53,7 @@ export function Home() {
         }
     }
 
-    const [image, setImage] = useState<string[]>([]);
+    const [image, setImage] = useState<ImageBase64[]>([]);
     const fetchImage = async (lotto: ILotto, amount: number) => {
         try {
             const res = await axios.get(`${import.meta.env.VITE_OPS_URL}/get/file/${lotto.img_flag}`, {
@@ -63,7 +68,7 @@ export function Home() {
                 reader.onloadend = function () {
                     const base64data = reader.result;
                     if (image.length < amount) {
-                        setImage(prevArray => [...prevArray, base64data!.toString()])
+                        setImage(prevArray => [...prevArray, { name: lotto.name, data: base64data!.toString() }])
                     }
                 };
             }
@@ -154,21 +159,24 @@ export function Home() {
         }
     }
 
+
     const display = () => {
         const hours = new Date().getHours()
         const minutes = new Date().getMinutes()
         const t = `${hours}:${minutes}`
-
-        return lotto!.map((lotto, index) => (
+        return lotto!.map((lot, index) => (
             <div key={index} className="p-2 xl:basis-1/5 lg:basis-1/4 basis-1/3">
-                <Link to={getCountdownTime(lotto.open, lotto.close, t) ? times ? lotto.date!.includes(day[dateNow.getDay()]) && lotto.status == TLottoStatusEnum.OPEN ? `/bill/${lotto.id}` : '#' : '#' : '#'} className={`flex flex-col items-center rounded-none shadow-md dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700 ${getCountdownTime(lotto.open, lotto.close, t) ? times ? lotto.date!.includes(day[dateNow.getDay()]) && lotto.status == TLottoStatusEnum.OPEN ? `bg-green-600 text-white` : `bg-gray-300 text-dark` : `bg-gray-300 text-dark` : `bg-gray-300 text-dark`}`}>
+                <Link to={getCountdownTime(lot.open, lot.close, t) ? times ? lot.date!.includes(day[dateNow.getDay()]) && lot.status == TLottoStatusEnum.OPEN ? `/bill/${lot.id}` : '#' : '#' : '#'} className={`flex flex-col items-center rounded-none shadow-md dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700 ${getCountdownTime(lot.open, lot.close, t) ? times ? lot.date!.includes(day[dateNow.getDay()]) && lot.status == TLottoStatusEnum.OPEN ? `bg-green-600 text-white` : `bg-gray-300 text-dark` : `bg-gray-300 text-dark` : `bg-gray-300 text-dark`}`}>
                     <div className="flex flex-row items-center p-2 w-full">
-                        <img style={{ height: 40 }} className="object-cover rounded-none" src={`${image[index]}`} alt={lotto.name} />
+                        <img style={{ height: 40 }} className="object-cover rounded-none" src={`${Object.values(image).map((im, i) => {
+                            if (lot.name == im.name && i == index) return im.data
+                        })[index]
+                            }`} alt={lot.name} />
                         <div className="flex text-end w-full flex-col justify-between leading-normal">
-                            <h5 className="text-sm font-bold tracking-tight dark:text-white">{lotto.name}
+                            <h5 className="text-sm font-bold tracking-tight dark:text-white">{lot.name}
                                 <br />
                                 {
-                                    lotto.date!.includes(day[dateNow.getDay()]) && lotto.status == TLottoStatusEnum.OPEN ? `เปิดรับ ${String(lotto.open)}` : `ปิดรับ`
+                                    lot.date!.includes(day[dateNow.getDay()]) && lot.status == TLottoStatusEnum.OPEN ? `เปิดรับ ${String(lot.open)}` : `ปิดรับ`
                                 }
                             </h5>
                         </div>
@@ -178,11 +186,11 @@ export function Home() {
                     <div className="w-full text-xs px-2">
                         <p className="flex justify-between w-full">
                             <span className="font-light">เวลาปิด</span>
-                            <span className="font-light">{lotto.date!.includes(day[dateNow.getDay()]) && lotto.status == TLottoStatusEnum.OPEN ? String(lotto.close) : `-`}</span>
+                            <span className="font-light">{lot.date!.includes(day[dateNow.getDay()]) && lot.status == TLottoStatusEnum.OPEN ? String(lot.close) : `-`}</span>
                         </p>
                         <p className="flex justify-between w-full">
                             <span className="font-light">สถานะ</span>
-                            <span className="font-light">{getCountdownTime(lotto.open, lotto.close, t) ? lotto.date!.includes(day[dateNow.getDay()]) && times[index] ? times[index].id == lotto.id && `ปิดรับใน ${times[index]?.hours ?? "00"}:${times[index]?.minutes ?? "00"}:${times[index]?.seconds ?? "00"}` : '' : ''}</span>
+                            <span className="font-light">{getCountdownTime(lot.open, lot.close, t) ? lot.date!.includes(day[dateNow.getDay()]) && times[index] ? times[index].id == lot.id && `ปิดรับใน ${times[index]?.hours ?? "00"}:${times[index]?.minutes ?? "00"}:${times[index]?.seconds ?? "00"}` : '' : ''}</span>
                         </p>
                     </div>
                 </Link>
