@@ -29,19 +29,18 @@ const ManageReward = (props: Props) => {
                 const fetchRewards = await axios.get(`${import.meta.env.VITE_OPS_URL}/get/reward/all`, axiosConfig)
                 if (fetchRewards) {
                     const rewards = fetchRewards.data as ICheckRewardDoc[]
-                    lottos.map(lotto => {
-                        setRewardAll(prevState => [...prevState, { top: "", bottom: "", lotto_id: lotto, times: "" }])
+                    let getRewardAll: ICheckReward[] = []
+                    lottos.map((lotto, index) => {
+                        getRewardAll.push({ top: "", bottom: "", lotto_id: lotto, times: "" })
                         rewards.map(reward => {
                             if (reward.lotto_id.id == lotto.id) {
-                                setRewardAll(prevState => [...prevState, reward])
+                                getRewardAll[index] = reward
                             }
                         })
                     })
-
-
+                    setRewardAll(getRewardAll)
                 }
             }
-
         } catch (error) {
         }
     }
