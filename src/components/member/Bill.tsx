@@ -482,313 +482,328 @@ export function Bill() {
         }
 
     }, [digitsTemp, billTemp, modal, price, digitWin, lotto])
-    return (
-        isUser &&
-            lotto ? <>
-            {
-                billTimeout && <div className="overlay-timeout">
-                    {modal.openModal === "TIMEOUT" && <ModalNotice />}
-                </div>
-            }
 
-            <div id="bill" className="flex flex-col" onLoad={() => document.getElementById("input_digits")!.focus()}>
-                <div className="basis-full w-full p-2">
-                    <div id="bill_time" className="flex flex-col w-full mb-3 p-2 text-red-500">
-                        เหลือเวลา {time?.hours ?? "00"}:{time?.minutes ?? "00"}:{time?.seconds ?? "00"}
+    const render = () => {
+        return (
+            <>
+                {
+                    billTimeout && <div className="overlay-timeout">
+                        {modal.openModal === "TIMEOUT" && <ModalNotice />}
                     </div>
-                </div>
-                <div className="flex flex-row">
-                    <div className="basis-3/6 w-full p-2">
-                        <div id="bill_content" style={{ minWidth: "420px", maxWidth: "568px" }} className="flex flex-col items-center">
+                }
 
-                            <div id="bill_header" className="flex flex-col items-center rounded-lg border border-green-400 bg-green-100 w-full mb-3 p-2">
-                                <div className="flex justify-between w-full p-2">
-                                    <span>{lotto.name}</span>
-                                    <span>{`${new Date().getDate()}-${(parseInt(new Date().getMonth().toString()) + 1)}-${new Date().getFullYear()}`}</span>
-                                </div>
-                                <div className="flex justify-between w-full p-2">
-                                    <span>อัตราจ่าย</span>
-                                    <span>{rate?.two_digits.top} อัตราจ่ายเริ่มต้น</span>
-                                    <span>ดูรายละเอียด</span>
-                                    <span><img width={60} src={`${image}`} alt="flag" className="object-cover" /></span>
-                                </div>
-                            </div>
+                <div id="bill" className="flex flex-col" onLoad={() => document.getElementById("input_digits")!.focus()}>
+                    <div className="basis-full w-full p-2">
+                        <div id="bill_time" className="flex flex-col w-full mb-3 p-2 text-red-500">
+                            เหลือเวลา {time?.hours ?? "00"}:{time?.minutes ?? "00"}:{time?.seconds ?? "00"}
+                        </div>
+                    </div>
+                    <div className="flex flex-row">
+                        <div className="basis-3/6 w-full p-2">
+                            <div id="bill_content" style={{ minWidth: "420px", maxWidth: "568px" }} className="flex flex-col items-center">
 
-                            <div id="bill_body" className="flex flex-col items-center rounded-lg border border-green-400 bg-green-100 w-full mb-3 p-2">
-                                <div className="w-full p-2">
-                                    <span>แทงเร็ว</span>
-                                </div>
-                                <div className="flex justify-between w-full p-2">
-                                    <span>{lotto.name}</span>
-                                    <span>{`${new Date().getDate()}-${(parseInt(new Date().getMonth().toString()) + 1)}-${new Date().getFullYear()}`}</span>
-                                </div>
-                                <div className="border-t w-full"></div>
-                                <div className="flex justify-evenly w-full p-2">
-                                    <div className="w-full">
-                                        <button value={"TWO" as TDigit} onClick={setDigitValue} style={{ width: "60px" }} className={"text-xs bg-white text-gray-800 font-semibold p-2 border rounded shadow mx-2 mb-2 " + (digitsType === "TWO" ? "bg-green-400 border-green-500" : "bg-gray-100 border-gray-400 hover:bg-gray-200")}>2 ตัว</button>
-                                        <button value={"THREE" as TDigit} onClick={setDigitValue} style={{ width: "60px" }} className={"text-xs bg-white text-gray-800 font-semibold p-2 border rounded shadow mx-2 mb-2 " + (digitsType === "THREE" ? "bg-green-400 border-green-500" : "bg-gray-100 border-gray-400 hover:bg-gray-200")}>3 ตัว</button>
-                                        <button value={"SIX" as TDigit} onClick={setDigitValue} style={{ width: "60px" }} className={"text-xs bg-white text-gray-800 font-semibold p-2 border rounded shadow mx-2 mb-2 " + (digitsType === "SIX" ? "bg-green-400 border-green-500" : "bg-gray-100 border-gray-400 hover:bg-gray-200")}>6 กลับ</button>
-                                        <button value={"NINETEEN" as TDigit} onClick={setDigitValue} style={{ width: "60px" }} className={"text-xs bg-white text-gray-800 font-semibold p-2 border rounded shadow mx-2 mb-2 " + (digitsType === "NINETEEN" ? "bg-green-400 border-green-500" : "bg-gray-100 border-gray-400 hover:bg-gray-200")}>19 ประตู</button>
-                                        <button value={"ONE" as TDigit} onClick={setDigitValue} style={{ width: "60px" }} className={"text-xs bg-white text-gray-800 font-semibold p-2 border rounded shadow mx-2 mb-2 " + (digitsType === "ONE" ? "bg-green-400 border-green-500" : "bg-gray-100 border-gray-400 hover:bg-gray-200")}>เลขวิ่ง</button>
-                                        <button value={"WIN" as TDigit} onClick={setDigitValue} style={{ width: "60px" }} className={"text-xs bg-white text-gray-800 font-semibold p-2 border rounded shadow mx-2 mb-2 " + (digitsType === "WIN" ? "bg-green-400 border-green-500" : "bg-gray-100 border-gray-400 hover:bg-gray-200")}>วินเลข</button>
-                                    </div>
-                                    <div>
-                                        <img width={60} src={`${image}`} alt="flag" />
-                                    </div>
-                                </div>
-                                {
-                                    digitsType === "WIN" &&
+                                <div id="bill_header" className="flex flex-col items-center rounded-lg border border-green-400 bg-green-100 w-full mb-3 p-2">
                                     <div className="flex justify-between w-full p-2">
-                                        <div id="btn_digit_win" className="w-full mb-2 p-2">
-                                            <div className="digit">
-                                                <div className="w-full">
-                                                    <button onClick={toggleDigitWin} value={1} style={{ width: "50px", height: "50px" }} className={"text-md font-semibold p-2 border shadow px-2 " + (digitWin.includes(1) ? "border-blue-600 bg-blue-600 text-white" : "border-blue-200 hover:text-white hover:border-blue-500 bg-blue-100 hover:bg-blue-500 text-gray-800")}>1</button>
-                                                    <button onClick={toggleDigitWin} value={2} style={{ width: "50px", height: "50px" }} className={"text-md font-semibold p-2 border shadow px-2 " + (digitWin.includes(2) ? "border-blue-600 bg-blue-600 text-white" : "border-blue-200 hover:text-white hover:border-blue-500 bg-blue-100 hover:bg-blue-500 text-gray-800")}>2</button>
-                                                    <button onClick={toggleDigitWin} value={3} style={{ width: "50px", height: "50px" }} className={"text-md font-semibold p-2 border shadow px-2 " + (digitWin.includes(3) ? "border-blue-600 bg-blue-600 text-white" : "border-blue-200 hover:text-white hover:border-blue-500 bg-blue-100 hover:bg-blue-500 text-gray-800")}>3</button>
-                                                    <button onClick={toggleDigitWin} value={4} style={{ width: "50px", height: "50px" }} className={"text-md font-semibold p-2 border shadow px-2 " + (digitWin.includes(4) ? "border-blue-600 bg-blue-600 text-white" : "border-blue-200 hover:text-white hover:border-blue-500 bg-blue-100 hover:bg-blue-500 text-gray-800")}>4</button>
-                                                    <button onClick={toggleDigitWin} value={5} style={{ width: "50px", height: "50px" }} className={"text-md font-semibold p-2 border shadow px-2 " + (digitWin.includes(5) ? "border-blue-600 bg-blue-600 text-white" : "border-blue-200 hover:text-white hover:border-blue-500 bg-blue-100 hover:bg-blue-500 text-gray-800")}>5</button>
-                                                </div>
-                                                <div className="w-full">
-                                                    <button onClick={toggleDigitWin} value={6} style={{ width: "50px", height: "50px" }} className={"text-md font-semibold p-2 border shadow px-2 " + (digitWin.includes(6) ? "border-blue-600 bg-blue-600 text-white" : "border-blue-200 hover:text-white hover:border-blue-500 bg-blue-100 hover:bg-blue-500 text-gray-800")}>6</button>
-                                                    <button onClick={toggleDigitWin} value={7} style={{ width: "50px", height: "50px" }} className={"text-md font-semibold p-2 border shadow px-2 " + (digitWin.includes(7) ? "border-blue-600 bg-blue-600 text-white" : "border-blue-200 hover:text-white hover:border-blue-500 bg-blue-100 hover:bg-blue-500 text-gray-800")}>7</button>
-                                                    <button onClick={toggleDigitWin} value={8} style={{ width: "50px", height: "50px" }} className={"text-md font-semibold p-2 border shadow px-2 " + (digitWin.includes(8) ? "border-blue-600 bg-blue-600 text-white" : "border-blue-200 hover:text-white hover:border-blue-500 bg-blue-100 hover:bg-blue-500 text-gray-800")}>8</button>
-                                                    <button onClick={toggleDigitWin} value={9} style={{ width: "50px", height: "50px" }} className={"text-md font-semibold p-2 border shadow px-2 " + (digitWin.includes(9) ? "border-blue-600 bg-blue-600 text-white" : "border-blue-200 hover:text-white hover:border-blue-500 bg-blue-100 hover:bg-blue-500 text-gray-800")}>9</button>
-                                                    <button onClick={toggleDigitWin} value={0} style={{ width: "50px", height: "50px" }} className={"text-md font-semibold p-2 border shadow px-2 " + (digitWin.includes(0) ? "border-blue-600 bg-blue-600 text-white" : "border-blue-200 hover:text-white hover:border-blue-500 bg-blue-100 hover:bg-blue-500 text-gray-800")}>0</button>
-                                                </div>
-                                            </div>
-                                            <div className="calculate w-full mt-2">
-                                                <button onClick={calculateDigitWin} style={{ minWidth: "60px" }} className="whitespace-nowrap items-center text-xs bg-orange-400 hover:bg-orange-500 text-white font-semibold p-2 rounded shadow">คำนวณ</button>
-                                            </div>
+                                        <span>{lotto!.name}</span>
+                                        <span>{`${new Date().getDate()}-${(parseInt(new Date().getMonth().toString()) + 1)}-${new Date().getFullYear()}`}</span>
+                                    </div>
+                                    <div className="flex justify-between w-full p-2">
+                                        <span>อัตราจ่าย</span>
+                                        <span>{rate?.two_digits.top} อัตราจ่ายเริ่มต้น</span>
+                                        <span>ดูรายละเอียด</span>
+                                        <span><img width={60} src={`${image}`} alt="flag" className="object-cover" /></span>
+                                    </div>
+                                </div>
 
-
+                                <div id="bill_body" className="flex flex-col items-center rounded-lg border border-green-400 bg-green-100 w-full mb-3 p-2">
+                                    <div className="w-full p-2">
+                                        <span>แทงเร็ว</span>
+                                    </div>
+                                    <div className="flex justify-between w-full p-2">
+                                        <span>{lotto!.name}</span>
+                                        <span>{`${new Date().getDate()}-${(parseInt(new Date().getMonth().toString()) + 1)}-${new Date().getFullYear()}`}</span>
+                                    </div>
+                                    <div className="border-t w-full"></div>
+                                    <div className="flex justify-evenly w-full p-2">
+                                        <div className="w-full">
+                                            <button value={"TWO" as TDigit} onClick={setDigitValue} style={{ width: "60px" }} className={"text-xs bg-white text-gray-800 font-semibold p-2 border rounded shadow mx-2 mb-2 " + (digitsType === "TWO" ? "bg-green-400 border-green-500" : "bg-gray-100 border-gray-400 hover:bg-gray-200")}>2 ตัว</button>
+                                            <button value={"THREE" as TDigit} onClick={setDigitValue} style={{ width: "60px" }} className={"text-xs bg-white text-gray-800 font-semibold p-2 border rounded shadow mx-2 mb-2 " + (digitsType === "THREE" ? "bg-green-400 border-green-500" : "bg-gray-100 border-gray-400 hover:bg-gray-200")}>3 ตัว</button>
+                                            <button value={"SIX" as TDigit} onClick={setDigitValue} style={{ width: "60px" }} className={"text-xs bg-white text-gray-800 font-semibold p-2 border rounded shadow mx-2 mb-2 " + (digitsType === "SIX" ? "bg-green-400 border-green-500" : "bg-gray-100 border-gray-400 hover:bg-gray-200")}>6 กลับ</button>
+                                            <button value={"NINETEEN" as TDigit} onClick={setDigitValue} style={{ width: "60px" }} className={"text-xs bg-white text-gray-800 font-semibold p-2 border rounded shadow mx-2 mb-2 " + (digitsType === "NINETEEN" ? "bg-green-400 border-green-500" : "bg-gray-100 border-gray-400 hover:bg-gray-200")}>19 ประตู</button>
+                                            <button value={"ONE" as TDigit} onClick={setDigitValue} style={{ width: "60px" }} className={"text-xs bg-white text-gray-800 font-semibold p-2 border rounded shadow mx-2 mb-2 " + (digitsType === "ONE" ? "bg-green-400 border-green-500" : "bg-gray-100 border-gray-400 hover:bg-gray-200")}>เลขวิ่ง</button>
+                                            <button value={"WIN" as TDigit} onClick={setDigitValue} style={{ width: "60px" }} className={"text-xs bg-white text-gray-800 font-semibold p-2 border rounded shadow mx-2 mb-2 " + (digitsType === "WIN" ? "bg-green-400 border-green-500" : "bg-gray-100 border-gray-400 hover:bg-gray-200")}>วินเลข</button>
+                                        </div>
+                                        <div>
+                                            <img width={60} src={`${image}`} alt="flag" />
                                         </div>
                                     </div>
-                                }
-
-                                <div className="flex justify-between w-full p-2">
-                                    <div id="show_digit_temps">
-                                        {
-                                            digitsTemp.map((digit, index) => <button onClick={removeDigitTemp} value={index} key={index} style={{ width: "40px" }} className={"text-xs text-white font-semibold bg-blue-600 hover:bg-blue-700 p-3 border rounded shadow mx-1 mb-2"}>{digit}</button>)
-                                        }
-
-                                    </div>
-                                    <div id="remove_digit_temps">
-                                        <button onClick={() => setDigitsTemp([])} style={{ width: "60px" }} className="whitespace-nowrap inline-flex text-xs bg-red-500 hover:bg-red-400 text-white font-light p-2 rounded shadow mx-2 mb-2">
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-4 h-4">
-                                                <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
-                                            </svg>
-                                            &nbsp;ยกเลิก</button>
-                                    </div>
-                                </div>
-
-                                <div className="flex justify-between w-full p-2">
                                     {
-                                        TWO.includes(digitsType) && digitsType !== "WIN" ?
-                                            <button onClick={addDigitDoubleAndTripleValue} style={{ width: "60px" }} className="whitespace-nowrap inline-flex text-xs bg-green-600 hover:bg-green-700 text-white font-light p-2 rounded shadow mx-2 mb-2">
-                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-4 h-4">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                                                </svg>
-                                                &nbsp;เลขเบิ้ล</button>
-                                            : THREE.includes(digitsType) &&
-                                            <button onClick={addDigitDoubleAndTripleValue} style={{ width: "60px" }} className="whitespace-nowrap inline-flex text-xs bg-green-600 hover:bg-green-700 text-white font-light p-2 rounded shadow mx-2 mb-2">
-                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-4 h-4">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                                                </svg>
-                                                &nbsp;เลขตอง</button>
-                                    }
-
-                                </div>
-                                <div className="border-t w-full"></div>
-                                <div className="flex justify-around p-2 pt-4 gap-4">
-                                    <div className="relative z-0">
-                                        <input tabIndex={1} ref={digitRef} onKeyUp={inputTempsKey} onChange={inputTemps} type={"text"} id="input_digits" className="bg-white rounded-none block h-8 py-2 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
-                                        <label htmlFor="input_digits" style={{ transition: ".3s" }} className="cursor-text peer-focus:cursor-default pl-1 absolute text-sm text-gray-500 dark:text-gray-400 transform -translate-y-6 scale-75 top-3 z-50 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-7">ใส่เลข</label>
-                                    </div>
-                                    <button id="revert" onClick={digitRevers} style={{ minWidth: "60px" }} className="whitespace-nowrap items-center text-xs bg-orange-500 hover:bg-orange-400 text-white font-light p-2 rounded shadow">กลับเลข</button>
-                                    <div className="relative z-0">
-                                        <input tabIndex={2} ref={priceTopRef} type={"number"} id="input_price_top" className="bg-white rounded-none block h-8 py-2 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
-                                        <label htmlFor="input_price_top" style={{ transition: ".3s" }} className="cursor-text peer-focus:cursor-default pl-1 absolute text-sm text-gray-500 dark:text-gray-400 transform -translate-y-6 scale-75 top-3 z-50 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-7">บน</label>
-                                    </div>
-                                    <div className="relative z-0">
-                                        <input onKeyDown={addBillTempKey} tabIndex={3} ref={priceBottomRef} type={"number"} id="input_price_bottom" className="bg-white rounded-none block h-8 py-2 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
-                                        <label htmlFor="input_price_bottom" style={{ transition: ".3s" }} className="cursor-text peer-focus:cursor-default pl-1 absolute text-sm text-gray-500 dark:text-gray-400 transform -translate-y-6 scale-75 top-3 z-50 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-7">{["ONE", "TWO", "NINETEEN", "WIN"].includes(digitsType) ? "ล่าง" : "โต๊ด"}</label>
-                                    </div>
-                                    <button onClick={addBillTemp} style={{ minWidth: "60px" }} className="whitespace-nowrap items-center inline-flex text-xs bg-green-600 hover:bg-green-500 text-white font-light p-2 rounded shadow">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-4 h-4">
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                                        </svg>
-                                        &nbsp;เพิ่มบิล</button>
-                                </div>
-                                <div className="flex justify-between w-full p-2">
-                                    <div id="show_digit_orders" className="flex flex-col w-full">
-                                        {
-                                            billTemp!.map((bill, index) => (
-                                                <div key={"bill_" + index} className="flex flex-row w-full bg-gray-100 justify-center items-center my-2">
-                                                    {
-                                                        bill.digit[0] && ONE.includes(bill.digit_type) ?
-                                                            <div className="p-2 px-4 mx-auto text-center">วิ่ง<br />บน x ล่าง<br />{bill.digit[0].split(":")[1]} x {bill.digit[0].split(":")[2]}</div>
-                                                            : bill.digit[0] && TWO.includes(bill.digit_type) ?
-                                                                <div className="p-2 px-4 mx-auto text-center">2 ตัว<br />บน x ล่าง<br />{bill.digit[0].split(":")[1]} x {bill.digit[0].split(":")[2]}</div>
-                                                                : bill.digit[0] && THREE.includes(bill.digit_type) &&
-                                                                <div className="p-2 px-4 mx-auto text-center">3 ตัว<br />บน x โต๊ด<br />{bill.digit[0].split(":")[1]} x {bill.digit[0].split(":")[2]}</div>
-                                                    }
-                                                    <div key={"digit_" + index} className="w-3/5 h-full bg-white p-2">
-                                                        {
-                                                            bill.digit.map((digit, index) => (
-                                                                <span style={{ width: "15px" }} key={"number_" + index} className="inline-block font-light mx-1">{digit!.split(":")[0]!}&nbsp;</span>
-                                                            ))
-                                                        }
+                                        digitsType === "WIN" &&
+                                        <div className="flex justify-between w-full p-2">
+                                            <div id="btn_digit_win" className="w-full mb-2 p-2">
+                                                <div className="digit">
+                                                    <div className="w-full">
+                                                        <button onClick={toggleDigitWin} value={1} style={{ width: "50px", height: "50px" }} className={"text-md font-semibold p-2 border shadow px-2 " + (digitWin.includes(1) ? "border-blue-600 bg-blue-600 text-white" : "border-blue-200 hover:text-white hover:border-blue-500 bg-blue-100 hover:bg-blue-500 text-gray-800")}>1</button>
+                                                        <button onClick={toggleDigitWin} value={2} style={{ width: "50px", height: "50px" }} className={"text-md font-semibold p-2 border shadow px-2 " + (digitWin.includes(2) ? "border-blue-600 bg-blue-600 text-white" : "border-blue-200 hover:text-white hover:border-blue-500 bg-blue-100 hover:bg-blue-500 text-gray-800")}>2</button>
+                                                        <button onClick={toggleDigitWin} value={3} style={{ width: "50px", height: "50px" }} className={"text-md font-semibold p-2 border shadow px-2 " + (digitWin.includes(3) ? "border-blue-600 bg-blue-600 text-white" : "border-blue-200 hover:text-white hover:border-blue-500 bg-blue-100 hover:bg-blue-500 text-gray-800")}>3</button>
+                                                        <button onClick={toggleDigitWin} value={4} style={{ width: "50px", height: "50px" }} className={"text-md font-semibold p-2 border shadow px-2 " + (digitWin.includes(4) ? "border-blue-600 bg-blue-600 text-white" : "border-blue-200 hover:text-white hover:border-blue-500 bg-blue-100 hover:bg-blue-500 text-gray-800")}>4</button>
+                                                        <button onClick={toggleDigitWin} value={5} style={{ width: "50px", height: "50px" }} className={"text-md font-semibold p-2 border shadow px-2 " + (digitWin.includes(5) ? "border-blue-600 bg-blue-600 text-white" : "border-blue-200 hover:text-white hover:border-blue-500 bg-blue-100 hover:bg-blue-500 text-gray-800")}>5</button>
                                                     </div>
-                                                    <div key={"delete_" + index} className="mx-auto text-center">
-                                                        <button onClick={removeBillTemp} value={index} className="whitespace-nowrap inline-flex text-xs text-red-600 hover:text-red-400 font-light p-2 rounded shadow mx-2 mb-2">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-4 h-4">
-                                                                <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
-                                                            </svg>
-                                                            &nbsp;</button>
+                                                    <div className="w-full">
+                                                        <button onClick={toggleDigitWin} value={6} style={{ width: "50px", height: "50px" }} className={"text-md font-semibold p-2 border shadow px-2 " + (digitWin.includes(6) ? "border-blue-600 bg-blue-600 text-white" : "border-blue-200 hover:text-white hover:border-blue-500 bg-blue-100 hover:bg-blue-500 text-gray-800")}>6</button>
+                                                        <button onClick={toggleDigitWin} value={7} style={{ width: "50px", height: "50px" }} className={"text-md font-semibold p-2 border shadow px-2 " + (digitWin.includes(7) ? "border-blue-600 bg-blue-600 text-white" : "border-blue-200 hover:text-white hover:border-blue-500 bg-blue-100 hover:bg-blue-500 text-gray-800")}>7</button>
+                                                        <button onClick={toggleDigitWin} value={8} style={{ width: "50px", height: "50px" }} className={"text-md font-semibold p-2 border shadow px-2 " + (digitWin.includes(8) ? "border-blue-600 bg-blue-600 text-white" : "border-blue-200 hover:text-white hover:border-blue-500 bg-blue-100 hover:bg-blue-500 text-gray-800")}>8</button>
+                                                        <button onClick={toggleDigitWin} value={9} style={{ width: "50px", height: "50px" }} className={"text-md font-semibold p-2 border shadow px-2 " + (digitWin.includes(9) ? "border-blue-600 bg-blue-600 text-white" : "border-blue-200 hover:text-white hover:border-blue-500 bg-blue-100 hover:bg-blue-500 text-gray-800")}>9</button>
+                                                        <button onClick={toggleDigitWin} value={0} style={{ width: "50px", height: "50px" }} className={"text-md font-semibold p-2 border shadow px-2 " + (digitWin.includes(0) ? "border-blue-600 bg-blue-600 text-white" : "border-blue-200 hover:text-white hover:border-blue-500 bg-blue-100 hover:bg-blue-500 text-gray-800")}>0</button>
                                                     </div>
                                                 </div>
+                                                <div className="calculate w-full mt-2">
+                                                    <button onClick={calculateDigitWin} style={{ minWidth: "60px" }} className="whitespace-nowrap items-center text-xs bg-orange-400 hover:bg-orange-500 text-white font-semibold p-2 rounded shadow">คำนวณ</button>
+                                                </div>
 
-                                            ))
-                                        }
+
+                                            </div>
+                                        </div>
+                                    }
+
+                                    <div className="flex justify-between w-full p-2">
+                                        <div id="show_digit_temps">
+                                            {
+                                                digitsTemp.map((digit, index) => <button onClick={removeDigitTemp} value={index} key={index} style={{ width: "40px" }} className={"text-xs text-white font-semibold bg-blue-600 hover:bg-blue-700 p-3 border rounded shadow mx-1 mb-2"}>{digit}</button>)
+                                            }
+
+                                        </div>
+                                        <div id="remove_digit_temps">
+                                            <button onClick={() => setDigitsTemp([])} style={{ width: "60px" }} className="whitespace-nowrap inline-flex text-xs bg-red-500 hover:bg-red-400 text-white font-light p-2 rounded shadow mx-2 mb-2">
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-4 h-4">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                                                </svg>
+                                                &nbsp;ยกเลิก</button>
+                                        </div>
                                     </div>
-                                    <div id="remove_digit_orders"></div>
-                                </div>
-                            </div>
 
-                            <div id="bill_footer" className="flex flex-col items-center rounded-lg w-full mb-3 p-2">
-                                <div className="flex justify-center w-full p-2 gap-2">
-                                    <label htmlFor="input_note">หมายเหตุ: </label>
-                                    <input type="text" className="rounded-none border-b w-full" ref={noteRef} id="input_note" onChange={(e) => setIsNotePrice({ note: e.currentTarget.value, price: isNotePrice.price })} value={isNotePrice.note} />
-                                </div>
-                                <div className="flex justify-center w-full p-2 gap-2">
-                                    <span>รวม:</span>
-                                    <span>{price.reduce((price, current) => price + current, 0)} บาท</span>
-                                </div>
-                                <div className="flex justify-center w-full p-2 gap-2">
-                                    {!isMobile() ? <button onClick={() => copyElementToClipboard(document.getElementById("bill_content")!)} style={{ minWidth: "60px" }} className="whitespace-nowrap inline-flex text-xs bg-green-600 hover:bg-green-500 text-white font-light p-2 rounded shadow">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-4 h-4">
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zM18.75 10.5h.008v.008h-.008V10.5z" />
-                                        </svg>
-                                        &nbsp;Screenshot</button> : null}
+                                    <div className="flex justify-between w-full p-2">
+                                        {
+                                            TWO.includes(digitsType) && digitsType !== "WIN" ?
+                                                <button onClick={addDigitDoubleAndTripleValue} style={{ width: "60px" }} className="whitespace-nowrap inline-flex text-xs bg-green-600 hover:bg-green-700 text-white font-light p-2 rounded shadow mx-2 mb-2">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-4 h-4">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                                                    </svg>
+                                                    &nbsp;เลขเบิ้ล</button>
+                                                : THREE.includes(digitsType) &&
+                                                <button onClick={addDigitDoubleAndTripleValue} style={{ width: "60px" }} className="whitespace-nowrap inline-flex text-xs bg-green-600 hover:bg-green-700 text-white font-light p-2 rounded shadow mx-2 mb-2">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-4 h-4">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                                                    </svg>
+                                                    &nbsp;เลขตอง</button>
+                                        }
 
-                                    <Link to={billTemp.length > 0 ? `/bill/check/${location.pathname.split("/")[2]}` : "#"}>
-                                        <button onClick={saveBill} style={{ minWidth: "60px" }} className={"whitespace-nowrap text-xs text-white font-light p-2 rounded shadow " + (billTemp.length === 0 ? "bg-gray-200 cursor-default" : "bg-blue-600 hover:bg-blue-500")}>บันทึก</button>
-                                    </Link>
+                                    </div>
+                                    <div className="border-t w-full"></div>
+                                    <div className="flex justify-around p-2 pt-4 gap-4">
+                                        <div className="relative z-0">
+                                            <input tabIndex={1} ref={digitRef} onKeyUp={inputTempsKey} onChange={inputTemps} type={"text"} id="input_digits" className="bg-white rounded-none block h-8 py-2 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
+                                            <label htmlFor="input_digits" style={{ transition: ".3s" }} className="cursor-text peer-focus:cursor-default pl-1 absolute text-sm text-gray-500 dark:text-gray-400 transform -translate-y-6 scale-75 top-3 z-50 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-7">ใส่เลข</label>
+                                        </div>
+                                        <button id="revert" onClick={digitRevers} style={{ minWidth: "60px" }} className="whitespace-nowrap items-center text-xs bg-orange-500 hover:bg-orange-400 text-white font-light p-2 rounded shadow">กลับเลข</button>
+                                        <div className="relative z-0">
+                                            <input tabIndex={2} ref={priceTopRef} type={"number"} id="input_price_top" className="bg-white rounded-none block h-8 py-2 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
+                                            <label htmlFor="input_price_top" style={{ transition: ".3s" }} className="cursor-text peer-focus:cursor-default pl-1 absolute text-sm text-gray-500 dark:text-gray-400 transform -translate-y-6 scale-75 top-3 z-50 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-7">บน</label>
+                                        </div>
+                                        <div className="relative z-0">
+                                            <input onKeyDown={addBillTempKey} tabIndex={3} ref={priceBottomRef} type={"number"} id="input_price_bottom" className="bg-white rounded-none block h-8 py-2 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
+                                            <label htmlFor="input_price_bottom" style={{ transition: ".3s" }} className="cursor-text peer-focus:cursor-default pl-1 absolute text-sm text-gray-500 dark:text-gray-400 transform -translate-y-6 scale-75 top-3 z-50 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-7">{["ONE", "TWO", "NINETEEN", "WIN"].includes(digitsType) ? "ล่าง" : "โต๊ด"}</label>
+                                        </div>
+                                        <button onClick={addBillTemp} style={{ minWidth: "60px" }} className="whitespace-nowrap items-center inline-flex text-xs bg-green-600 hover:bg-green-500 text-white font-light p-2 rounded shadow">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-4 h-4">
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                                            </svg>
+                                            &nbsp;เพิ่มบิล</button>
+                                    </div>
+                                    <div className="flex justify-between w-full p-2">
+                                        <div id="show_digit_orders" className="flex flex-col w-full">
+                                            {
+                                                billTemp!.map((bill, index) => (
+                                                    <div key={"bill_" + index} className="flex flex-row w-full bg-gray-100 justify-center items-center my-2">
+                                                        {
+                                                            bill.digit[0] && ONE.includes(bill.digit_type) ?
+                                                                <div className="p-2 px-4 mx-auto text-center">วิ่ง<br />บน x ล่าง<br />{bill.digit[0].split(":")[1]} x {bill.digit[0].split(":")[2]}</div>
+                                                                : bill.digit[0] && TWO.includes(bill.digit_type) ?
+                                                                    <div className="p-2 px-4 mx-auto text-center">2 ตัว<br />บน x ล่าง<br />{bill.digit[0].split(":")[1]} x {bill.digit[0].split(":")[2]}</div>
+                                                                    : bill.digit[0] && THREE.includes(bill.digit_type) &&
+                                                                    <div className="p-2 px-4 mx-auto text-center">3 ตัว<br />บน x โต๊ด<br />{bill.digit[0].split(":")[1]} x {bill.digit[0].split(":")[2]}</div>
+                                                        }
+                                                        <div key={"digit_" + index} className="w-3/5 h-full bg-white p-2">
+                                                            {
+                                                                bill.digit.map((digit, index) => (
+                                                                    <span style={{ width: "15px" }} key={"number_" + index} className="inline-block font-light mx-1">{digit!.split(":")[0]!}&nbsp;</span>
+                                                                ))
+                                                            }
+                                                        </div>
+                                                        <div key={"delete_" + index} className="mx-auto text-center">
+                                                            <button onClick={removeBillTemp} value={index} className="whitespace-nowrap inline-flex text-xs text-red-600 hover:text-red-400 font-light p-2 rounded shadow mx-2 mb-2">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-4 h-4">
+                                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                                                                </svg>
+                                                                &nbsp;</button>
+                                                        </div>
+                                                    </div>
+
+                                                ))
+                                            }
+                                        </div>
+                                        <div id="remove_digit_orders"></div>
+                                    </div>
+                                </div>
+
+                                <div id="bill_footer" className="flex flex-col items-center rounded-lg w-full mb-3 p-2">
+                                    <div className="flex justify-center w-full p-2 gap-2">
+                                        <label htmlFor="input_note">หมายเหตุ: </label>
+                                        <input type="text" className="rounded-none border-b w-full" ref={noteRef} id="input_note" onChange={(e) => setIsNotePrice({ note: e.currentTarget.value, price: isNotePrice.price })} value={isNotePrice.note} />
+                                    </div>
+                                    <div className="flex justify-center w-full p-2 gap-2">
+                                        <span>รวม:</span>
+                                        <span>{price.reduce((price, current) => price + current, 0)} บาท</span>
+                                    </div>
+                                    <div className="flex justify-center w-full p-2 gap-2">
+                                        {!isMobile() ? <button onClick={() => copyElementToClipboard(document.getElementById("bill_content")!)} style={{ minWidth: "60px" }} className="whitespace-nowrap inline-flex text-xs bg-green-600 hover:bg-green-500 text-white font-light p-2 rounded shadow">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-4 h-4">
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zM18.75 10.5h.008v.008h-.008V10.5z" />
+                                            </svg>
+                                            &nbsp;Screenshot</button> : null}
+
+                                        <Link to={billTemp.length > 0 ? `/bill/check/${location.pathname.split("/")[2]}` : "#"}>
+                                            <button onClick={saveBill} style={{ minWidth: "60px" }} className={"whitespace-nowrap text-xs text-white font-light p-2 rounded shadow " + (billTemp.length === 0 ? "bg-gray-200 cursor-default" : "bg-blue-600 hover:bg-blue-500")}>บันทึก</button>
+                                        </Link>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div className="basis-3/6 w-full p-2">
-                        <table id="statics" className="w-full mb-3">
-                            <thead className="bg-red-500 text-white">
-                                <tr>
-                                    <th>สถิติรางวัล</th>
-                                    <th>5 งวดล่าสุด</th>
-                                    <th>3 ตัวบน</th>
-                                    <th>2 ตัวบน</th>
-                                    <th>2 ตัวล่าง</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td className="border px-1 font-light">ดาวน์โจนส์ VIP</td>
-                                    <td className="border px-1 font-light">2022-12-09</td>
-                                    <td className="border px-1 font-light">231</td>
-                                    <td className="border px-1 font-light">31</td>
-                                    <td className="border px-1 font-light">22</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <div className="basis-3/6 w-full p-2">
+                            <table id="statics" className="w-full mb-3">
+                                <thead className="bg-red-500 text-white">
+                                    <tr>
+                                        <th>สถิติรางวัล</th>
+                                        <th>5 งวดล่าสุด</th>
+                                        <th>3 ตัวบน</th>
+                                        <th>2 ตัวบน</th>
+                                        <th>2 ตัวล่าง</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td className="border px-1 font-light">ดาวน์โจนส์ VIP</td>
+                                        <td className="border px-1 font-light">2022-12-09</td>
+                                        <td className="border px-1 font-light">231</td>
+                                        <td className="border px-1 font-light">31</td>
+                                        <td className="border px-1 font-light">22</td>
+                                    </tr>
+                                </tbody>
+                            </table>
 
-                        <table id="digits_close" className="w-full mb-3">
-                            <thead className="bg-blue-800 text-white">
-                                <tr>
-                                    <th>เลขมาแรง</th>
-                                    <th>จ่ายครึ่ง</th>
-                                    <th>ปิดรับ</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td className="border px-1 font-light">2 ตัวบน</td>
-                                    <td className="border px-1 font-light"></td>
-                                    <td className="border px-1 font-light">
-                                        {digitClose?.two_digits?.top?.toString()}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td className="border px-1 font-light">2 ตัวล่าง</td>
-                                    <td className="border px-1 font-light"></td>
-                                    <td className="border px-1 font-light">
-                                        {digitClose?.two_digits?.bottom?.toString()}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td className="border px-1 font-light">3 ตัวบน</td>
-                                    <td className="border px-1 font-light"></td>
-                                    <td className="border px-1 font-light">
-                                        {digitClose?.three_digits?.top?.toString()}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td className="border px-1 font-light">3 ตัวโต๊ด</td>
-                                    <td className="border px-1 font-light"></td>
-                                    <td className="border px-1 font-light">
-                                        {digitClose?.three_digits?.toad?.toString()}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td className="border px-1 font-light">วิ่งบน</td>
-                                    <td className="border px-1 font-light"></td>
-                                    <td className="border px-1 font-light">
-                                        {digitClose?.one_digits?.top?.toString()}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td className="border px-1 font-light">วิ่งล่าง</td>
-                                    <td className="border px-1 font-light"></td>
-                                    <td className="border px-1 font-light">
-                                        {digitClose?.one_digits?.bottom?.toString()}
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                            <table id="digits_close" className="w-full mb-3">
+                                <thead className="bg-blue-800 text-white">
+                                    <tr>
+                                        <th>เลขมาแรง</th>
+                                        <th>จ่ายครึ่ง</th>
+                                        <th>ปิดรับ</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td className="border px-1 font-light">2 ตัวบน</td>
+                                        <td className="border px-1 font-light"></td>
+                                        <td className="border px-1 font-light">
+                                            {digitClose?.two_digits?.top?.toString()}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td className="border px-1 font-light">2 ตัวล่าง</td>
+                                        <td className="border px-1 font-light"></td>
+                                        <td className="border px-1 font-light">
+                                            {digitClose?.two_digits?.bottom?.toString()}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td className="border px-1 font-light">3 ตัวบน</td>
+                                        <td className="border px-1 font-light"></td>
+                                        <td className="border px-1 font-light">
+                                            {digitClose?.three_digits?.top?.toString()}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td className="border px-1 font-light">3 ตัวโต๊ด</td>
+                                        <td className="border px-1 font-light"></td>
+                                        <td className="border px-1 font-light">
+                                            {digitClose?.three_digits?.toad?.toString()}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td className="border px-1 font-light">วิ่งบน</td>
+                                        <td className="border px-1 font-light"></td>
+                                        <td className="border px-1 font-light">
+                                            {digitClose?.one_digits?.top?.toString()}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td className="border px-1 font-light">วิ่งล่าง</td>
+                                        <td className="border px-1 font-light"></td>
+                                        <td className="border px-1 font-light">
+                                            {digitClose?.one_digits?.bottom?.toString()}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
 
-                        <table id="last_order" className="w-full mb-3">
-                            <caption className="text-start">รายการบิลล่าสุด (แสดง 15 รายการ)</caption>
-                            <thead className="bg-blue-800 text-white">
-                                <tr>
-                                    <th>เวลาแทง</th>
-                                    <th>ตลาด</th>
-                                    <th>รายการ</th>
-                                    <th>บาท</th>
-                                    <th>หมายเหตุ</th>
-                                    <th>ลบโพย</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td className="border px-1 font-light">2022-12-10 16:57:40</td>
-                                    <td className="border px-1 font-light">ฮานอยพิเศษ#2022-12-10</td>
-                                    <td className="border px-1 font-light">20</td>
-                                    <td className="border px-1 font-light">230</td>
-                                    <td className="border px-1 font-light">ขวัญสุดา</td>
-                                    <td className="border px-1 font-light text-center">
-                                        <button className="text-xs text-red-600 hover:text-red-500 font-light p-2 rounded shadow mx-2 mb-2">
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-4 h-4">
-                                                <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
-                                            </svg>
-                                        </button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                            <table id="last_order" className="w-full mb-3">
+                                <caption className="text-start">รายการบิลล่าสุด (แสดง 15 รายการ)</caption>
+                                <thead className="bg-blue-800 text-white">
+                                    <tr>
+                                        <th>เวลาแทง</th>
+                                        <th>ตลาด</th>
+                                        <th>รายการ</th>
+                                        <th>บาท</th>
+                                        <th>หมายเหตุ</th>
+                                        <th>ลบโพย</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td className="border px-1 font-light">2022-12-10 16:57:40</td>
+                                        <td className="border px-1 font-light">ฮานอยพิเศษ#2022-12-10</td>
+                                        <td className="border px-1 font-light">20</td>
+                                        <td className="border px-1 font-light">230</td>
+                                        <td className="border px-1 font-light">ขวัญสุดา</td>
+                                        <td className="border px-1 font-light text-center">
+                                            <button className="text-xs text-red-600 hover:text-red-500 font-light p-2 rounded shadow mx-2 mb-2">
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-4 h-4">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                                                </svg>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
+                    {modal.openModal === "CONFIRM" && <ModalConfirm />}
                 </div>
-                {modal.openModal === "CONFIRM" && <ModalConfirm />}
-            </div>
-        </>
-            : <>กำลังโหลด</>
+            </>
+        )
+    }
+
+    const isLoading = document.getElementById("loading")
+
+    const loading = () => {
+        isLoading!.removeAttribute("style")
+        isLoading!.style.position = "fixed"
+        return <></>
+    }
+    
+    return (
+        isUser &&
+            lotto ? render()
+            : loading()
     )
 }

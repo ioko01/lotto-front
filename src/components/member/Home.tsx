@@ -7,6 +7,7 @@ import { ILotto, TLottoStatusEnum } from "../../models/Lotto";
 import { countdown } from "../../utils/countdown";
 import { Time } from "../../models/Time";
 import { ILottoDoc } from "../../models/Id";
+import { Modal } from "../modal/Modal";
 
 interface ImageBase64 {
     name: string
@@ -37,7 +38,7 @@ export function Home() {
                     const this_hours = new Date().getHours()
                     const this_minutes = new Date().getMinutes()
                     const t = `${this_hours}:${this_minutes}`
-                    
+
                     const cd = countdown(res.open, res.close, getTomorrow(res.open, res.close, t))
                     if (cd.days < 0) {
                         if (res.status == TLottoStatusEnum.OPEN) axios.put(`${import.meta.env.VITE_OPS_URL}/status/lotto`, { id: res.id, status: TLottoStatusEnum.CLOSE }, axiosConfig)
@@ -204,12 +205,20 @@ export function Home() {
         fetchLottoAll()
     }, [])
 
+    const isLoading = document.getElementById("loading")
+
+    const loading = () => {
+        isLoading!.removeAttribute("style")
+        isLoading!.style.position = "fixed"
+        return <></>
+    }
+    
     return (
         <>{
             isUser &&
             <div id="home" className="flex flex-row">
                 {
-                    lotto ? display() : "กำลังโหลด"
+                    lotto ? display() : loading()
                 }
             </div>
         }
