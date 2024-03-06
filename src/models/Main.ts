@@ -15,3 +15,10 @@ export interface IInitialState {
 }
 
 export interface FirebaseTimestamp { seconds: number | string, nanoseconds: number | string }
+
+export type TypeDate = {
+    startDate: string | Date | null,
+    endDate: string | Date | null
+} | null
+
+export type TDate = "TODAY" | "YESTERDAY" | "THIS_WEEK" | "LAST_WEEK" | "MONTH" | "SELECT_DATE"

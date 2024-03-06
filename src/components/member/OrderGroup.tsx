@@ -5,13 +5,7 @@ import axios from "axios";
 import { axiosConfig } from "../../utils/headers";
 import moment from "moment";
 import { ICheckReward } from "../../models/CheckReward";
-
-type TypeDate = {
-    startDate: string | Date | null,
-    endDate: string | Date | null
-} | null
-
-type TDate = "TODAY" | "YESTERDAY" | "THIS_WEEK" | "LAST_WEEK" | "MONTH" | "SELECT_DATE"
+import { TDate, TypeDate } from "../../models/Main";
 
 export function OrderGroup() {
 

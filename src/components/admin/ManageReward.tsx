@@ -6,6 +6,9 @@ import { ICheckReward } from '../../models/CheckReward'
 import { Modal } from '../modal/Modal'
 import { useDispatch } from 'react-redux'
 import { stateModal } from '../../redux/features/modal/modalSlice'
+import Datepicker from 'react-tailwindcss-datepicker'
+import { TDate, TypeDate } from '../../models/Main'
+import moment from 'moment'
 
 type Props = {}
 
@@ -18,6 +21,78 @@ const ManageReward = (props: Props) => {
     const [two, setTwo] = useState('');
     const [three, setThree] = useState('');
 
+    const [disabledDatepicker, setDisabledDatepicker] = useState<boolean>(true)
+    const [disabledMonth, setDisabledMonth] = useState<boolean>(true)
+
+    const [isDate, setDate] = useState<TypeDate>({
+        startDate: new Date(),
+        endDate: new Date()
+    });
+
+    const handleDateChange = (newDate: TypeDate) => {
+        setDate(newDate)
+    }
+
+    const toggleDisabled = (disabledMonth: boolean, disabledDatePicker: boolean) => {
+        setDisabledMonth(disabledMonth)
+        setDisabledDatepicker(disabledDatePicker)
+    }
+
+    const selectDateType = (date: TDate, month: number = 0) => {
+        const thisDateStart = new Date()
+        const thisDateEnd = new Date()
+        let start = new Date()
+        let end = new Date()
+
+        if (date == "TODAY") {
+            start = thisDateStart
+            end = thisDateEnd
+        }
+
+        if (date == "YESTERDAY") {
+            thisDateStart.setDate(thisDateStart.getDate() - 1).toString()
+            thisDateEnd.setDate(thisDateEnd.getDate() - 1).toString()
+
+            start = thisDateStart
+            end = thisDateEnd
+        }
+
+        if (date == "THIS_WEEK") {
+            thisDateStart.setDate(thisDateStart.getDate() - thisDateStart.getDay() + 1).toString()
+            start = thisDateStart
+
+            end = thisDateEnd
+        }
+
+        if (date == "LAST_WEEK") {
+            thisDateStart.setDate(thisDateStart.getDate() - thisDateStart.getDay() - 7).toString()
+            start = thisDateStart
+
+            thisDateEnd.setDate(thisDateEnd.getDate() - thisDateEnd.getDay()).toString()
+            end = thisDateEnd
+        }
+
+        if (date == "MONTH") {
+            thisDateStart.setDate(1).toString()
+            thisDateStart.setMonth(month - 1)
+            start = thisDateStart
+
+            thisDateEnd.setMonth(month, 0)
+            end = thisDateEnd
+
+        }
+
+        if (date == "SELECT_DATE") {
+            start = new Date(isDate!.startDate!)
+            end = new Date(isDate!.endDate!)
+        }
+
+        setDate({
+            startDate: start,
+            endDate: end
+        })
+    }
+
     const dispatch = useDispatch();
 
 
@@ -25,13 +100,19 @@ const ManageReward = (props: Props) => {
         try {
             const fetchLottos = await axios.get(`${import.meta.env.VITE_OPS_URL}/get/lotto/all`, axiosConfig)
             if (fetchLottos) {
+                const start = new Date(isDate!.startDate!)
+                const end = new Date(isDate!.endDate!)
+
+                const ds = `${start.getDate()}-${start.getMonth() + 1}-${start.getFullYear()}`
+                const de = `${end.getDate()}-${end.getMonth() + 1}-${end.getFullYear()}`
+
                 const lottos = fetchLottos.data as ILottoDoc[]
-                const fetchRewards = await axios.get(`${import.meta.env.VITE_OPS_URL}/get/reward/all`, axiosConfig)
+                const fetchRewards = await axios.get(`${import.meta.env.VITE_OPS_URL}/get/reward/lotto/${ds}/${de}`, axiosConfig)
                 if (fetchRewards) {
                     const rewards = fetchRewards.data as ICheckRewardDoc[]
                     let getRewardAll: ICheckReward[] = []
                     lottos.map((lotto, index) => {
-                        getRewardAll.push({ top: "", bottom: "", lotto_id: lotto, times: "" })
+                        getRewardAll.push({ top: "", bottom: "", lotto_id: lotto, times: new Date() })
                         rewards.map(reward => {
                             if (reward.lotto_id.id == lotto.id) {
                                 getRewardAll[index] = reward
@@ -77,6 +158,88 @@ const ManageReward = (props: Props) => {
 
     return (
         <>
+            <strong>ตัวเลือกการค้นหา</strong>
+            <div className="flex flex-row mt-3">
+                <div className="flex items-center mr-10">
+                    <input onChange={() => { toggleDisabled(true, true); selectDateType("TODAY"); }} defaultChecked id="today" type="radio" name="order_filter" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+                    <label htmlFor="today" className="font-bold ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">วันนี้</label>
+                </div>
+                <div className="flex items-center mr-10">
+                    <input onChange={() => { toggleDisabled(true, true); selectDateType("YESTERDAY"); }} id="yesterday" type="radio" name="order_filter" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+                    <label htmlFor="yesterday" className="font-bold ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">เมื่อวาน</label>
+                </div>
+                <div className="flex items-center mr-10">
+                    <input onChange={() => { toggleDisabled(true, true); selectDateType("THIS_WEEK"); }} id="weeked" type="radio" name="order_filter" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+                    <label htmlFor="weeked" className="font-bold ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">สัปดาห์นี้</label>
+                </div>
+                <div className="flex items-center mr-10">
+                    <input onChange={() => { toggleDisabled(true, true); selectDateType("LAST_WEEK"); }} id="last_week" type="radio" name="order_filter" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+                    <label htmlFor="last_week" className="font-bold ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">สัปดาห์ที่แล้ว</label>
+                </div>
+            </div>
+
+            <div className="flex flex-row mt-3">
+                <div style={{ width: "90px" }} className="flex items-center">
+                    <input onChange={() => { toggleDisabled(false, true); selectDateType("MONTH"); }} id="month" type="radio" name="order_filter" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+                    <label htmlFor="month" className="font-bold ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">เดือน</label>
+                </div>
+                <div className="flex items-center mr-6">
+                    <label htmlFor="select_month" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"></label>
+                    <select onChange={(e) => { selectDateType("MONTH", parseInt(e.currentTarget.value)) }} style={{ width: "320px" }} disabled={disabledMonth} id="select_month" className="text-center transition-all duration-300 py-2.5 w-full border border-gray-300 dark:bg-slate-800 dark:text-white/80 dark:border-slate-600 rounded-lg tracking-wide font-light text-sm placeholder-gray-400 bg-white focus:ring disabled:opacity-40 disabled:cursor-not-allowed focus:border-indigo-500 focus:ring-indigo-500/20">
+                        <option className="font-normal">-- เลือกเดือน --</option>
+                        <option value="1" className="font-normal">มกราคม</option>
+                        <option value="2" className="font-normal">กุมภาพันธ์</option>
+                        <option value="3" className="font-normal">มีนาคม</option>
+                        <option value="4" className="font-normal">เมษายน</option>
+                        <option value="5" className="font-normal">พฤษภาคม</option>
+                        <option value="6" className="font-normal">มิถุนายน</option>
+                        <option value="7" className="font-normal">กรกฎาคม</option>
+                        <option value="8" className="font-normal">สิงหาคม</option>
+                        <option value="9" className="font-normal">กันยายน</option>
+                        <option value="10" className="font-normal">ตุลาคม</option>
+                        <option value="11" className="font-normal">พฤษจิกายน</option>
+                        <option value="12" className="font-normal">ธันวาคม</option>
+                    </select>
+                </div>
+            </div>
+
+            <div className="flex flex-row mt-3 whitespace-nowrap w-full">
+                <div style={{ width: "90px" }} className="flex items-center">
+                    <input onChange={() => { toggleDisabled(true, false); selectDateType("SELECT_DATE"); }} id="custom_date" type="radio" name="order_filter" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+                    <label htmlFor="custom_date" className="font-bold ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">เลือกวันที่</label>
+                </div>
+                <div style={{ width: "320px" }} className="border rounded-lg">
+                    <Datepicker
+                        primaryColor="indigo"
+                        i18n="th"
+                        configs={{
+                            footer: {
+                                apply: "ยืนยัน",
+                                cancel: "ยกเลิก"
+                            }
+                        }}
+                        placeholder="วัน/เดือน/ปี - วัน/เดือน/ปี"
+                        value={isDate}
+                        useRange={false}
+                        showFooter={true}
+                        separator="-"
+                        inputClassName={"relative text-center transition-all duration-300 py-2.5 pl-4 pr-14 w-full border-gray-300 dark:bg-slate-800 dark:text-white/80 dark:border-slate-600 rounded-lg tracking-wide font-light text-sm placeholder-gray-400 bg-white focus:ring disabled:opacity-40 disabled:cursor-not-allowed focus:border-indigo-500 focus:ring-indigo-500/20"}
+                        displayFormat={"DD/MM/YYYY"}
+                        onChange={handleDateChange}
+                        readOnly={true}
+                        disabled={disabledDatepicker}
+                    />
+                </div>
+            </div>
+
+            <div className="flex flex-row mt-3">
+                <button onClick={fetchLottosAndRewardAll} className="inline-flex font-bold text-xs bg-blue-800 hover:bg-blue-700 text-white font-light p-2 px-4 rounded-md shadow">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-4 h-4">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                    </svg>
+                    ค้นหา</button>
+            </div>
+            <br />
             <div className="text-gray-900 bg-gray-200">
                 <div className="p-4 flex">
                     <h1 className="text-3xl">
@@ -101,7 +264,7 @@ const ManageReward = (props: Props) => {
                                 <tr key={index} className="border-b hover:bg-orange-100 bg-gray-100 text-center">
                                     <td className="p-3" width={"10%"}>{index + 1}</td>
                                     <td className="p-3">{reward.lotto_id.name}</td>
-                                    <td className="p-3">{reward.times}</td>
+                                    <td className="p-3">{moment(new Date(Object(reward.times)['seconds'] * 1000 + Object(reward.times)['nanoseconds'] / 1000)).format("DD-MM-YYYY") != "Invalid date" ? moment(new Date(Object(reward.times)['seconds'] * 1000 + Object(reward.times)['nanoseconds'] / 1000)).format("DD-MM-YYYY") : moment(new Date(reward.times.toString())).format("DD-MM-YYYY")}</td>
                                     <td className="p-3">{(reward.top || reward.bottom) ? `${reward.top}/${reward.bottom}` : "รอผล"}</td>
                                     <td className="p-3">{reward.lotto_id.api ?? "-"}</td>
                                     <td className="p-3"><button className='btn btn-primary' onClick={() => openCheckRewardModal(reward)}>{(reward.top && reward.bottom) ? "แก้ไขผล" : "ใส่ผล"}</button></td>
