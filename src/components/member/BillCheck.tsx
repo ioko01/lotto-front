@@ -156,7 +156,7 @@ export function BillCheck() {
             store_id: isUser!.store_id!,
             lotto_id: lotto!,
             rate_id: rate!,
-            times: "12-01-2566",
+            times: "01-01-1997",
             one_digits: digitOne,
             two_digits: digitTwo,
             three_digits: digitThree,
@@ -175,11 +175,16 @@ export function BillCheck() {
                 io.connect()
                 io.emit("create_credit")
                 io.disconnect()
+            } else if (res.status == 202 && res.data.message == "no credit") {
+                console.log("object");
+                isLoading!.style.display = "none"
+                dispatch(stateModal({ show: true, openModal: "NO_CREDIT", confirm: false }))
             } else {
+                isLoading!.style.display = "none"
                 dispatch(stateModal({ show: true, openModal: "ADDBILLFALSE", confirm: false }))
             }
         }).catch(error => {
-            console.log(error)
+            isLoading!.style.display = "none"
             dispatch(stateModal({ show: true, openModal: "ADDBILLFALSE", confirm: false }))
             console.log(error);
         })
@@ -295,6 +300,7 @@ export function BillCheck() {
         return commission
     }
 
+
     return (
         rate! ? <>
             {
@@ -392,7 +398,9 @@ export function BillCheck() {
                 </div>
             </div>
 
-            {modal.openModal === "ADDBILLTRUE" && <div className="overlay-timeout"><ModalNotice /></div>}
+            {
+                (modal.openModal === "ADDBILLTRUE" || modal.openModal === "ADDBILLFALSE" || modal.openModal === "NO_CREDIT") && <ModalNotice />
+            }
 
         </> : <>ไม่มีอัตราการจ่าย</>
 
