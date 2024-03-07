@@ -298,7 +298,7 @@ export function OrderGroup() {
                                                                         <tr key={i}>
                                                                             <td className="border border-slate-300 font-light">{moment(new Date(Object(bill.created_at)['seconds'] * 1000 + Object(bill.created_at)['nanoseconds'] / 1000)).format("DD-MM-YYYY HH:mm:ss")}</td>
                                                                             <td className="border border-slate-300 font-light">{bill.lotto_id.name}</td>
-                                                                            <td className="border border-slate-300 font-light">{bill.times}</td>
+                                                                            <td className="border border-slate-300 font-light">{new Date(bill.times.toString()).toDateString()}</td>
                                                                             <td className="border border-slate-300 text-green-600">{(price[i] - commission[i]) ? (price[i] - commission[i]).toFixed(2) : ""}</td>
                                                                             <td className="border border-slate-300">{commission[i] ? commission[i].toFixed(2) : ""}</td>
                                                                             <td className="border border-slate-300 text-red-500">{bill.status == "WAIT" ? "รอผล" : bill.status == "CANCEL" ? "ยกเลิก" : bill.status == "REWARD" && "ไม่ถูกรางวัล"}</td>
@@ -366,7 +366,7 @@ export function OrderGroup() {
                                     <div id="bill_header" className="flex flex-col items-start rounded-sm w-full mb-3 p-2">
                                         <span>
                                             [{billId?.lotto_id.name}]  &nbsp;
-                                            {billId?.times} &nbsp;
+                                            {billId?.times ? new Date(billId?.times.toString()).toDateString(): ""} &nbsp;
                                             {billId?.status == "WAIT" && <span className="bg-yellow-500 text-sm px-1 rounded">ส่งโพย</span>}
                                             {billId?.status == "REWARD" && <span className="bg-blue-500 text-white text-sm px-1 rounded">ออกรางวัล</span>}
                                             {billId?.status == "CANCEL" && <span className="bg-red-500 text-white text-sm px-1 rounded">ยกเลิกโพย</span>}
