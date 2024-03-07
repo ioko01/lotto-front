@@ -151,12 +151,12 @@ export function BillCheck() {
             }
 
         })
-
+        
         const BILL: IBill = {
             store_id: isUser!.store_id!,
             lotto_id: lotto!,
             rate_id: rate!,
-            times: "01-01-1997",
+            times: new Date(Date.now()).toDateString(),
             one_digits: digitOne,
             two_digits: digitTwo,
             three_digits: digitThree,

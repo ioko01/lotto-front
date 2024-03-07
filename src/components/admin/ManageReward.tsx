@@ -23,7 +23,6 @@ const ManageReward = (props: Props) => {
 
     const [disabledDatepicker, setDisabledDatepicker] = useState<boolean>(true)
     const [disabledMonth, setDisabledMonth] = useState<boolean>(true)
-    const [isDateNow, setIsDateNow] = useState<boolean>(true)
 
     const [isDate, setDate] = useState<TypeDate>({
         startDate: new Date(),
@@ -115,6 +114,7 @@ const ManageReward = (props: Props) => {
                     lottos.map((lotto, index) => {
                         getRewardAll.push({ top: "", bottom: "", lotto_id: lotto, times: new Date() })
                         rewards.map(reward => {
+                            console.log(reward.lotto_id.id, lotto.id);
                             if (reward.lotto_id.id == lotto.id) {
                                 getRewardAll[index] = reward
                             }
@@ -122,12 +122,7 @@ const ManageReward = (props: Props) => {
                     })
                     setRewardAll(getRewardAll)
                 }
-
-                if (start.toDateString() == new Date(Date.now()).toDateString() && end.toDateString() == new Date(Date.now()).toDateString()) {
-                    setIsDateNow(true)
-                } else {
-                    setIsDateNow(false)
-                }
+                
             }
         } catch (error) {
         }
@@ -239,7 +234,7 @@ const ManageReward = (props: Props) => {
                                 <tr key={index} className="border-b hover:bg-orange-100 bg-gray-100 text-center">
                                     <td className="p-3" width={"10%"}>{index + 1}</td>
                                     <td className="p-3">{reward.lotto_id.name}</td>
-                                    <td className="p-3">{isDateNow ? moment(new Date(Object(reward.times))).format("DD-MM-YYYY") : moment(new Date(Object(reward.times)['seconds'] * 1000 + Object(reward.times)['nanoseconds'] / 1000)).format("DD-MM-YYYY") != "Invalid date" ? moment(new Date(Object(reward.times)['seconds'] * 1000 + Object(reward.times)['nanoseconds'] / 1000)).format("DD-MM-YYYY") : moment(isDate!.startDate!).format("DD-MM-YYYY")}</td>
+                                    <td className="p-3">{moment(new Date(Object(reward.times)['seconds'] * 1000 + Object(reward.times)['nanoseconds'] / 1000)).format("DD-MM-YYYY") != "Invalid date" ? moment(new Date(Object(reward.times)['seconds'] * 1000 + Object(reward.times)['nanoseconds'] / 1000)).format("DD-MM-YYYY") : moment(isDate!.startDate!).format("DD-MM-YYYY")}</td>
                                     <td className="p-3">{(reward.top || reward.bottom) ? `${reward.top}/${reward.bottom}` : "รอผล"}</td>
                                     <td className="p-3">{reward.lotto_id.api ?? "-"}</td>
                                     <td className="p-3"><button className='btn btn-primary' onClick={() => openCheckRewardModal(reward)}>{(reward.top && reward.bottom) ? "แก้ไขผล" : "ใส่ผล"}</button></td>
