@@ -298,7 +298,7 @@ export function OrderGroup() {
                                                                         <tr key={i}>
                                                                             <td className="border border-slate-300 font-light">{moment(new Date(Object(bill.created_at)['seconds'] * 1000 + Object(bill.created_at)['nanoseconds'] / 1000)).format("DD-MM-YYYY HH:mm:ss")}</td>
                                                                             <td className="border border-slate-300 font-light">{bill.lotto_id.name}</td>
-                                                                            <td className="border border-slate-300 font-light">{new Date(bill.times.toString()).toDateString()}</td>
+                                                                            <td className="border border-slate-300 font-light">{moment(new Date(Object(bill.times)['seconds'] * 1000 + Object(bill.times)['nanoseconds'] / 1000)).format("DD-MM-YYYY")}</td>
                                                                             <td className="border border-slate-300 text-green-600">{(price[i] - commission[i]) ? (price[i] - commission[i]).toFixed(2) : ""}</td>
                                                                             <td className="border border-slate-300">{commission[i] ? commission[i].toFixed(2) : ""}</td>
                                                                             <td className="border border-slate-300 text-red-500">{bill.status == "WAIT" ? "รอผล" : bill.status == "CANCEL" ? "ยกเลิก" : bill.status == "REWARD" && "ไม่ถูกรางวัล"}</td>
