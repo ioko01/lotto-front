@@ -1,6 +1,6 @@
 import { Fragment, useEffect, useRef, useState } from "react";
 import Datepicker from "react-tailwindcss-datepicker";
-import { IBill } from "../../models/Bill";
+import { IBill, TBillStatus } from "../../models/Bill";
 import axios from "axios";
 import { axiosConfig } from "../../utils/headers";
 import moment from "moment";
@@ -9,8 +9,25 @@ import { TDate, TypeDate } from "../../models/Main";
 import { stateModal } from "../../redux/features/modal/modalSlice";
 import { Modal } from "../modal/Modal";
 import { useAppDispatch } from "../../redux/hooks";
+import { IBillDoc } from "../../models/Id";
 
-
+interface Reward {
+    id: string;
+    one_digit?: {
+        top?: string[]
+        bottom?: string[]
+    }
+    two_digit?: {
+        top?: string[]
+        bottom?: string[]
+    }
+    three_digit?: {
+        top?: string[]
+        toad?: string[]
+    }
+    total_price: number;
+    status: TBillStatus;
+}
 export function OrderGroup() {
 
     const [isDate, setDate] = useState<TypeDate>({
@@ -20,11 +37,12 @@ export function OrderGroup() {
 
     const [disabledDatepicker, setDisabledDatepicker] = useState<boolean>(true)
     const [disabledMonth, setDisabledMonth] = useState<boolean>(true)
-    const [bills, setBills] = useState<IBill[]>([])
+    const [bills, setBills] = useState<IBillDoc[]>([])
     const [lottoGroup, setLottoGroup] = useState<string[]>([])
     const [price, setPrice] = useState<number[]>([])
     const [commission, setCommission] = useState<number[]>([])
-    const [billId, setBillId] = useState<IBill>()
+    const [billId, setBillId] = useState<IBillDoc>()
+    const [billReward, setBillReward] = useState<Reward[]>()
     const dispatch = useAppDispatch()
 
 
@@ -106,7 +124,7 @@ export function OrderGroup() {
 
             const res = await axios.get(`${import.meta.env.VITE_OPS_URL}/get/bill/me/${ds}/${de}`, axiosConfig)
             if (res && res.status == 200) {
-                const data = res.data as IBill[]
+                const data = res.data as IBillDoc[]
                 let prices: number[] = []
                 let commissions: number[] = []
                 let group: string[] = []
@@ -115,10 +133,82 @@ export function OrderGroup() {
                 const fetchReward = await axios.get(`${import.meta.env.VITE_OPS_URL}/get/reward/lotto/${ds}/${de}`, axiosConfig)
                 if (fetchReward && fetchReward.status == 200) {
                     const reward = fetchReward.data as ICheckReward[]
-                    console.log(reward);
+                    const bill_reward: Reward[] = []
                     if (reward.length > 0) {
-
+                        data.map((bill, i) => {
+                            bill_reward[i] = {
+                                id: bill.id,
+                                total_price: 0,
+                                one_digit: { top: [], bottom: [] },
+                                two_digit: { top: [], bottom: [] },
+                                three_digit: { top: [], toad: [] },
+                                status: "REWARD"
+                            }
+                            reward.map((r, j) => {
+                                if (bill.lotto_id.id == r.lotto_id.id) {
+                                    bill.one_digits?.map(one => {
+                                        const ONE = one.split(":")
+                                        if (r.top.search(ONE[0])) {
+                                            const p = parseInt(bill.rate_id.one_digits.top!.toString()) ?? 0
+                                            bill_reward[i].one_digit?.top?.push(`${ONE[0]}:${ONE[1]}`)
+                                            bill_reward[i].total_price += parseInt(ONE[1]) * p
+                                        }
+                                        if (r.bottom.search(ONE[0])) {
+                                            const p = parseInt(bill.rate_id.one_digits.bottom!.toString()) ?? 0
+                                            bill_reward[i].one_digit?.bottom?.push(`${ONE[0]}:${ONE[2]}`)
+                                            bill_reward[i].total_price += parseInt(ONE[2]) * p
+                                        }
+                                    })
+                                    bill.two_digits?.map(two => {
+                                        const TWO = two.split(":")
+                                        if (r.top.substring(1).match(TWO[0])) {
+                                            const p = parseInt(bill.rate_id.two_digits.top!.toString()) ?? 0
+                                            bill_reward[i].two_digit?.top?.push(`${TWO[0]}:${TWO[1]}`)
+                                            bill_reward[i].total_price += parseInt(TWO[1]) * p
+                                        }
+                                        if (r.bottom.match(TWO[0])) {
+                                            const p = parseInt(bill.rate_id.two_digits.bottom!.toString()) ?? 0
+                                            bill_reward[i].two_digit?.bottom?.push(`${TWO[0]}:${TWO[2]}`)
+                                            bill_reward[i].total_price += parseInt(TWO[2]) * p
+                                        }
+                                    })
+                                    bill.three_digits?.map(three => {
+                                        const THREE = three.split(":")
+                                        if (r.top.match(THREE[0])) {
+                                            if (THREE[1] != "0") {
+                                                const p = parseInt(bill.rate_id.three_digits.top!.toString()) ?? 0
+                                                bill_reward[i].three_digit?.top?.push(`${THREE[0]}:${THREE[1]}`)
+                                                bill_reward[i].total_price += parseInt(THREE[1]) * p
+                                            }
+                                            if (THREE[2] != "0") {
+                                                const p = parseInt(bill.rate_id.three_digits.toad!.toString()) ?? 0
+                                                bill_reward[i].three_digit?.toad?.push(`${THREE[0]}:${THREE[2]}`)
+                                                bill_reward[i].total_price += parseInt(THREE[2]) * p
+                                            }
+                                        } else {
+                                            const tmpFilter: string[] = []
+                                            const tmp: string[] = []
+                                            const split = r.top.split("")
+                                            split.map((_, index) => {
+                                                const arrTemp: number[] = []
+                                                for (let i = 0; i < 3; i++) (i !== index) && arrTemp.push(i)
+                                                tmp.push(split[index].concat(split[arrTemp[0]], split[arrTemp[1]]))
+                                                tmp.push(split[index].concat(split[arrTemp[1]], split[arrTemp[0]]))
+                                            })
+                                            const filter = Array.from(new Set(tmp))
+                                            filter.map((digit, index) => index > 0 && tmpFilter.push(digit))
+                                            if (tmpFilter.includes(THREE[0])) {
+                                                const p = parseInt(bill.rate_id.three_digits.toad!.toString()) ?? 0
+                                                bill_reward[i].three_digit?.toad?.push(`${THREE[0]}:${THREE[2]}`)
+                                                bill_reward[i].total_price += parseInt(THREE[2]) * p
+                                            }
+                                        }
+                                    })
+                                }
+                            })
+                        })
                     }
+                    setBillReward(bill_reward)
                 }
                 data.map((bill, index) => {
                     if (group.length == 0) {
@@ -291,35 +381,37 @@ export function OrderGroup() {
                                                     </thead>
                                                     <tbody>
                                                         {
-                                                            bills.map((bill, i) => (
-                                                                <Fragment key={i}>
-                                                                    {
-                                                                        bill.lotto_id.name == g &&
-                                                                        <tr key={i}>
-                                                                            <td className="border border-slate-300 font-light">{moment(new Date(Object(bill.created_at)['seconds'] * 1000 + Object(bill.created_at)['nanoseconds'] / 1000)).format("DD-MM-YYYY HH:mm:ss")}</td>
-                                                                            <td className="border border-slate-300 font-light">{bill.lotto_id.name}</td>
-                                                                            <td className="border border-slate-300 font-light">{moment(new Date(Object(bill.times)['seconds'] * 1000 + Object(bill.times)['nanoseconds'] / 1000)).format("DD-MM-YYYY")}</td>
-                                                                            <td className="border border-slate-300 text-green-600">{(price[i] - commission[i]) ? (price[i] - commission[i]).toFixed(2) : ""}</td>
-                                                                            <td className="border border-slate-300">{commission[i] ? commission[i].toFixed(2) : ""}</td>
-                                                                            <td className="border border-slate-300 text-red-500">{bill.status == "WAIT" ? "รอผล" : bill.status == "CANCEL" ? "ยกเลิก" : bill.status == "REWARD" && "ไม่ถูกรางวัล"}</td>
-                                                                            <td className="border border-slate-300 text-red-500">-70</td>
-                                                                            <td className="border border-slate-300 font-light">{bill.note}</td>
-                                                                            <td className="border border-slate-300 font-light">
-                                                                                <div className="flex flex-row justify-around items-center">
-                                                                                    <button onClick={() => { setBillId(bill); dispatch(stateModal({ show: true, openModal: "CONFIG", confirm: false })) }} className="text-[blue] hover:text-blue-500 hover:bg-gray-100">ดูรายละเอียด</button>
-                                                                                    <button className="text-xs text-red-600 hover:text-red-400 font-bold p-2 rounded shadow mx-2">
-                                                                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-4 h-4">
-                                                                                            <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
-                                                                                        </svg></button>
-                                                                                </div>
-                                                                            </td>
-                                                                        </tr>
+                                                            Object.values(bills).map((bill, i) => {
+                                                                return (
+                                                                    <Fragment key={i}>
+                                                                        {
+                                                                            billReward?.map(bill_reward => (
+                                                                                (bill.lotto_id.name == g && bill_reward.id == bill.id) &&
+                                                                                <tr key={i} className={bill_reward.total_price > 0 ? "bg-blue-200" : ""}>
+                                                                                    <td className="border border-slate-300 font-light">{moment(new Date(Object(bill.created_at)['seconds'] * 1000 + Object(bill.created_at)['nanoseconds'] / 1000)).format("DD-MM-YYYY HH:mm:ss")}</td>
+                                                                                    <td className="border border-slate-300 font-light">{bill.lotto_id.name}</td>
+                                                                                    <td className="border border-slate-300 font-light">{moment(new Date(Object(bill.times)['seconds'] * 1000 + Object(bill.times)['nanoseconds'] / 1000)).format("DD-MM-YYYY")}</td>
+                                                                                    <td className="border border-slate-300 text-green-600">{(price[i] - commission[i]) ? (price[i] - commission[i]).toFixed(2) : "0.00"}</td>
+                                                                                    <td className="border border-slate-300">{commission[i] ? commission[i].toFixed(2) : "0.00"}</td>
+                                                                                    <td className={`border border-slate-300 ${bill_reward.total_price > 0 ? 'text-blue-600' : 'text-red-500'}`}>{bill.status == "WAIT" ? "รอผล" : bill.status == "CANCEL" ? "ยกเลิก" : bill.status == "REWARD" ? bill_reward.total_price > 0 ? "ถูกรางวัล" : "ไม่ถูกรางวัล" : "ไม่ถูกรางวัล"}</td>
+                                                                                    <td className={`border border-slate-300${(bill_reward.total_price - price[i] - commission[i] > 0) ? " text-blue-600" : " text-red-500"}`}>{(bill_reward.total_price - price[i] - commission[i]) ? (bill_reward.total_price - price[i] - commission[i]).toLocaleString('en-us', { minimumFractionDigits: 2 }) : "0.00"}</td>
+                                                                                    <td className="border border-slate-300 font-light">{bill.note}</td>
+                                                                                    <td className="border border-slate-300 font-light">
+                                                                                        <div className="flex flex-row justify-around items-center">
+                                                                                            <button onClick={() => { setBillId(bill); dispatch(stateModal({ show: true, openModal: "CONFIG", confirm: false })) }} className="text-[blue] hover:text-blue-500 hover:text-blue-800">ดูรายละเอียด</button>
+                                                                                            <button className="text-xs text-red-600 hover:text-red-400 font-bold p-2 rounded shadow mx-2">
+                                                                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-4 h-4">
+                                                                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                                                                                                </svg></button>
+                                                                                        </div>
+                                                                                    </td>
+                                                                                </tr>
+                                                                            ))
+                                                                        }
+                                                                    </Fragment>
+                                                                )
+                                                            })
 
-
-                                                                    }
-                                                                </Fragment>
-
-                                                            ))
                                                         }
 
                                                         <tr>
@@ -335,17 +427,32 @@ export function OrderGroup() {
                                                                         let iTotal = 0;
                                                                         if (b.lotto_id.name == g) iTotal += commission[i]
                                                                         return iTotal
-                                                                    }).reduce((price, cur) => price + cur, 0)).toFixed(2)
+                                                                    }).reduce((price, cur) => price + cur, 0)).toLocaleString('en-us', { minimumFractionDigits: 2 })
                                                             }</td>
                                                             <td className="border border-slate-300 bg-gray-200">{
                                                                 Object.values(bills).map<number>((b: IBill, i) => {
                                                                     let iTotal = 0;
                                                                     if (b.lotto_id.name == g) iTotal += commission[i]
                                                                     return iTotal
-                                                                }).reduce((price, cur) => price + cur, 0).toFixed(2)
+                                                                }).reduce((price, cur) => price + cur, 0).toLocaleString('en-us', { minimumFractionDigits: 2 })
                                                             }</td>
                                                             <td className="border border-slate-300 bg-gray-200 text-green-600">0</td>
-                                                            <td className="border border-slate-300 bg-gray-200 text-red-500">-70</td>
+                                                            <td className="border border-slate-300 bg-gray-200 text-red-500">
+                                                                {
+                                                                    Object.values(bills).map<number>((b: IBillDoc, i) => {
+                                                                        let iTotal = 0;
+                                                                        if (billReward) {
+                                                                            Object.values(billReward).map(bill_reward => {
+                                                                                if (b.lotto_id.name == g && bill_reward.id == b.id) {
+                                                                                    iTotal += bill_reward.total_price - commission[i]
+                                                                                }
+                                                                            })
+                                                                        }
+
+                                                                        return iTotal
+                                                                    }).reduce((price, cur) => price + cur, 0).toLocaleString('en-us', { minimumFractionDigits: 2 })
+                                                                }
+                                                            </td>
                                                             <td colSpan={2} className="border border-slate-300 bg-gray-200"></td>
                                                         </tr>
                                                     </tbody>
@@ -366,7 +473,7 @@ export function OrderGroup() {
                                     <div id="bill_header" className="flex flex-col items-start rounded-sm w-full mb-3 p-2">
                                         <span>
                                             [{billId?.lotto_id.name}]  &nbsp;
-                                            {billId?.times ? new Date(billId?.times.toString()).toDateString(): ""} &nbsp;
+                                            {billId?.times ? new Date(billId?.times.toString()).toDateString() : ""} &nbsp;
                                             {billId?.status == "WAIT" && <span className="bg-yellow-500 text-sm px-1 rounded">ส่งโพย</span>}
                                             {billId?.status == "REWARD" && <span className="bg-blue-500 text-white text-sm px-1 rounded">ออกรางวัล</span>}
                                             {billId?.status == "CANCEL" && <span className="bg-red-500 text-white text-sm px-1 rounded">ยกเลิกโพย</span>}
@@ -395,9 +502,9 @@ export function OrderGroup() {
                                             </thead>
                                             <tbody>
                                                 {
-                                                    billId?.one_digits?.map(one => (
+                                                    billId?.one_digits?.map((one, i) => (
                                                         parseInt(one.split(":")[1]) > 0 &&
-                                                        <tr>
+                                                        <tr key={i}>
                                                             <td className="border border-slate-300 text-center font-light">วิ่งบน @ {one.split(":")[0]}</td>
                                                             <td className="border border-slate-300 text-center font-light">{parseInt(one.split(":")[1]).toFixed(2)}</td>
                                                             <td className="border border-slate-300 text-center font-light">{(parseInt(one.split(":")[1]) * parseInt(billId.rate_id.committion.one_digits.top as string)) / 100}</td>
@@ -412,9 +519,9 @@ export function OrderGroup() {
                                                     ))
                                                 }
                                                 {
-                                                    billId?.one_digits?.map(one => (
+                                                    billId?.one_digits?.map((one, i) => (
                                                         parseInt(one.split(":")[2]) > 0 &&
-                                                        <tr>
+                                                        <tr key={i}>
                                                             <td className="border border-slate-300 text-center font-light">วิ่งล่าง @ {one.split(":")[0]}</td>
                                                             <td className="border border-slate-300 text-center font-light">{parseInt(one.split(":")[2]).toFixed(2)}</td>
                                                             <td className="border border-slate-300 text-center font-light">{(parseInt(one.split(":")[2]) * parseInt(billId.rate_id.committion.one_digits.bottom as string)) / 100}</td>
@@ -429,9 +536,9 @@ export function OrderGroup() {
                                                     ))
                                                 }
                                                 {
-                                                    billId?.two_digits?.map(two => (
+                                                    billId?.two_digits?.map((two, i) => (
                                                         parseInt(two.split(":")[1]) > 0 &&
-                                                        <tr>
+                                                        <tr key={i}>
                                                             <td className="border border-slate-300 text-center font-light">2 ตัวบน @ {two.split(":")[0]}</td>
                                                             <td className="border border-slate-300 text-center font-light">{parseInt(two.split(":")[1]).toFixed(2)}</td>
                                                             <td className="border border-slate-300 text-center font-light">{(parseInt(two.split(":")[1]) * parseInt(billId.rate_id.committion.two_digits.top as string)) / 100}</td>
@@ -446,9 +553,9 @@ export function OrderGroup() {
                                                     ))
                                                 }
                                                 {
-                                                    billId?.two_digits?.map(two => (
+                                                    billId?.two_digits?.map((two, i) => (
                                                         parseInt(two.split(":")[2]) > 0 &&
-                                                        <tr>
+                                                        <tr key={i}>
                                                             <td className="border border-slate-300 text-center font-light">2 ตัวล่าง @ {two.split(":")[0]}</td>
                                                             <td className="border border-slate-300 text-center font-light">{parseInt(two.split(":")[2]).toFixed(2)}</td>
                                                             <td className="border border-slate-300 text-center font-light">{(parseInt(two.split(":")[2]) * parseInt(billId.rate_id.committion.two_digits.bottom as string)) / 100}</td>
@@ -463,9 +570,9 @@ export function OrderGroup() {
                                                     ))
                                                 }
                                                 {
-                                                    billId?.three_digits?.map(three => (
+                                                    billId?.three_digits?.map((three, i) => (
                                                         parseInt(three.split(":")[1]) > 0 &&
-                                                        <tr>
+                                                        <tr key={i}>
                                                             <td className="border border-slate-300 text-center font-light">3 ตัวบน @ {three.split(":")[0]}</td>
                                                             <td className="border border-slate-300 text-center font-light">{parseInt(three.split(":")[1]).toFixed(2)}</td>
                                                             <td className="border border-slate-300 text-center font-light">{(parseInt(three.split(":")[1]) * parseInt(billId.rate_id.committion.three_digits.top as string)) / 100}</td>
@@ -480,9 +587,9 @@ export function OrderGroup() {
                                                     ))
                                                 }
                                                 {
-                                                    billId?.three_digits?.map(three => (
+                                                    billId?.three_digits?.map((three, i) => (
                                                         parseInt(three.split(":")[2]) > 0 &&
-                                                        <tr>
+                                                        <tr key={i}>
                                                             <td className="border border-slate-300 text-center font-light">3 ตัวโต๊ด @ {three.split(":")[0]}</td>
                                                             <td className="border border-slate-300 text-center font-light">{parseInt(three.split(":")[2]).toFixed(2)}</td>
                                                             <td className="border border-slate-300 text-center font-light">{(parseInt(three.split(":")[2]) * parseInt(billId.rate_id.committion.three_digits.toad as string)) / 100}</td>

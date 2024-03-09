@@ -19,8 +19,9 @@ export function Home() {
     const [lotto, setLotto] = useState<ILottoDoc[] | null>(null)
 
     const [times, setTimes] = useState<Time[]>([])
-    let newTimes: Time[] = [];
+    // let newTimes: Time[] = [];
     let count = 0
+    const isLoading = document.getElementById("loading")
 
 
     const day = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']
@@ -28,6 +29,8 @@ export function Home() {
 
     const fetchLottoAll = async () => {
         try {
+            isLoading!.removeAttribute("style")
+            isLoading!.style.position = "fixed"
             const res = await axios.get(import.meta.env.VITE_OPS_URL + "/get/lotto/all", axiosConfig)
             const lottos = res.data as ILottoDoc[]
             setLotto(lottos)
@@ -49,6 +52,7 @@ export function Home() {
                     }
                 })
             }
+            isLoading!.style.display = "none";
         } catch (error) {
 
         }
@@ -79,8 +83,6 @@ export function Home() {
     }
 
     const timer = (id: string, open: string, close: string, status: TLottoStatusEnum, amount: number) => {
-
-
         const interval = setInterval(() => {
             const this_hours = new Date().getHours()
             const this_minutes = new Date().getMinutes()
@@ -88,27 +90,28 @@ export function Home() {
 
             const cd = countdown(open, close, getTomorrow(open, close, t))
             if (count >= amount) {
-                newTimes = []
+                // newTimes = []
                 setTimes([])
                 count = 0
             }
-            if (cd.days < 0) {
-                clearInterval(interval)
-            }
+            // if (cd.days < 0) {
+            //     clearInterval(interval)
+            // }
 
             const days = status == TLottoStatusEnum.OPEN ? cd.days < 10 ? `0${cd.days.toString()}` : cd.days.toString() : "00"
             const hours = status == TLottoStatusEnum.OPEN ? cd.hours < 10 ? `0${cd.hours.toString()}` : cd.hours.toString() : "00"
             const minutes = status == TLottoStatusEnum.OPEN ? cd.minutes < 10 ? `0${cd.minutes.toString()}` : cd.minutes.toString() : "00"
             const seconds = status == TLottoStatusEnum.OPEN ? cd.seconds < 10 ? `0${cd.seconds.toString()}` : cd.seconds.toString() : "00"
+            // console.log(newTimes);
+            // newTimes = [...newTimes,]
 
-            newTimes = [...newTimes, {
+            setTimes((prevState) => [...prevState, {
                 id: id,
                 days: days,
                 hours: hours,
                 minutes: minutes,
                 seconds: seconds
-            }]
-            setTimes(newTimes)
+            }])
             count++
         }, 1000)
 
@@ -160,19 +163,24 @@ export function Home() {
         }
     }
 
+    const previewImage = (lotto: ILottoDoc) => {
+        let img = ""
+        image.map((im) => {
+            if (lotto.name!.match(im.name)) img = im.data
+        })
+        return img
+    }
+
 
     const display = () => {
         const hours = new Date().getHours()
         const minutes = new Date().getMinutes()
         const t = `${hours}:${minutes}`
-        return lotto!.map((lot, index) => (
+        return lotto?.map((lot, index) => (
             <div key={index} className="p-2 xl:basis-1/5 lg:basis-1/4 basis-1/3">
                 <Link to={getCountdownTime(lot.open, lot.close, t) ? times ? lot.date!.includes(day[dateNow.getDay()]) && lot.status == TLottoStatusEnum.OPEN ? `/bill/${lot.id}` : '#' : '#' : '#'} className={`flex flex-col items-center rounded-none shadow-md dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700 ${getCountdownTime(lot.open, lot.close, t) ? times ? lot.date!.includes(day[dateNow.getDay()]) && lot.status == TLottoStatusEnum.OPEN ? `bg-green-600 text-white` : `bg-gray-300 text-dark` : `bg-gray-300 text-dark` : `bg-gray-300 text-dark`}`}>
                     <div className="flex flex-row items-center p-2 w-full">
-                        <img style={{ height: 40 }} className="object-cover rounded-none" src={`${Object.values(image).map((im, i) => {
-                            if (lot.name == im.name && i == index) return im.data
-                        })[index]
-                            }`} alt={lot.name} />
+                        <img style={{ height: 40 }} className="object-cover rounded-none" src={previewImage(lot)} alt={lot.name} />
                         <div className="flex text-end w-full flex-col justify-between leading-normal">
                             <h5 className="text-sm font-bold tracking-tight dark:text-white">{lot.name}
                                 <br />
@@ -187,11 +195,11 @@ export function Home() {
                     <div className="w-full text-xs px-2">
                         <p className="flex justify-between w-full">
                             <span className="font-light">เวลาปิด</span>
-                            <span className="font-light">{lot.date!.includes(day[dateNow.getDay()]) && lot.status == TLottoStatusEnum.OPEN ? String(lot.close) : `-`}</span>
+                            <span className="font-light">{(lot.date!.includes(day[dateNow.getDay()]) && lot.status) == TLottoStatusEnum.OPEN ? String(lot.close) : `-`}</span>
                         </p>
                         <p className="flex justify-between w-full">
                             <span className="font-light">สถานะ</span>
-                            <span className="font-light">{getCountdownTime(lot.open, lot.close, t) ? lot.date!.includes(day[dateNow.getDay()]) && times[index] ? times[index].id == lot.id && `ปิดรับใน ${times[index]?.hours ?? "00"}:${times[index]?.minutes ?? "00"}:${times[index]?.seconds ?? "00"}` : '' : ''}</span>
+                            <span className="font-light">{getCountdownTime(lot.open, lot.close, t) ? lot.date!.includes(day[dateNow.getDay()]) && times[index] ? times[index].id == lot.id ? `ปิดรับใน ${times[index]?.hours ?? "00"}:${times[index]?.minutes ?? "00"}:${times[index]?.seconds ?? "00"}` : '-' : '-' : 'ปิดรับ'}</span>
                         </p>
                     </div>
                 </Link>
@@ -205,20 +213,15 @@ export function Home() {
         fetchLottoAll()
     }, [])
 
-    const isLoading = document.getElementById("loading")
 
-    const loading = () => {
-        isLoading!.removeAttribute("style")
-        isLoading!.style.position = "fixed"
-        return <></>
-    }
-    
+
+
     return (
         <>{
             isUser &&
-            <div id="home" className="flex flex-row">
+            <div id="home" className="flex flex-row flex-wrap">
                 {
-                    lotto ? display() : loading()
+                    display()
                 }
             </div>
         }
