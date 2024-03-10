@@ -42,7 +42,7 @@ export function OrderGroup() {
     const [price, setPrice] = useState<number[]>([])
     const [commission, setCommission] = useState<number[]>([])
     const [billId, setBillId] = useState<IBillDoc>()
-    const [billReward, setBillReward] = useState<Reward[]>()
+    const [billReward, setBillReward] = useState<Reward[]>([])
     const dispatch = useAppDispatch()
 
 
@@ -385,28 +385,56 @@ export function OrderGroup() {
                                                                 return (
                                                                     <Fragment key={i}>
                                                                         {
-                                                                            billReward?.map(bill_reward => (
-                                                                                (bill.lotto_id.name == g && bill_reward.id == bill.id) &&
-                                                                                <tr key={i} className={bill_reward.total_price > 0 ? "bg-blue-200" : ""}>
-                                                                                    <td className="border border-slate-300 font-light">{moment(new Date(Object(bill.created_at)['seconds'] * 1000 + Object(bill.created_at)['nanoseconds'] / 1000)).format("DD-MM-YYYY HH:mm:ss")}</td>
-                                                                                    <td className="border border-slate-300 font-light">{bill.lotto_id.name}</td>
-                                                                                    <td className="border border-slate-300 font-light">{moment(new Date(Object(bill.times)['seconds'] * 1000 + Object(bill.times)['nanoseconds'] / 1000)).format("DD-MM-YYYY")}</td>
-                                                                                    <td className="border border-slate-300 text-green-600">{(price[i] - commission[i]) ? (price[i] - commission[i]).toFixed(2) : "0.00"}</td>
-                                                                                    <td className="border border-slate-300">{commission[i] ? commission[i].toFixed(2) : "0.00"}</td>
-                                                                                    <td className={`border border-slate-300 ${bill_reward.total_price > 0 ? 'text-blue-600' : 'text-red-500'}`}>{bill.status == "WAIT" ? "รอผล" : bill.status == "CANCEL" ? "ยกเลิก" : bill.status == "REWARD" ? bill_reward.total_price > 0 ? "ถูกรางวัล" : "ไม่ถูกรางวัล" : "ไม่ถูกรางวัล"}</td>
-                                                                                    <td className={`border border-slate-300${(bill_reward.total_price - price[i] - commission[i] > 0) ? " text-blue-600" : " text-red-500"}`}>{(bill_reward.total_price - price[i] - commission[i]) ? (bill_reward.total_price - price[i] - commission[i]).toLocaleString('en-us', { minimumFractionDigits: 2 }) : "0.00"}</td>
-                                                                                    <td className="border border-slate-300 font-light">{bill.note}</td>
-                                                                                    <td className="border border-slate-300 font-light">
-                                                                                        <div className="flex flex-row justify-around items-center">
-                                                                                            <button onClick={() => { setBillId(bill); dispatch(stateModal({ show: true, openModal: "CONFIG", confirm: false })) }} className="text-[blue] hover:text-blue-500 hover:text-blue-800">ดูรายละเอียด</button>
-                                                                                            <button className="text-xs text-red-600 hover:text-red-400 font-bold p-2 rounded shadow mx-2">
-                                                                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-4 h-4">
-                                                                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
-                                                                                                </svg></button>
-                                                                                        </div>
-                                                                                    </td>
-                                                                                </tr>
-                                                                            ))
+                                                                            <>
+                                                                                {
+                                                                                    billReward?.map(bill_reward => (
+                                                                                        (bill.lotto_id.name == g && bill_reward.id == bill.id) &&
+                                                                                        <tr key={i} className={bill_reward.total_price > 0 ? "bg-blue-200" : ""}>
+                                                                                            <td className="border border-slate-300 font-light">{moment(new Date(Object(bill.created_at)['seconds'] * 1000 + Object(bill.created_at)['nanoseconds'] / 1000)).format("DD-MM-YYYY HH:mm:ss")}</td>
+                                                                                            <td className="border border-slate-300 font-light">{bill.lotto_id.name}</td>
+                                                                                            <td className="border border-slate-300 font-light">{moment(new Date(Object(bill.times)['seconds'] * 1000 + Object(bill.times)['nanoseconds'] / 1000)).format("DD-MM-YYYY")}</td>
+                                                                                            <td className="border border-slate-300 text-green-600">{(price[i] - commission[i]) ? (price[i] - commission[i]).toFixed(2) : "0.00"}</td>
+                                                                                            <td className="border border-slate-300">{commission[i] ? commission[i].toFixed(2) : "0.00"}</td>
+                                                                                            <td className={`border border-slate-300 ${bill_reward.total_price > 0 ? 'text-blue-600' : 'text-red-500'}`}>{bill.status == "WAIT" ? "รอผล" : bill.status == "CANCEL" ? "ยกเลิก" : bill.status == "REWARD" ? bill_reward.total_price > 0 ? bill_reward.total_price.toLocaleString('en-us', { minimumFractionDigits: 2 }) : "ไม่ถูกรางวัล" : "ไม่ถูกรางวัล"}</td>
+                                                                                            <td className={`border border-slate-300${(bill_reward.total_price - commission[i] - price[i] > 0) ? " text-blue-600" : " text-red-500"}`}>{bill.status == "WAIT" ? "" : (bill_reward.total_price + commission[i] - price[i]) ? (bill_reward.total_price + commission[i] - price[i]).toLocaleString('en-us', { minimumFractionDigits: 2 }) : "0.00"}</td>
+                                                                                            <td className="border border-slate-300 font-light">{bill.note}</td>
+                                                                                            <td className="border border-slate-300 font-light">
+                                                                                                <div className="flex flex-row justify-around items-center">
+                                                                                                    <button onClick={() => { setBillId(bill); dispatch(stateModal({ show: true, openModal: "CONFIG", confirm: false })) }} className="text-[blue] hover:text-blue-500 hover:text-blue-800">ดูรายละเอียด</button>
+                                                                                                    {
+                                                                                                        bill.status == "WAIT" && <button className="text-xs text-red-600 hover:text-red-400 font-bold p-2 rounded shadow mx-2">
+                                                                                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-4 h-4">
+                                                                                                                <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                                                                                                            </svg></button>
+                                                                                                    }
+                                                                                                </div>
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                    ))
+                                                                                }
+                                                                                {
+                                                                                    (bill.lotto_id.name == g && billReward.length == 0) &&
+                                                                                    <tr key={i}>
+                                                                                        <td className="border border-slate-300 font-light">{moment(new Date(Object(bill.created_at)['seconds'] * 1000 + Object(bill.created_at)['nanoseconds'] / 1000)).format("DD-MM-YYYY HH:mm:ss")}</td>
+                                                                                        <td className="border border-slate-300 font-light">{bill.lotto_id.name}</td>
+                                                                                        <td className="border border-slate-300 font-light">{moment(new Date(Object(bill.times)['seconds'] * 1000 + Object(bill.times)['nanoseconds'] / 1000)).format("DD-MM-YYYY")}</td>
+                                                                                        <td className="border border-slate-300 text-green-600">{(price[i] - commission[i]) ? (price[i] - commission[i]).toFixed(2) : "0.00"}</td>
+                                                                                        <td className="border border-slate-300">{commission[i] ? commission[i].toFixed(2) : "0.00"}</td>
+                                                                                        <td className={`border border-slate-300 ${bill.status == "WAIT" ? "text-blue-600" : ""}`}>{bill.status == "WAIT" ? "รอผล" : bill.status == "CANCEL" ? "ยกเลิก" : bill.status == "REWARD" ? "" : ""}</td>
+                                                                                        <td className={`border border-slate-300`}></td>
+                                                                                        <td className="border border-slate-300 font-light">{bill.note}</td>
+                                                                                        <td className="border border-slate-300 font-light">
+                                                                                            <div className="flex flex-row justify-around items-center">
+                                                                                                <button onClick={() => { setBillId(bill); dispatch(stateModal({ show: true, openModal: "CONFIG", confirm: false })) }} className="text-[blue] hover:text-blue-500 hover:text-blue-800">ดูรายละเอียด</button>
+                                                                                                <button className="text-xs text-red-600 hover:text-red-400 font-bold p-2 rounded shadow mx-2">
+                                                                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-4 h-4">
+                                                                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                                                                                                    </svg></button>
+                                                                                            </div>
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                }
+                                                                            </>
                                                                         }
                                                                     </Fragment>
                                                                 )
@@ -436,15 +464,18 @@ export function OrderGroup() {
                                                                     return iTotal
                                                                 }).reduce((price, cur) => price + cur, 0).toLocaleString('en-us', { minimumFractionDigits: 2 })
                                                             }</td>
-                                                            <td className="border border-slate-300 bg-gray-200 text-green-600">0</td>
-                                                            <td className="border border-slate-300 bg-gray-200 text-red-500">
+                                                            <td className="border border-slate-300 bg-gray-200 text-green-600"></td>
+                                                            <td className="border border-slate-300 bg-gray-200 text-blue-600">
                                                                 {
                                                                     Object.values(bills).map<number>((b: IBillDoc, i) => {
+                                                                        if (b.status == "WAIT") {
+                                                                            return 0
+                                                                        }
                                                                         let iTotal = 0;
                                                                         if (billReward) {
                                                                             Object.values(billReward).map(bill_reward => {
                                                                                 if (b.lotto_id.name == g && bill_reward.id == b.id) {
-                                                                                    iTotal += bill_reward.total_price - commission[i]
+                                                                                    iTotal += bill_reward.total_price + commission[i] - price[i]
                                                                                 }
                                                                             })
                                                                         }
@@ -504,102 +535,114 @@ export function OrderGroup() {
                                                 {
                                                     billId?.one_digits?.map((one, i) => (
                                                         parseInt(one.split(":")[1]) > 0 &&
-                                                        <tr key={i}>
-                                                            <td className="border border-slate-300 text-center font-light">วิ่งบน @ {one.split(":")[0]}</td>
-                                                            <td className="border border-slate-300 text-center font-light">{parseInt(one.split(":")[1]).toFixed(2)}</td>
-                                                            <td className="border border-slate-300 text-center font-light">{(parseInt(one.split(":")[1]) * parseInt(billId.rate_id.committion.one_digits.top as string)) / 100}</td>
+                                                        <tr key={i} className={billReward.find((r) => r.one_digit?.top?.includes(`${one.split(":")[0]}:${one.split(":")[1]}`)) ? "bg-blue-200" : ""}>
+                                                            <td className={`border border-slate-300 text-center font-light`}>วิ่งบน @ {one.split(":")[0]}</td>
+                                                            <td className={`border border-slate-300 text-center font-light`}>{parseInt(one.split(":")[1]).toFixed(2)}</td>
+                                                            <td className={`border border-slate-300 text-center font-light`}>{(parseInt(one.split(":")[1]) * parseInt(billId.rate_id.committion.one_digits.top as string)) / 100}</td>
                                                             <td className="border border-slate-300 text-center">
                                                                 <div className="flex justify-between px-1">
                                                                     <span className="font-light">{billId.rate_id.one_digits.top}</span>
                                                                     <span className="font-light">{parseInt(billId.rate_id.one_digits.top as string) * parseInt(one.split(":")[1])}</span>
                                                                 </div>
                                                             </td>
-                                                            <td className="border border-slate-300 text-center font-light"></td>
+                                                            <td className={`border border-slate-300 text-center font-light ${billReward.find((r) => r.one_digit?.top?.includes(`${one.split(":")[0]}:${one.split(":")[1]}`)) ? "text-blue-600" : "text-red-600"}`}>
+                                                                {billReward.find((r) => r.one_digit?.top?.includes(`${one.split(":")[0]}:${one.split(":")[1]}`)) ? "ถูกรางวัล" : "ไม่ถูกรางวัล"}
+                                                            </td>
                                                         </tr>
                                                     ))
                                                 }
                                                 {
                                                     billId?.one_digits?.map((one, i) => (
                                                         parseInt(one.split(":")[2]) > 0 &&
-                                                        <tr key={i}>
-                                                            <td className="border border-slate-300 text-center font-light">วิ่งล่าง @ {one.split(":")[0]}</td>
-                                                            <td className="border border-slate-300 text-center font-light">{parseInt(one.split(":")[2]).toFixed(2)}</td>
-                                                            <td className="border border-slate-300 text-center font-light">{(parseInt(one.split(":")[2]) * parseInt(billId.rate_id.committion.one_digits.bottom as string)) / 100}</td>
+                                                        <tr key={i} className={billReward.find((r) => r.one_digit?.bottom?.includes(`${one.split(":")[0]}:${one.split(":")[2]}`)) ? "bg-blue-200" : ""}>
+                                                            <td className={`border border-slate-300 text-center font-light`}>วิ่งล่าง @ {one.split(":")[0]}</td>
+                                                            <td className={`border border-slate-300 text-center font-light`}>{parseInt(one.split(":")[2]).toFixed(2)}</td>
+                                                            <td className={`border border-slate-300 text-center font-light`}>{(parseInt(one.split(":")[2]) * parseInt(billId.rate_id.committion.one_digits.bottom as string)) / 100}</td>
                                                             <td className="border border-slate-300 text-center">
                                                                 <div className="flex justify-between px-1">
                                                                     <span className="font-light">{billId.rate_id.one_digits.bottom}</span>
                                                                     <span className="font-light">{parseInt(billId.rate_id.one_digits.bottom as string) * parseInt(one.split(":")[2])}</span>
                                                                 </div>
                                                             </td>
-                                                            <td className="border border-slate-300 text-center font-light"></td>
+                                                            <td className={`border border-slate-300 text-center font-light ${billReward.find((r) => r.one_digit?.bottom?.includes(`${one.split(":")[0]}:${one.split(":")[2]}`)) ? "text-blue-600" : "text-red-600"}`}>
+                                                                {billReward.find((r) => r.one_digit?.bottom?.includes(`${one.split(":")[0]}:${one.split(":")[2]}`)) ? "ถูกรางวัล" : "ไม่ถูกรางวัล"}
+                                                            </td>
                                                         </tr>
                                                     ))
                                                 }
                                                 {
                                                     billId?.two_digits?.map((two, i) => (
                                                         parseInt(two.split(":")[1]) > 0 &&
-                                                        <tr key={i}>
-                                                            <td className="border border-slate-300 text-center font-light">2 ตัวบน @ {two.split(":")[0]}</td>
-                                                            <td className="border border-slate-300 text-center font-light">{parseInt(two.split(":")[1]).toFixed(2)}</td>
-                                                            <td className="border border-slate-300 text-center font-light">{(parseInt(two.split(":")[1]) * parseInt(billId.rate_id.committion.two_digits.top as string)) / 100}</td>
+                                                        <tr key={i} className={billReward.find((r) => r.two_digit?.top?.includes(`${two.split(":")[0]}:${two.split(":")[1]}`)) ? "bg-blue-200" : ""}>
+                                                            <td className={`border border-slate-300 text-center font-light`}>2 ตัวบน @ {two.split(":")[0]}</td>
+                                                            <td className={`border border-slate-300 text-center font-light`}>{parseInt(two.split(":")[1]).toFixed(2)}</td>
+                                                            <td className={`border border-slate-300 text-center font-light`}>{(parseInt(two.split(":")[1]) * parseInt(billId.rate_id.committion.two_digits.top as string)) / 100}</td>
                                                             <td className="border border-slate-300 text-center">
                                                                 <div className="flex justify-between px-1">
                                                                     <span className="font-light">{billId.rate_id.two_digits.top}</span>
                                                                     <span className="font-light">{parseInt(billId.rate_id.two_digits.top as string) * parseInt(two.split(":")[1])}</span>
                                                                 </div>
                                                             </td>
-                                                            <td className="border border-slate-300 text-center font-light"></td>
+                                                            <td className={`border border-slate-300 text-center font-light ${billReward.find((r) => r.two_digit?.top?.includes(`${two.split(":")[0]}:${two.split(":")[1]}`)) ? "text-blue-600" : "text-red-600"}`}>
+                                                                {billReward.find((r) => r.two_digit?.top?.includes(`${two.split(":")[0]}:${two.split(":")[1]}`)) ? "ถูกรางวัล" : "ไม่ถูกรางวัล"}
+                                                            </td>
                                                         </tr>
                                                     ))
                                                 }
                                                 {
                                                     billId?.two_digits?.map((two, i) => (
                                                         parseInt(two.split(":")[2]) > 0 &&
-                                                        <tr key={i}>
-                                                            <td className="border border-slate-300 text-center font-light">2 ตัวล่าง @ {two.split(":")[0]}</td>
-                                                            <td className="border border-slate-300 text-center font-light">{parseInt(two.split(":")[2]).toFixed(2)}</td>
-                                                            <td className="border border-slate-300 text-center font-light">{(parseInt(two.split(":")[2]) * parseInt(billId.rate_id.committion.two_digits.bottom as string)) / 100}</td>
+                                                        <tr key={i} className={billReward.find((r) => r.two_digit?.bottom?.includes(`${two.split(":")[0]}:${two.split(":")[2]}`)) ? "bg-blue-200" : ""}>
+                                                            <td className={`border border-slate-300 text-center font-light`}>2 ตัวล่าง @ {two.split(":")[0]}</td>
+                                                            <td className={`border border-slate-300 text-center font-light`}>{parseInt(two.split(":")[2]).toFixed(2)}</td>
+                                                            <td className={`border border-slate-300 text-center font-light`}>{(parseInt(two.split(":")[2]) * parseInt(billId.rate_id.committion.two_digits.bottom as string)) / 100}</td>
                                                             <td className="border border-slate-300 text-center">
                                                                 <div className="flex justify-between px-1">
                                                                     <span className="font-light">{billId.rate_id.two_digits.bottom}</span>
                                                                     <span className="font-light">{parseInt(billId.rate_id.two_digits.bottom as string) * parseInt(two.split(":")[2])}</span>
                                                                 </div>
                                                             </td>
-                                                            <td className="border border-slate-300 text-center font-light"></td>
+                                                            <td className={`border border-slate-300 text-center font-light ${billReward.find((r) => r.two_digit?.bottom?.includes(`${two.split(":")[0]}:${two.split(":")[2]}`)) ? "text-blue-600" : "text-red-600"}`}>
+                                                                {billReward.find((r) => r.two_digit?.bottom?.includes(`${two.split(":")[0]}:${two.split(":")[2]}`)) ? "ถูกรางวัล" : "ไม่ถูกรางวัล"}
+                                                            </td>
                                                         </tr>
                                                     ))
                                                 }
                                                 {
                                                     billId?.three_digits?.map((three, i) => (
                                                         parseInt(three.split(":")[1]) > 0 &&
-                                                        <tr key={i}>
-                                                            <td className="border border-slate-300 text-center font-light">3 ตัวบน @ {three.split(":")[0]}</td>
-                                                            <td className="border border-slate-300 text-center font-light">{parseInt(three.split(":")[1]).toFixed(2)}</td>
-                                                            <td className="border border-slate-300 text-center font-light">{(parseInt(three.split(":")[1]) * parseInt(billId.rate_id.committion.three_digits.top as string)) / 100}</td>
+                                                        <tr key={i} className={billReward.find((r) => r.three_digit?.top?.includes(`${three.split(":")[0]}:${three.split(":")[1]}`)) ? "bg-blue-200" : ""}>
+                                                            <td className={`border border-slate-300 text-center font-light`}>3 ตัวบน @ {three.split(":")[0]}</td>
+                                                            <td className={`border border-slate-300 text-center font-light`}>{parseInt(three.split(":")[1]).toFixed(2)}</td>
+                                                            <td className={`border border-slate-300 text-center font-light`}>{(parseInt(three.split(":")[1]) * parseInt(billId.rate_id.committion.three_digits.top as string)) / 100}</td>
                                                             <td className="border border-slate-300 text-center">
                                                                 <div className="flex justify-between px-1">
                                                                     <span className="font-light">{billId.rate_id.three_digits.top}</span>
                                                                     <span className="font-light">{parseInt(billId.rate_id.three_digits.top as string) * parseInt(three.split(":")[1])}</span>
                                                                 </div>
                                                             </td>
-                                                            <td className="border border-slate-300 text-center font-light"></td>
+                                                            <td className={`border border-slate-300 text-center font-light ${billReward.find((r) => r.three_digit?.top?.includes(`${three.split(":")[0]}:${three.split(":")[1]}`)) ? "text-blue-600" : "text-red-600"}`}>
+                                                                {billReward.find((r) => r.three_digit?.top?.includes(`${three.split(":")[0]}:${three.split(":")[1]}`)) ? "ถูกรางวัล" : "ไม่ถูกรางวัล"}
+                                                            </td>
                                                         </tr>
                                                     ))
                                                 }
                                                 {
                                                     billId?.three_digits?.map((three, i) => (
                                                         parseInt(three.split(":")[2]) > 0 &&
-                                                        <tr key={i}>
-                                                            <td className="border border-slate-300 text-center font-light">3 ตัวโต๊ด @ {three.split(":")[0]}</td>
-                                                            <td className="border border-slate-300 text-center font-light">{parseInt(three.split(":")[2]).toFixed(2)}</td>
-                                                            <td className="border border-slate-300 text-center font-light">{(parseInt(three.split(":")[2]) * parseInt(billId.rate_id.committion.three_digits.toad as string)) / 100}</td>
+                                                        <tr key={i} className={billReward.find((r) => r.three_digit?.toad?.includes(`${three.split(":")[0]}:${three.split(":")[2]}`)) ? "bg-blue-200" : ""}>
+                                                            <td className={`border border-slate-300 text-center font-light`}>3 ตัวโต๊ด @ {three.split(":")[0]}</td>
+                                                            <td className={`border border-slate-300 text-center font-light`}>{parseInt(three.split(":")[2]).toFixed(2)}</td>
+                                                            <td className={`border border-slate-300 text-center font-light`}>{(parseInt(three.split(":")[2]) * parseInt(billId.rate_id.committion.three_digits.toad as string)) / 100}</td>
                                                             <td className="border border-slate-300 text-center">
                                                                 <div className="flex justify-between px-1">
                                                                     <span className="font-light">{billId.rate_id.three_digits.toad}</span>
                                                                     <span className="font-light">{parseInt(billId.rate_id.three_digits.toad as string) * parseInt(three.split(":")[2])}</span>
                                                                 </div>
                                                             </td>
-                                                            <td className="border border-slate-300 text-center font-light"></td>
+                                                            <td className={`border border-slate-300 text-center font-light ${billReward.find((r) => r.three_digit?.toad?.includes(`${three.split(":")[0]}:${three.split(":")[2]}`)) ? "text-blue-600" : "text-red-600"}`}>
+                                                                {billReward.find((r) => r.three_digit?.toad?.includes(`${three.split(":")[0]}:${three.split(":")[2]}`)) ? "ถูกรางวัล" : "ไม่ถูกรางวัล"}
+                                                            </td>
                                                         </tr>
                                                     ))
                                                 }
